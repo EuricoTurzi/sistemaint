@@ -1,0 +1,589 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="display-4">{% if form.instance.pk %}Editar Pagamento{% else %}Novo Acionamento{% endif %}</h3>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post" action="{% url 'formacompanhamento:registro_pagamento_create' %}" enctype="multipart/form-data">
+
+                {% csrf_token %}
+                
+                <!-- Campos Cliente e Prestador -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="id_cliente" class="form-label">Cliente</label>
+                        {{ form.cliente.errors }}
+                        {{ form.cliente }}
+                    </div>
+                
+                
+                
+                
+                    
+                        <div class="col-md-4">
+                            <label for="id_protocolo" class="form-label">Protocolo</label>
+                            {{ form.protocolo }}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="id_prestador" class="form-label">Prestador</label>
+                            {{ form.prestador }}
+                        </div>
+                        <div class="col-md-2">
+                            <label for="id_placas" class="form-label">Placas</label>
+                            {{ form.placas }}
+                        </div>
+                        <div class="col-md-2">
+                            <label for="id_acionamento" class="form-label">Valor de Acionamento</label>
+                            {{ form.acionamento }}
+                        </div>
+                      
+                        <div class="col-md-2">
+                            <label for="id_franquia_hora" class="form-label">Franquia de Horas</label>
+                            {{ form.franquia_hora }}
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <label for="id_km_franquia" class="form-label">Franquia de KM</label>
+                            {{ form.km_franquia }}
+                        </div>
+                        <div class="col-md-2">
+                            <label for="id_valor_hora_excedente" class="form-label">Valor de Hora excedente</label>
+                            {{ form.valor_hora_excedente }}
+                        </div>
+                        <div class="col-md-2">
+                            <label for="id_valor_km_excedente" class="form-label">Valor de KM Excedente</label>
+                            {{ form.valor_km_excedente }}
+                        </div>
+                        
+                     
+
+                </div>
+                
+                <div class="row mb-3">
+                 
+                    
+                   
+                
+                    
+                
+                   
+                            <!-- Campos Protocolo e Solicitante -->
+
+
+                            <p><h3>Dados do Acionamento</h3></p>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="id_solicitante" class="form-label">Solicitante</label>
+                            {{ form.solicitante }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_tipo_contato" class="form-label">Tipo de Contato</label>
+                            {{ form.tipo_contato }}
+                        </div>
+                       
+                    </div>
+                    
+                    <!-- Campos Tipo e Tipo de Contato -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="id_tipo" class="form-label">Tipo</label>
+                            {{ form.tipo }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_quantidade_agentes" class="form-label">Quantidade de Agentes</label>
+                            {{ form.quantidade_agentes }}
+                        </div>
+                       
+                    </div>
+                 
+                
+                    <!-- Campos Data e Hora Inicial/Final -->
+                     <br>
+                     <br>
+                     <br>
+                     <br>
+                     
+                     <div class="row mb-3">
+                        <!-- Data e Hora Inicial -->
+                        <div class="col-md-3">
+                            <label for="id_data_hora_inicial" class="form-label">Data e Hora (Início de Operação)</label>
+                            <div class="input-group">
+                                {{ form.data_hora_inicial }}
+                                <button type="button" class="btn btn-outline-secondary" id="registrarDataHoraInicialButton">
+                                    Registrar
+                                </button>
+                            </div>
+                        </div>
+                    
+                        <!-- SLA -->
+                        <div class="col-md-2">
+                            <label for="id_sla" class="form-label">SLA (MM)</label>
+                            {{ form.sla }}
+                            {% if form.sla.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.sla.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2">
+                            <label for="id_sla" class="form-label">Previsão de Chegada</label>
+                            {{ form.previsa_chegada }}
+                        </div>
+                        <div class="col-md-2">
+                            <label for="id_data_hora_chegada" class="form-label">Data e Hora (Chegada)</label>
+                            <div class="input-group">
+                                {{ form.data_hora_chegada }}
+                                <button type="button" class="btn btn-outline-secondary" id="registrarDataHoraChegadaButton">
+                                    Registrar
+                                </button>
+                            </div>
+                        </div>
+                        
+                    
+                        <div class="col-md-3">
+                            <label for="id_data_hora_final" class="form-label">Data e Hora (Final de Operação)</label>
+                            <div class="input-group">
+                                {{ form.data_hora_final }}
+                                <button type="button" class="btn btn-outline-secondary" id="registrarDataHoraFinalButton">
+                                    Registrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                
+                    <div class="row mb-4">
+                        <div class="col-md-2">
+                            <label for="id_km_inicial" class="form-label">Km Inicial</label>
+                            {{ form.km_inicial }}
+                        </div>
+                        <div class="col-md-2">
+                            <label for="id_km_final" class="form-label">Km Final</label>
+                            {{ form.km_final }}
+                        </div>
+                        
+                            <div class="col-md-2">
+                                <label for="id_km_total" class="form-label">Km Total</label>
+                                {{ form.km_total }}
+                            </div>
+                                <div class="col-md-2">
+                                    <label for="id_km_excedente" class="form-label">Km Excedente</label>
+                                    {{ form.km_excedente }}
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <label for="id_pedagio" class="form-label">Pedágio</label>
+                                    {{ form.pedagio }}
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="id_acionamento" class="form-label">Valor do KM</label>
+                                    {{ form.valor_km_excedente }}
+                                </div>
+                            
+                    </div>
+                
+                
+                    <!-- Campos Operador e Modelo, Cor e Ano -->
+                     <p></p>
+                <div class="row mb-3">
+                   
+                    <div class="col-md-4">
+                    
+                        <label for="id_modelo_cor_ano" class="form-label">Marca / Modelo</label>
+                        {{ form.modelo }}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="id_ano" class="form-label">Ano Fabricação / Modelo  </label>
+                        {{ form.ano }}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="id_cor" class="form-label">Cor</label>
+                        {{ form.cor }}
+                    </div>
+                  
+                </div>
+                
+
+               
+<div class="row mb-3">
+    <div class="col-md-2">
+        <label for="id_rastreador" class="form-label">Rastreador</label>
+        {{ form.rastreador }}
+    </div>
+    <div class="col-md-2" style="display: none;" id="id_equipamento_field">
+        <label for="id_id_equipamento" class="form-label">ID Equipamento</label>
+        {{ form.id_equipamento }}
+    </div>
+    <div class="col-md-6" style="display: none;" id="ultima_posicao_field">
+        <label for="id_ultima_posicao" class="form-label">Endereço da Ultima Posição</label>
+        {{ form.ultima_posicao }}
+    </div>
+    <div class="col-md-2" style="display: none;" id="latlong_field">
+        <label for="id_latlong" class="form-label">Latitude - Longitude</label>
+        {{ form.latlong }}
+    </div>
+</div>
+
+
+<div class="row mb-3">
+    <div class="col-md-2">
+        <label for="id_isca" class="form-label">Isca</label>
+        {{ form.isca }}
+    </div>
+    <div class="col-md-2" style="display: none;" id="id_isca_field">
+        <label for="id_id_isca" class="form-label">ID Equipamento</label>
+        {{ form.id_isca }}
+    </div>
+    <div class="col-md-6" style="display: none;" id="ultima_posicao_isca_field">
+        <label for="id_ultima_posicao_isca" class="form-label">Endereço da Ultima Posição</label>
+        {{ form.ultima_posicao_isca }}
+    </div>
+    <div class="col-md-2" style="display: none;" id="latlong_isca_field">
+        <label for="id_latlong_isca" class="form-label">Latitude - Longitude</label>
+        {{ form.latlong_isca }}
+    </div>
+</div>    
+                
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="id_descricao" class="form-label">Descrição</label>
+                        {{ form.descricao }}
+                    </div>
+                </div>
+
+                <!-- Renderizando os campos de imagens -->
+                <div class="row mb-3">
+                    <div class="col-md-2">
+                        <label for="id_imagem1" class="form-label">Imagem 1</label>
+                        {{ form.imagem1 }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_imagem2" class="form-label">Imagem 2</label>
+                        {{ form.imagem2 }}
+                    </div>
+               
+                
+                    <div class="col-md-2">
+                        <label for="id_imagem3" class="form-label">Imagem 3</label>
+                        {{ form.imagem3 }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_imagem4" class="form-label">Imagem 4</label>
+                        {{ form.imagem4 }}
+                    </div>
+                
+               
+                    <div class="col-md-2">
+                        <label for="id_imagem5" class="form-label">Imagem 5</label>
+                        {{ form.imagem5 }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_imagem6" class="form-label">Imagem 6</label>
+                        {{ form.imagem6 }}
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <label for="id_imagem7" class="form-label">Imagem 7</label>
+                        {{ form.imagem7 }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_imagem8" class="form-label">Imagem 8</label>
+                        {{ form.imagem8 }}
+                    </div>
+                
+                
+                    <div class="col-md-2">
+                        <label for="id_imagem9" class="form-label">Imagem 9</label>
+                        {{ form.imagem9 }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_imagem10" class="form-label">Imagem 10</label>
+                        {{ form.imagem10 }}
+                    </div>
+                
+               
+                    <div class="col-md-2">
+                        <label for="id_imagem11" class="form-label">Imagem 11</label>
+                        {{ form.imagem11 }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_imagem12" class="form-label">Imagem 12</label>
+                        {{ form.imagem12 }}
+                    </div>
+                </div>
+          
+
+                <!-- Botões de Ação -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <a href="{% url 'formacompanhamento:registro_pagamento_list' %}" class="btn btn-secondary">Cancelar e Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if form.errors %}
+    <div class="alert alert-danger">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                <li><strong>{{ field }}</strong>: {{ errors|join:", " }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+                <!-- Botões de Ação -->
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        console.log("Script carregado corretamente!");
+                    
+                        // Inicializar datetimepicker com o horário de Brasília
+                        flatpickr('.datetimepicker', {
+                            enableTime: true,
+                            dateFormat: "Y-m-d H:i",
+                            time_24hr: true,
+                            defaultDate: getFormattedDateTimeBrasilia() // Inicializa com data e hora em horário de Brasília
+                        });
+                    
+                        // Elementos dos campos de Data e Hora
+                        const dataHoraInicialInput = document.getElementById('id_data_hora_inicial');
+                        const dataHoraFinalInput = document.getElementById('id_data_hora_final');
+                        const dataHoraChegadaInput = document.getElementById('id_data_hora_chegada');
+                        const horaTotalInput = document.getElementById('id_hora_total');
+                        const franquiaHoraInput = document.getElementById('id_franquia_hora');
+                        const campoPrevisaoChegada = document.getElementById('id_previsa_chegada');
+                        const campoSla = document.getElementById('id_sla');
+                        const valorAcionamentoInput = document.getElementById('id_acionamento'); // Campo de valor de acionamento
+                        const valorKmExcedenteInput = document.getElementById('id_valor_km_excedente'); // Campo valor_km_excedente
+                        const valorHoraExcedenteInput = document.getElementById('id_valor_hora_excedente'); // Campo valor_hora_excedente
+                    
+                        // Botões para registrar Data e Hora
+                        const registrarDataHoraInicialButton = document.getElementById('registrarDataHoraInicialButton');
+                        const registrarDataHoraFinalButton = document.getElementById('registrarDataHoraFinalButton');
+                        const registrarDataHoraChegadaButton = document.getElementById('registrarDataHoraChegadaButton');
+                    
+                        // Elementos dos campos de KM
+                        const kmInicialInput = document.getElementById('id_km_inicial');
+                        const kmFinalInput = document.getElementById('id_km_final');
+                        const kmFranquiaInput = document.getElementById('id_km_franquia');
+                        const kmTotalInput = document.getElementById('id_km_total');
+                        const kmExcedenteInput = document.getElementById('id_km_excedente');
+                    
+                        // Elementos para campos de Rastreador e Isca
+                        const rastreadorInput = document.getElementById('id_rastreador');
+                        const iscaInput = document.getElementById('id_isca');
+                    
+                        // Elementos dos campos relacionados ao cliente e prestador
+                        const clienteField = document.getElementById('id_cliente');
+                        const prestadorField = document.getElementById('id_prestador');
+                    
+                        // Função para obter a data e hora atual no horário de Brasília
+                        function getFormattedDateTimeBrasilia() {
+                            const now = new Date();
+                            const brasiliaOffset = -3 * 60; // Offset em minutos para UTC-3
+                            const localOffset = now.getTimezoneOffset(); // Offset do fuso horário local em minutos
+                            const brasiliaDate = new Date(now.getTime() + (localOffset + brasiliaOffset) * 60 * 1000);
+                            return formatDateTime(brasiliaDate);
+                        }
+                    
+                        // Função para formatar data e hora no padrão "YYYY-MM-DDTHH:mm"
+                        function formatDateTime(date) {
+                            const year = date.getFullYear();
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const hours = String(date.getHours()).padStart(2, '0');
+                            const minutes = String(date.getMinutes()).padStart(2, '0');
+                            return `${year}-${month}-${day}T${hours}:${minutes}`;
+                        }
+                    
+                        // Função para calcular a Hora Total
+                        function calcularHoraTotal() {
+                            const horaInicial = new Date(dataHoraInicialInput?.value);
+                            const horaFinal = new Date(dataHoraFinalInput?.value);
+                            const franquiaHora = parseFloat(franquiaHoraInput?.value) || 0;
+                    
+                            if (!isNaN(horaInicial.getTime()) && !isNaN(horaFinal.getTime())) {
+                                const diffMs = horaFinal - horaInicial; // Diferença em milissegundos
+                                if (diffMs >= 0) {
+                                    const diffHours = diffMs / (1000 * 60 * 60); // Converter para horas
+                                    const horaTotal = diffHours - franquiaHora; // Subtrair franquia
+                                    if (horaTotalInput) {
+                                        horaTotalInput.value = Math.max(0, horaTotal.toFixed(2)); // Garantir valor não negativo
+                                    }
+                                } else {
+                                    alert("A data/hora final deve ser posterior à inicial.");
+                                }
+                            }
+                        }
+                    
+                        // Função para calcular a previsão de chegada
+                        function calcularPrevisaoChegada() {
+                            if (!dataHoraInicialInput || !campoPrevisaoChegada || !campoSla) {
+                                console.error("Elementos necessários não encontrados.");
+                                return;
+                            }
+                    
+                            const slaValue = campoSla.value?.trim();
+                            const dataHoraInicialValue = dataHoraInicialInput.value?.trim();
+                    
+                            if (!slaValue || !dataHoraInicialValue) {
+                                console.info("Valores inválidos: SLA ou Data/Hora Inicial estão vazios.");
+                                campoPrevisaoChegada.value = ""; // Limpa o campo se os valores forem inválidos
+                                return;
+                            }
+                    
+                            const sla = parseInt(slaValue, 10);
+                            const dataHoraInicial = new Date(dataHoraInicialValue);
+                    
+                            if (isNaN(dataHoraInicial.getTime()) || isNaN(sla)) {
+                                console.warn("Valores inválidos: SLA ou Data/Hora Inicial.");
+                                campoPrevisaoChegada.value = ""; // Limpa o campo se os valores forem inválidos
+                                return;
+                            }
+                    
+                            // Calcula a previsão de chegada
+                            const previsaoChegada = new Date(dataHoraInicial.getTime() + sla * 60000);
+                            campoPrevisaoChegada.value = formatDateTime(previsaoChegada);
+                        }
+                    
+                        // Função para calcular o KM Total e KM Excedente
+                        function calcularKmValores() {
+                            const kmInicial = parseFloat(kmInicialInput?.value) || 0;
+                            const kmFinal = parseFloat(kmFinalInput?.value) || 0;
+                            const kmFranquia = parseFloat(kmFranquiaInput?.value) || 0;
+                    
+                            const kmTotal = kmFinal - kmInicial;
+                            if (kmTotalInput) kmTotalInput.value = Math.max(0, kmTotal.toFixed(2));
+                    
+                            const kmExcedente = kmTotal - kmFranquia;
+                            if (kmExcedenteInput) kmExcedenteInput.value = Math.max(0, kmExcedente.toFixed(2));
+                        }
+                    
+                        // Função para alternar campos de Rastreador
+                        function toggleRastreadorFields() {
+                            const idEquipamentoField = document.getElementById('id_equipamento_field');
+                            const ultimaPosicaoField = document.getElementById('ultima_posicao_field');
+                            const latLongField = document.getElementById('latlong_field');
+                    
+                            if (rastreadorInput?.value === "SIM") {
+                                idEquipamentoField.style.display = "block";
+                                ultimaPosicaoField.style.display = "block";
+                                latLongField.style.display = "block";
+                            } else {
+                                idEquipamentoField.style.display = "none";
+                                ultimaPosicaoField.style.display = "none";
+                                latLongField.style.display = "none";
+                            }
+                        }
+                    
+                        // Função para alternar campos de Isca
+                        function toggleIscaFields() {
+                            const idIscaField = document.getElementById('id_isca_field');
+                            const ultimaPosicaoIscaField = document.getElementById('ultima_posicao_isca_field');
+                            const latLongIscaField = document.getElementById('latlong_isca_field');
+                    
+                            if (iscaInput?.value === "SIM") {
+                                idIscaField.style.display = "block";
+                                ultimaPosicaoIscaField.style.display = "block";
+                                latLongIscaField.style.display = "block";
+                            } else {
+                                idIscaField.style.display = "none";
+                                ultimaPosicaoIscaField.style.display = "none";
+                                latLongIscaField.style.display = "none";
+                            }
+                        }
+                    
+                        // Função para buscar dados do prestador via AJAX
+                        function atualizarCamposPrestador() {
+                            const prestadorId = prestadorField.value;
+                            if (!prestadorId) return;
+                    
+                            console.log("Buscando dados para o prestador:", prestadorId);
+                    
+                            fetch(`/formacompanhamento/get-prestador-data/?prestador_id=${prestadorId}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log("Dados recebidos do servidor:", data);
+                                    if (data.error) {
+                                        alert(data.error);
+                                    } else {
+                                        franquiaHoraInput.value = data.franquia_hora || '';
+                                        kmFranquiaInput.value = data.km_franquia || '';
+                                        valorAcionamentoInput.value = data.valor_acionamento || '';
+                                        valorKmExcedenteInput.value = data.valorkm || ''; // Preenche o campo valor_km_excedente
+                                        valorHoraExcedenteInput.value = data.valorh || ''; // Preenche o campo valor_hora_excedente
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error("Erro ao buscar os dados do prestador:", error);
+                                    alert("Erro ao buscar os dados do prestador. Tente novamente.");
+                                });
+                        }
+                    
+                        // Função para buscar dados do cliente via AJAX
+                        function atualizarCamposCliente() {
+                            const clienteId = clienteField.value;
+                            if (!clienteId) return;
+                    
+                            console.log("Buscando dados para o cliente:", clienteId);
+                    
+                            fetch(`/get-cliente-data/?cliente_id=${clienteId}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log("Dados recebidos do servidor:", data);
+                                    if (data.error) {
+                                        alert(data.error);
+                                    } else {
+                                        valorAcionamentoInput.value = data.valor_acionamento || '';
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error("Erro ao buscar os dados do cliente:", error);
+                                    alert("Erro ao buscar os dados do cliente. Tente novamente.");
+                                });
+                        }
+                    
+                        // Eventos de interação
+                        registrarDataHoraInicialButton?.addEventListener('click', function () {
+                            dataHoraInicialInput.value = getFormattedDateTimeBrasilia();
+                            calcularHoraTotal();
+                            calcularPrevisaoChegada();
+                        });
+                    
+                        registrarDataHoraFinalButton?.addEventListener('click', function () {
+                            dataHoraFinalInput.value = getFormattedDateTimeBrasilia();
+                            calcularHoraTotal();
+                        });
+                    
+                        registrarDataHoraChegadaButton?.addEventListener('click', function () {
+                            dataHoraChegadaInput.value = getFormattedDateTimeBrasilia();
+                        });
+                    
+                        prestadorField?.addEventListener('change', atualizarCamposPrestador);
+                    
+                        campoSla?.addEventListener('change', calcularPrevisaoChegada);
+                        dataHoraInicialInput?.addEventListener('change', calcularPrevisaoChegada);
+                    
+                        kmInicialInput?.addEventListener('input', calcularKmValores);
+                        kmFinalInput?.addEventListener('input', calcularKmValores);
+                    
+                        rastreadorInput?.addEventListener('change', toggleRastreadorFields);
+                        iscaInput?.addEventListener('change', toggleIscaFields);
+                    
+                        // Inicializar campos e cálculos ao carregar a página
+                        toggleRastreadorFields();
+                        toggleIscaFields();
+                        calcularPrevisaoChegada();
+                        calcularHoraTotal();
+                        calcularKmValores();
+                    });
+                    </script>
+                    
+                    
+
+{% endblock %}

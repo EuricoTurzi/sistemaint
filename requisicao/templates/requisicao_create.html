@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <style>
+        .form-label {
+            font-weight: 600;
+        }
+
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .container {
+            max-width: 900px;
+        }
+
+        h3.display-4 {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+        .mb-3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+    </style>
+<div class="card shadow-sm">
+    <div class="card-header">Formulário de Requisição de Vendas</div>
+    <div class="card-body">
+        {% if messages %}
+            <div class="alert alert-danger">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="post" class="form">
+            {% csrf_token %}
+            
+            <!-- Informações do Cliente -->
+            <div class="section-title">Informações do Cliente</div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="nome" class="form-label">Nome</label>
+                    {{ form.nome }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="cnpj" class="form-label">CNPJ</label>
+                    {{ form.cnpj }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="endereco" class="form-label">Endereço</label>
+                    {{ form.endereco }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="taxa_envio" class="form-label">Taxa de Envio</label>
+                    {{ form.taxa_envio }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="aos_cuidados" class="form-label">Aos Cuidados</label>
+                    {{ form.aos_cuidados }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="data_entrega" class="form-label">Data de Entrega</label>
+                    {{ form.data_entrega }}
+                </div>
+            </div>
+            
+            <!-- Detalhes do Contrato -->
+            <div class="section-title">Detalhes do Contrato</div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="contrato" class="form-label">Contrato</label>
+                    {{ form.contrato }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="comercial" class="form-label">Comercial</label>
+                    {{ form.comercial }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="inicio_de_contrato" class="form-label">Início de Contrato</label>
+                    {{ form.inicio_de_contrato }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="vigencia" class="form-label">Vigência</label>
+                    {{ form.vigencia }}
+                </div>
+            </div>
+            
+            <!-- Informações do Produto -->
+            <div class="section-title">Informações do Produto</div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="motivo" class="form-label">Motivo</label>
+                    {{ form.motivo }}
+                </div>
+                <div class="col-md-6 mb-3" id="antenista-field" style="display: none;">
+                    <label for="antenista" class="form-label">Antenista</label>
+                    {{ form.antenista }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="envio" class="form-label">Envio</label>
+                    {{ form.envio }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="tipo_customizacao" class="form-label">Tipo de Customização</label>
+                    {{ form.tipo_customizacao }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="numero_de_equipamentos" class="form-label">Número de Equipamentos</label>
+                    {{ form.numero_de_equipamentos }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="tipo_produto" class="form-label">Tipo de Produto</label>
+                    {{ form.tipo_produto }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="TP" class="form-label">TP</label>
+                    {{ form.TP }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="carregador" class="form-label">Carregador</label>
+                    {{ form.carregador }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="cabo" class="form-label">Cabo</label>
+                    {{ form.cabo }}
+                </div>
+            </div>
+            
+            <!-- Informações Financeiras -->
+            <div class="section-title">Informações Financeiras</div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="tipo_fatura" class="form-label">Tipo de Fatura</label>
+                    {{ form.tipo_fatura }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="valor_unitario" class="form-label">Valor Unitário</label>
+                    {{ form.valor_unitario }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="valor_total" class="form-label">Valor Total</label>
+                    {{ form.valor_total }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="forma_pagamento" class="form-label">Forma de Pagamento</label>
+                    {{ form.forma_pagamento }}
+                </div>
+            </div>
+            
+            <!-- Outras Informações -->
+            <div class="section-title">Outras Informações</div>
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label for="observacoes" class="form-label">Observações</label>
+                    {{ form.observacoes }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    {{ form.status }}
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100">Salvar Requisição</button>
+        </form>
+    </div>
+</div>
+    
+    {% if form.errors %}
+    <div class="errors">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                <li>{{ field }}: {{ errors }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'requisicoes' %}" class="btn btn-secondary mt-3 w-100">Cancelar e Voltar</a>
+</div>
+
+
+<script>
+         $(document).ready(function() {
+            $('#id_nome').change(function() {
+                var clienteId = $(this).val();
+                if (clienteId) {
+                    $.ajax({
+                        url: '{% url "get_cliente_data" 0 %}'.replace('0', clienteId),
+                        type: 'GET',
+                        success: function(data) {
+                            $('#id_cnpj').val(data.cnpj);
+                            $('#id_inicio_de_contrato').val(data.inicio_de_contrato);
+                            $('#id_vigencia').val(data.vigencia);
+                            $('#id_contrato').val(data.contrato);
+                           
+                        }
+                    });
+                }
+            });
+
+            function toggleAntenistaField() {
+                var motivo = document.getElementById("id_motivo").value;
+                var antenistaField = document.getElementById("antenista-field");
+                if (motivo === "Isca FAST" || motivo === "Estoque Antenista") {
+                    antenistaField.style.display = "block";
+                } else {
+                    antenistaField.style.display = "none";
+                }
+            }
+
+            document.getElementById("id_motivo").addEventListener("change", toggleAntenistaField);
+            document.addEventListener("DOMContentLoaded", function() {
+                toggleAntenistaField();
+            });
+        });
+</script>
+{% endblock %}

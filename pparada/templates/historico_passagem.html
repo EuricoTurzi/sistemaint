@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Histórico de Passagens</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome do PA</th>
+            <th>Nome do Posto</th>
+            <th>Turno</th>
+            <th>Iscas</th>
+            <th>Notebook</th>
+            <th>Celular</th>
+            <th>Antena</th>
+            <th>Bodycam</th>
+            <th>Cadeados</th>
+            <th>Drone</th>
+            <th>Descrição</th>
+            <th>Fotos</th>
+            <th>Data de Criação</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in passagens %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.nome_do_pa }}</td>
+            <td>{{ item.nome_do_posto }}</td>
+            <td>{{ item.turno }}</td>
+            <td>{{ item.Iscas }}</td>
+            <td>{{ item.notebook }}</td>
+            <td>{{ item.celular }}</td>
+            <td>{{ item.antena }}</td>
+            <td>{{ item.bodycam }}</td>
+            <td>{{ item.cadeados }}</td>
+            <td>{{ item.drone }}</td>
+            <td>{{ item.descrição }}</td>
+            <td>
+                {% if item.fotos %}
+                    <a href="{{ item.fotos.url }}" target="_blank">
+                        <img src="{{ item.fotos.url }}" alt="Foto" style="max-width: 100px;"/>
+                    </a>
+                {% else %}
+                    Sem foto
+                {% endif %}
+            </td>
+            <td>{{ item.data_criacao }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="14">Nenhuma passagem encontrada.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if passagens.has_previous %}
+            <a href="?page=1">&laquo; primeira</a>
+            <a href="?page={{ passagens.previous_page_number }}">anterior</a>
+        {% endif %}
+
+        {% if passagens.has_next %}
+            <a href="?page={{ passagens.next_page_number }}">próxima</a>
+            <a href="?page={{ passagens.paginator.num_pages }}">última &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% include 'components/_pagination.html' %}
+{% endblock %}

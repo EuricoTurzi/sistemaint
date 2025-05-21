@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Passagem de Serviço{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tipoPostoField = document.querySelector('select[name="nome_do_posto"]');
+        const nomeDoPAField = document.querySelector('select[name="nome_do_pa"]');
+
+        tipoPostoField.addEventListener('change', function() {
+            const posto = tipoPostoField.value;
+
+            // Limpar opções anteriores
+            nomeDoPAField.innerHTML = '<option value="">Selecione uma PA</option>';
+
+            // Obter PAs com base no posto
+            fetch("{% url 'get_pa_choices' %}?tipo_posto=" + posto)
+                .then(response => response.json())
+                .then(data => {
+                    // Verificar se há PAs recebidas
+                    if (data.pa && data.pa.length > 0) {
+                        // Adicionar PAs
+                        data.pa.forEach(pa => {
+                            const option = document.createElement('option');
+                            option.value = pa[0];
+                            option.text = pa[1];
+                            nomeDoPAField.appendChild(option);
+                        });
+                    } else {
+                        console.warn('Nenhuma PA encontrada para este posto.');
+                    }
+                })
+                .catch(error => console.error('Erro ao buscar PAs:', error));
+        });
+    });
+</script>
+{% endblock %}

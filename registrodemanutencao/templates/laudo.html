@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <title>Criar Retorno</title>
+    
+    <style>
+        .dark-background {
+            background-color: #343a40; /* Cor de fundo escura */
+            color: white; /* Cor do texto para contraste */
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .dark-background .form-control {
+            background-color: #495057; /* Cor de fundo dos campos do formulário */
+            color: white; /* Cor do texto dos campos do formulário */
+        }
+        .dark-background .btn-primary {
+            background-color: #007bff; /* Cor do botão */
+            border-color: #007bff; /* Cor da borda do botão */
+        }
+        .dark-background .btn-secondary {
+            background-color: #6c757d; /* Cor do botão secundário */
+            border-color: #6c757d; /* Cor da borda do botão secundário */
+        }
+    </style>
+
+    <div class="container">
+        <h1>Protocolo de Retorno</h1>
+        <div class="dark-background">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+               
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+            {% endblock %}

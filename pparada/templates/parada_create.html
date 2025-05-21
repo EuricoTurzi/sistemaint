@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Passagem de Serviço{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tipoPostoField = document.querySelector('select[name="tipo_posto"]');
+        const nomeDoPAField = document.querySelector('select[name="nome_do_pa"]');
+        const idCadeadoField = document.querySelector('select[name="id_cadeado"]');
+        const idRastreadorField = document.querySelector('select[name="id_rastreador"]');
+
+        tipoPostoField.addEventListener('change', function() {
+            const posto = tipoPostoField.value;
+
+            // Limpar opções anteriores
+            nomeDoPAField.innerHTML = '<option value="">Selecione uma PA</option>';
+            idCadeadoField.innerHTML = '<option value="">Selecione um Cadeado</option>';
+            idRastreadorField.innerHTML = '<option value="">Selecione um Rastreador</option>';
+
+            // Obter dados com base no posto
+            fetch("{% url 'get_choices' %}?tipo_posto=" + posto)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // Adicione esta linha
+
+                    // Preencher opções de nome_do_pa
+                    if (data.pa && data.pa.length > 0) {
+                        data.pa.forEach(pa => {
+                            const option = document.createElement('option');
+                            option.value = pa[0];
+                            option.text = pa[1];
+                            nomeDoPAField.appendChild(option);
+                        });
+                    } else {
+                        console.warn('Nenhuma PA encontrada para este posto.');
+                    }
+
+                    // Preencher opções de id_cadeado
+                    if (data.cadeados && data.cadeados.length > 0) {
+                        data.cadeados.forEach(cadeado => {
+                            const option = document.createElement('option');
+                            option.value = cadeado[0];
+                            option.text = cadeado[1];
+                            idCadeadoField.appendChild(option);
+                        });
+                    } else {
+                        console.warn('Nenhum Cadeado encontrado para este posto.');
+                    }
+
+                    // Preencher opções de id_rastreador
+                    if (data.iscas && data.iscas.length > 0) {
+                        data.iscas.forEach(isca => {
+                            const option = document.createElement('option');
+                            option.value = isca[0];
+                            option.text = isca[1];
+                            idRastreadorField.appendChild(option);
+                        });
+                    } else {
+                        console.warn('Nenhum Rastreador encontrado para este posto.');
+                    }
+                })
+                .catch(error => console.error('Erro ao buscar dados:', error));
+        });
+    });
+</script>
+{% endblock %}

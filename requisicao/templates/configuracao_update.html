@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h3 class="display-4">Editar</h3>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="form" onkeydown="return event.key != 'Enter';">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="hidden" id="quantidade" name="quantidade" value="0">  <!-- Campo oculto de quantidade -->
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
+    <a href="{% url 'ConfiguracaoListView' %}" class="btn btn-primary mt-6">Cancelar e Voltar</a>
+</div>
+
+<script>
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault(); // Bloqueia a tecla Enter
+        }
+    });
+
+    document.addEventListener("input", function (e) {
+    var input = e.target;
+    var value = input.value;
+    var patterns = ["35154", "35642", "86590", "86325", "35196"];
+
+    var quantidade = 0;
+    var id = parseInt(input.getAttribute("data-id") || "0", 10); // Recupera o ID atual ou inicializa em 0
+
+    patterns.forEach(function (pattern) {
+        var regex = new RegExp(pattern, "g"); // Regex global para encontrar todas as ocorrências do padrão
+
+        value = value.replace(regex, function () {
+            id += 1; // Incrementa o ID para cada correspondência encontrada
+            quantidade += 1; // Incrementa a quantidade total de padrões encontrados
+            return `        `; // Substitui pelo ID formatado
+        });
+    });
+
+    input.value = value; // Atualiza o valor do campo de entrada
+
+    input.setAttribute("data-id", id); // Salva o último ID usado no elemento
+
+    // Atualiza o campo oculto com a quantidade total de padrões encontrados
+    document.getElementById("quantidade").value = quantidade;
+
+    console.log(`Quantidade total de padrões encontrados: ${quantidade}`);
+    console.log(`Último ID usado: ${id}`);
+
+
+
+        // Remove o último número a cada 10 números inteiros e adiciona 5 espaços
+        var regex = /(\d{9})(\d)/g;
+        value = value.replace(regex, function(match, p1, p2) {
+            return p1 + "     "; // Remove o último número e adiciona 5 espaços
+        });
+
+input.value = value; // Atualiza o valor do campo de entrada
+
+// Atualiza o campo oculto de quantidade
+document.getElementById("quantidade").value = quantidade;
+console.log("Quantidade total de padrões encontrados: " + quantidade); // Log para depuração
+});
+</script>
+
+
+{% endblock %}

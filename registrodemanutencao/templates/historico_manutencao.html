@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}
+| Grupo Golden Sat |
+{% endblock %}
+
+{% include 'components/_header.html' %}
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #45494E; /* Cor de fundo mais escura */
+        display: flex;
+        flex-direction: column;
+        height: 90vh;
+        margin: 0;
+    }
+    .container-fluid {
+        padding: 0;
+    }
+    .row {
+        margin: 0;
+    }
+    .table-responsive {
+        padding: 0 15px;
+        margin-left: -40vh;
+        width: 115rem;
+    }
+    .form-control {
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .dropdown-status {
+        width: 10rem; /* Ajuste a largura conforme necessário */
+    }
+    .filter-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0rem; /* Aumente o espaçamento entre os campos */
+    }
+    .thead-dark {
+        background-color: #344038; /* Substitua pelo valor exato da cor da sua barra de navegação */
+        color: white;
+    }
+
+    .status-aprovado-inteligencia {
+        background: linear-gradient(to bottom, #39ff14 0%, #ffffff 100%); /* Verde fluorescente */
+    }
+
+    .status-reprovado-inteligencia {
+        background: linear-gradient(to bottom, #ff0000 0%, #ffffff 100%); /* Vermelho */
+    }
+
+    .table thead th {
+        background-color: #344038; /* Cor de fundo do cabeçalho */
+        color: white; /* Cor do texto do cabeçalho */
+    }
+
+    .table tbody tr {
+        transition: background-color 0.3s; /* Transição suave para a cor de fundo */
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f1f1; /* Cor de fundo ao passar o mouse */
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
+         /* Alinhamento vertical centralizado */
+    }
+</style>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get" action="{% url 'historico_manutencaoListView' %}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="nome" placeholder="Nome" value="{{ request.GET.nome }}">
+                   
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Data de Entrada</th>
+                    <th>Tipo de Entrada</th>
+                    <th>Tipo de Produto</th>
+                    <th>Quantidade</th>
+                    <th>Customização</th>
+                    <th>ID Equipamento</th>
+                    <th>Entregue / Retirado</th>
+                    <th>Faturamento</th>
+                    
+                    <th>Status</th>
+                    <th>Customização Setor</th>
+                    
+                    <th>Observações</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for manutencao in dasentradas %}
+                    <tr class="status-{{ manutencao.status }}">
+                        <td>{{ manutencao.id }}</td>
+                        <td>{{ manutencao.data_criacao|date:"d/m/Y" }}</td>
+                        <td>{{ manutencao.nome }}</td>
+                        <td>{{ manutencao.tipo_entrada }}</td>
+                        <td>{{ manutencao.tipo_produto }}</td>
+                        <td>{{ manutencao.quantidade }} </td>
+                        <td>{{ manutencao.tipo_customizacao }}</td>
+                        <td>{{ manutencao.id_equipamentos }}</td>
+                        <td>{{ manutencao.entregue_por_retirado_por }}</td>
+                        <td>{{ manutencao.faturamento }}</td>
+                       
+                        <td>{{ manutencao.status }}</td>
+                        <td>{{ manutencao.customizacaoo }}</td>
+                        
+                        <td>{{ manutencao.observacoes }}</td>
+                        <td><a class="btn btn-info" href="{% url 'download_pdfmanutencao' manutencao.id %}">Download PDF</a>
+                        <a class="btn btn-success" href="{% url 'download_protocolo_entrada' manutencao.id %}">Protocolo</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% include 'components/_pagination.html' %}
+</div>
+{% endblock %}

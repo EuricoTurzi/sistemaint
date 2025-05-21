@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block title %} | Grupo Golden Sat | {% endblock %}
+
+{% include 'components/_header.html' %}
+
+{% block content %}
+<style>
+    .card-status {
+        position: relative;
+        transition: transform 0.3s ease;
+        width: 25rem;
+    }
+
+    .card-status.Aprovado {
+        background: linear-gradient(to bottom, #a0f0a0 0%, #ffffff 100%);
+    }
+
+    .card-status.Reprovado {
+        background: linear-gradient(to bottom, #f0a0a0 0%, #ffffff 100%);
+    }
+
+    .card-status.Pendente {
+        background: linear-gradient(to bottom, #d0d0d0 0%, #ffffff 100%);
+    }
+
+    .card-status.Configurado {
+        background: linear-gradient(to bottom, #ffd580 0%, #ffffff 100%);
+    }
+
+    .card-status.Reprovado-pelo-CEO {
+        background: linear-gradient(to bottom, #f08080 0%, #ffffff 100%);
+    }
+
+    .card-status.Aprovado-pelo-CEO {
+        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%);
+    }
+
+    .card-status.Reprovado-pela-Diretoria {
+        background: linear-gradient(to bottom, #f08080 0%, #ffffff 100%);
+    }
+
+    .card-status.Aprovado-pela-Diretoria {
+        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%);
+    }
+
+    .card-status.Expedido {
+        background: linear-gradient(to bottom, #ffb380 0%, #ffffff 100%);
+    }
+
+    .card-status.Enviado-para-o-Cliente {
+        background: linear-gradient(to bottom, #80b3ff 0%, #ffffff 100%);
+    }
+
+    .card-status.Aprovado-Inteligencia {
+        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%);
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .card-status:hover {
+        transform: scale(1.05);
+    }
+
+    .card-body p {
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .card-body p:hover {
+        transform: translateY(-3px); /* Move o texto para cima */
+        color: #007bff; /* Muda a cor do texto ao passar o mouse */
+    }
+</style>
+
+<!-- Mensagens de Alerta -->
+<div class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <!-- Avisos sobre data de entrega -->
+<!-- Avisos sobre data de entrega -->
+<!-- Avisos sobre data de entrega -->
+<!-- Avisos sobre data de entrega -->
+
+    <!-- Alerta para requisições sem alteração nas últimas 24 horas -->
+    {% if requisições_sem_alteracao %}
+        <div class="alert alert-warning" role="alert">
+            Existem {{ requisições_sem_alteracao.count }} requisições que não foram alteradas nas últimas 24 horas. IDs:  
+            <strong>
+                {% for item in requisições_sem_alteracao %}
+                    <a href="{% url 'ceodetailview' item.id %}" class="{% if item.status == 'Aprovado pelo CEO' %}text-success{% elif item.status == 'Configurado' %}text-danger{% endif %}">{{ item.id }}</a>
+                    {% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </strong>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Contadores de Status -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="alert alert-info" role="alert">
+            <strong>Pendentes:</strong> <b><h4>{{ total_pendente }}</h4></b>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <a class="button" href="{% url 'ConfiguracaoListView' %}"> 
+        <div class="alert alert-success" role="alert">
+            <a class="dropdown-item" href="{% url 'ConfiguracaoListView' %}"> <strong>Setor de Configuração:</strong> <b><h4>{{ total_aprovado_ceo }}</h4></b>
+        </div>
+    </div></a>
+    
+    <div class="col-md-4">
+        <a class="button" href="{% url 'expedicaoListViews' %}"> 
+        <div class="alert alert-danger" role="alert">
+            <a class="dropdown-item" href="{% url 'expedicaoListViews' %}"> <strong>Expedição:</strong> <b><h4>{{ total_configurado }}</h4></b>
+        </div>
+    </div>
+</a>
+</div>
+
+<!-- Cards de Requisições -->
+<div class="row">
+    {% for item in ceo_list %}
+    <div class="col-md-4 mb-4">
+        <div class="card card-status 
+            {% if item.status == 'Aprovado' %}Aprovado
+            {% elif item.status == 'Reprovado' %}Reprovado
+            {% elif item.status == 'Configurado' %}Configurado
+            {% elif item.status == 'Pendente' %}Pendente
+            {% elif item.status == 'Expedido' %}Expedido
+            {% elif item.status == 'Reprovado pelo CEO' %}Reprovado-pelo-CEO
+            {% elif item.status == 'Aprovado pelo CEO' %}Aprovado-pelo-CEO
+            {% elif item.status == 'Reprovado pela Diretoria' %}Reprovado-pela-Diretoria
+            {% elif item.status == 'Aprovado pela Diretoria' %}Aprovado-pela-Diretoria
+            {% endif %}">
+            <div class="card-body">
+                <h2>Requisição</h2>
+                <h5 class="card-title">{{ item.nome }}</h5>
+                <p><strong>ID:</strong> {{ item.id }}</p>
+                <p><strong>CNPJ:</strong> {{ item.cnpj }}</p>
+                <p><strong>Quantidade:</strong> {{ item.numero_de_equipamentos }}</p>
+                <p><strong>Valor Unitário:</strong> {{ item.valor_unitario }}</p>
+                <p><strong>Valor Total:</strong> {{ item.valor_total }}</p>
+                <p><strong>Comercial:</strong> {{ item.comercial }}</p>
+                <p><strong>Tipo de Produto:</strong> {{ item.tipo_produto }}</p>
+                <p><strong>Tipo de Contrato:</strong> {{ item.contrato }}</p>
+                <p><strong>Observações:</strong> {{ item.observacoes }}</p>
+                <p><strong>Status:</strong> {{ item.status }}</p>
+                <p><strong>TP:</strong> {{ item.TP }}</p>
+                <p><strong>Data de Entrega: </strong> {{ item.data_entrega|date:"d/m/Y " }}</p>
+                
+                <a class="btn btn-primary" href="{% url 'ceodetailview' item.id %}">Visualizar</a>
+                <a class="btn btn-success" href="{% url 'aprovar_ceo' item.id %}">Aprovar</a>
+                <a class="btn btn-danger" href="{% url 'reprovar_ceo' item.id %}">Reprovar</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Componente de Paginação -->
+{% include 'components/_pagination.html' %}
+{% endblock %}

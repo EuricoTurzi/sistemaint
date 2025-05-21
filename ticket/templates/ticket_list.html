@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}| Faturamento |{% endblock %}
+{% include 'components/_header.html' %}
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    body {
+        background-color: #45494E; /* Cor de fundo mais escura */
+        display: flex;
+        flex-direction: column;
+        height: 80rem;
+        margin: 0;
+    }
+    .container-fluid {
+        padding: 0;
+    }
+    .row {
+        margin: 0;
+    }
+    .table-responsive {
+        padding: 0 15px;
+        margin-left: -55vh;
+        width: 160rem;
+    }
+    .form-control {
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .dropdown-status {
+        width: 10rem;
+    }
+    .filter-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0;
+    }
+    .thead-dark {
+        background-color: #344038;
+        color: white;
+    }
+    .card {
+        transition: transform 0.3s;
+        border: none; /* Remover bordas padrão */
+    }
+    .card:hover {
+        transform: translateY(-10px) scale(1.02);
+    }
+    .pendente {
+        background-color: #f8d7da;
+    }
+    .atualizado {
+        background-color: #d1ecf1;
+    }
+    .negado {
+        background-color: #fa6363;
+    }
+    .default {
+        background-color: #ffffff;
+    }
+</style>
+<div class="row">
+    {% for item in ticket %}
+    <div class="col-md-4 mb-4">
+        {% if item.setor != 'Faturamento' or perms.faturamento.delete_formulario %}
+        <div class="card {% if item.status == 'Pendente' %}pendente{% elif item.status == 'Atualizado' %}atualizado{% elif item.status == 'Negado' %}negado{% else %}default{% endif %}">
+            <div class="card-body">
+                <h2>Ticket</h2>
+                <h3><b>ID</b>: {{ item.id }}</h3>
+                <h5 class="card-title">{{ item.usuario.username }}</h5>
+                <p class="card-text"><b>Setor</b>: {{ item.setor }}</p>
+                <p class="card-text"><b>Erro</b>: {{ item.erro }}</p>
+                <p class="card-text"><b>Correção</b>: {{ item.correcao }}</p>
+                <p class="card-text"><b>Data</b>: {{ item.data_criacao|date:"d/m/Y H:i" }}</p>
+                <p class="card-text"><b>Status</b>: {{ item.status }}</p>
+             
+                
+                {% if perms.ticket.change_ticketmodel %}
+
+
+           
+                
+                    <a class="btn btn-success" href="{% url 'atualizar_status' item.id %}">Atualizar</a>
+                    <a class="btn btn-danger" href="{% url 'atualizar_status2' item.id %}">Negado</a>
+                   
+                    
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% include 'components/_pagination.html' %}
+</div>
+{% endblock %}

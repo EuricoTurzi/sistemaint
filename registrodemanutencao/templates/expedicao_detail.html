@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="display-6">Detalhes</h3>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Registro #{{ expedicoes.id }}</h5>
+            <h5 class="card-title">Nome: {{ expedicoes.registro.nome }}</h5>
+            <p class="card-text"><b>ID:</b> {{ expedicoes.descricao }}</p>
+            <p class="card-text"><b>Tipo de Entrada:</b> {{ expedicoes.registro.tipo_entrada }}</p>
+            <p class="card-text"><b>Tipo de Produto:</b> {{ expedicoes.registro.tipo_produto }}</p>
+            <p class="card-text"><b>Customização:</b> {{ expedicoes.registro.customizacao }}</p>
+            <p class="card-text"><b>Motivo:</b> {{ expedicoes.registro.motivo }}</p>
+            <p class="card-text"><b>Setor:</b> {{ expedicoes.registro.setor }}</p>
+            <p class="card-text"><b>Imagem:</b> <img src="{{ expedicoes.imagem.url }}" alt="Descrição da imagem" style="width: 500px; height: 250px;" /></p>
+            <p class="card-text"><b>Tipo Problema:</b> {{ expedicoes.tipo_problema }}</p>
+            
+            <!-- Se 'expedicoes' é um objeto ImagemRegistro, então este loop não é necessário
+            {% for imagem in expedicoes.imagens.all %}
+                <img src="{{ imagem.imagem.url }}" alt="Descrição da imagem" style="width: 500px; height: 250px;" />
+            {% endfor %}
+            -->
+
+            <!-- Se 'expedicoes' tem um campo de imagem, então esta linha é suficiente -->
+            
+        </div>
+    </div>
+
+    <div>
+        <a href="{% url 'configListView' %}" class="btn btn-secondary mt-3">Voltar</a>
+    </div>
+
+</div>
+
+{% endblock %}

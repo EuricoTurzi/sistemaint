@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% block title %}
+| Grupo Golden Sat |
+{% endblock %}
+
+{% include 'components/_header.html' %}
+{% block content %}
+<style>
+    .card-status {
+        position: relative;
+        transition: transform 0.3s ease;
+        width: 23rem; /* Adiciona uma transição suave */
+    }
+
+    .card-status.Aprovado {
+        background: linear-gradient(to bottom, #0ae50a 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+    }
+
+    .card-status.Reprovado {
+        background: linear-gradient(to bottom, #f53db2 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
+    }
+
+    .card-status.Pendente {
+        background: linear-gradient(to bottom, #f5ff49 0%, #ffffff 100%); /* Gradiente amarelo claro para branco */
+    }
+
+    .card-status.Configurado {
+        background: linear-gradient(to bottom, #ffd500 0%, #ffffff 100%); /* Gradiente dourado para branco */
+    }
+
+    .card-status.Reprovado-pelo-CEO {
+        background: linear-gradient(to bottom, #ff4300 0%, #ffffff 100%); /* Gradiente laranja para branco */
+    }
+
+    .card-status.Aprovado-pelo-CEO {
+        background: linear-gradient(to bottom, #30cd30 0%, #ffffff 100%); /* Gradiente verde para branco */
+    }
+
+    .card-status.Reprovado-pela-Diretoria {
+        background: linear-gradient(to bottom, #ff6147 0%, #ffffff 100%); /* Gradiente vermelho tomate para branco */
+    }
+
+    .card-status.Aprovado-pela-Diretoria {
+        background: linear-gradient(to bottom, #4680b4 0%, #ffffff 100%); /* Gradiente azul aço para branco */
+    }
+
+    .card-status.Expedido {
+        background: linear-gradient(to bottom, #ff8a00 0%, #ffffff 100%); /* Gradiente laranja escuro para branco */
+    }
+
+    .card-status.Enviado-para-o-Cliente {
+        background: linear-gradient(to bottom, #1e80ff 0%, #ffffff 100%); /* Gradiente azul para branco */
+    }
+
+    .card-status.Aprovado-Inteligencia {
+        background: linear-gradient(to bottom, #ba95d8 0%, #ffffff 100%); /* Gradiente roxo para branco */
+    }
+
+    .card-body {
+        padding: 30px; /* Adiciona um espaço interno de 30px */
+    }
+
+    .card-status:hover {
+        transform: scale(1.05); /* Faz o card crescer um pouco */
+    }
+</style>
+<script>
+    document.querySelectorAll('.add-equipamento').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var containerId = this.getAttribute('data-container-id');
+            var container = document.getElementById(containerId);
+            var newField = document.createElement('textarea');
+            newField.setAttribute('name', 'id_equipamentos');
+            newField.setAttribute('class', 'form-control');
+            container.appendChild(newField);
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var cnpjAlert = document.getElementById('cnpj-alert');
+        var cnpjValue = '61.150.751/0025-56'; // Valor do CNPJ a ser verificado
+        var cnpjFields = document.querySelectorAll('.col-form-label');
+
+        cnpjFields.forEach(function(field) {
+            if (field.textContent.includes(cnpjValue)) {
+                var cardBody = field.closest('.card-body');
+                var idLabel = Array.from(cardBody.querySelectorAll('label')).find(label => label.textContent.includes('ID:'));
+                var requisicaoId = idLabel ? idLabel.textContent.split(': ')[1] : 'N/A';
+                cnpjAlert.innerHTML = `<strong>Atenção!</strong> Os ID´s da requisição de ID ( ${requisicaoId} ) com CNPJ ( ${cnpjValue} ) devem ser espelhados para o grid da KRONA_INTEGRACAO`;
+                cnpjAlert.style.display = 'block';
+            }
+        });
+    });
+</script>
+<div id="cnpj-alert" class="alert alert-danger" style="display: none;"></div>
+<div class="container mt-4">
+    <h3 class="display-6">Area Técnica</h3>
+    <div class="row">
+        {% for registro in equipamentos %}
+            {% if registro.status == 'Aprovado pelo CEO' %}
+                <div class="col-md-4 mb-4">
+                    <div class="card card-status {% if registro.status == 'Aprovado' %}Aprovado{% elif registro.status == 'Reprovado' %}Reprovado{% elif registro.status == 'Configurado' %}Configurado{% elif registro.status == 'Pendente' %}Pendente{% elif registro.status == 'Expedido' %}Expedido{% elif registro.status == 'Reprovado pelo CEO' %}Reprovado-pelo-CEO{% elif registro.status == 'Aprovado pelo CEO' %}Aprovado-pelo-CEO{% elif registro.status == 'Reprovado pela Diretoria' %}Reprovado-pela-Diretoria{% elif registro.status == 'Aprovado pela Diretoria' %}Aprovado-pela-Diretoria{% elif registro.status == 'Enviado para o Cliente' %}Enviado-para-o-Cliente{% elif registro.status == 'Aprovado Inteligência' %}Aprovado-Inteligencia{% endif %}">
+                        <div class="card-body">
+                            {% if registro.status == 'Aprovado pelo CEO' %}
+                                <h3>Requisição</h3>
+                            {% else %}
+                                <h3>Manutenção</h3>
+                            {% endif %}
+                            <form method="post" class="requisicao-form">
+                                {% csrf_token %}
+                                <div class="mb-2 row">
+                                    <label class="col-sm-6 col-form-label"><h3><b>ID:</b> {{ registro.id }}</h3></label>
+                                </div>
+                                <div class="mb-2 row">
+                                    <label class="col-sm-6 col-form-label"><b>Nome:</b> {{ registro.nome.nome }}</label>
+                                </div>
+                                <div class="mb-2 row">
+                                    <label class="col-sm-6 col-form-label"><b>Endereço:</b> {{ registro.endereco }}</label>
+                                </div>
+                                <div class="mb-2 row">
+                                    <label class="col-sm-6 col-form-label"><b>CNPJ:</b> {{ registro.cnpj }}</label>
+                                </div>
+                                <div class="mb-2 row">
+                                    <label class="col-sm-6 col-form-label"><b>Data:</b> {{ registro.data }}</label>
+                                </div>
+                                
+                                <div class="mb-2 row">
+                                    <label class="col-sm-6 col-form-label"><b>Comercial:</b> {{ registro.comercial }}</label>
+                                </div>
+                                <div class="mb-2 row">
+                                    <label class="col-sm-6 col-form-label"><b>Tipo de Produto:</b> {{ registro.tipo_produto }}</label>
+                                </div>
+                               <div>
+                                    <label class="col-sm-6 col-form-label"><b>Taxa envio:</b> {{ registro.taxa_envio }}</label>
+                                </div>
+                              
+                                <div class="mb-2 row">
+                                    <label class="col-sm-6 col-form-label"><b>Quantidade:</b> {{ registro.numero_de_equipamentos }}</label>
+                                </div>
+                           
+                                <div class="mb-2 row">
+                                    <label class="col-sm-6 col-form-label"><b>ID Equipamentos:</b> {{ registro.id_equipamentos }}</label>
+                                </div>
+                                <div class="mb-2 row">
+                                    <label class="col-sm-6 col-form-label"><b>Observações:</b> {{ registro.observacoes }}</label>
+                                </div>
+
+                                {% if registro.status == 'Aprovado pelo CEO' %}
+                                    <a href="{% url 'expedir_requisicaotec' registro.id %}" class="btn btn-primary">Expedir Requisição</a>
+                                    <a href="{% url 'tecnicoUpdateView' registro.id %}" class="btn btn-secondary">Incluir ID</a>
+                                {% elif registro.status == 'Aprovado pela Diretoria' %}
+                                    <a href="{% url 'expedir_manutencao' registro.id %}" class="btn btn-primary">Expedir Manutenção</a>
+                                    <a href="{% url 'tecnicoUpdateView' registro.id %}" class="btn btn-secondary">Editar Manutenção</a>
+                                {% elif registro.status == 'Aprovado Inteligência' %}
+                                    <a href="{% url 'expedir_manutencao' registro.id %}" class="btn btn-primary">Expedir Manutenção</a>
+                                    <a href="{% url 'ConfiguracaoUpdateView2' registro.id %}" class="btn btn-secondary">Editar Manutenção</a>
+                                {% else %}
+                                    <a href="{% url 'expedir_manutencao' registro.id %}" class="btn btn-primary">Expedir Manutenção</a>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

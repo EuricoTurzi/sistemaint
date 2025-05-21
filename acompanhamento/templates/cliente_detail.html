@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+<h3 class="display-6">Detalhes do cliente</h3>
+
+<div class="card">
+        <div class="card-body">
+            <h3 class="card-title">{{ cliente.nome}}</h3>
+            
+           <p class="card-text"> {{ cliente.descricao}}</p>
+           <p class="card-text"> {{ cliente.endereco}}</p>
+           <p class="card-text"> {{ cliente.cnpj}}</p>
+
+
+        </div>
+        <div>
+
+            <a href="{% url 'cliente_list' %}" class="btn btn-secondary mt3">  Voltar</a>
+        </div>
+
+{% endblock %}

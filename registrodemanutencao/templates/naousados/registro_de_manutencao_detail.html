@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+<h3 class="display-6">Detalhes </h3>
+
+<div class="card">
+        <div class="card-body">
+            <h3 class="card-title">{{ registro.nome}}</h3>
+            
+           <p class="card-text"> {{ registro.nome}}</p>
+           <p class="card-text"> {{ registro.tipo_produto}}</p>
+           <p class="card-text"> {{ registro.tipo_entrada}}</p>
+           <p class="card-text"> {{ registro.recebimento}}</p>
+           <p class="card-text"> {{ registro.status}}</p>
+           <p class="card-text"> {{ registro.entregue_por_retirado_por}}</p>
+          
+
+        </div>
+        <div>
+            <a class="btn btn-primary" href="{% url 'registrodemanutencao_detail' pk=registrodemanutencao_detail.id %}">Edit</a>
+            <a href="{% url 'registrodemanutencao' %}" class="btn btn-secondary mt3">  Voltar</a>
+        </div>
+
+{% endblock %}

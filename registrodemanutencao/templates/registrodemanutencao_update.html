@@ -1,0 +1,322 @@
+{# templates/registrodemanutencao_update.html #}
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Incluindo as bibliotecas JavaScript do Bootstrap e jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<div class="container mt-4">
+    <h3 class="display-4 mb-4">Editar Registro de Manutenção</h3>
+    <div class="card">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Exibir Erros Não Associados a Campos Específicos -->
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                <!-- Dados da Entrada -->
+                <h5 class="mt-4">Dados da Entrada</h5>
+                <div class="row mb-3">
+                    <div class="form-group col-md-6">
+                        <label for="{{ form.nome.id_for_label }}">Nome do Cliente:</label>
+                        {{ form.nome }}
+                        {% if form.nome.errors %}
+                        <div class="text-danger">{{ form.nome.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>Data de Entrada:</label>
+                        <input type="text" class="form-control" 
+                               value="{{ form.instance.data_criacao|date:'d/m/Y H:i' }}" readonly>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="{{ form.tipo_entrada.id_for_label }}">Tipo de Entrada:</label>
+                        {{ form.tipo_entrada }}
+                        {% if form.tipo_entrada.errors %}
+                        <div class="text-danger">{{ form.tipo_entrada.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>Data de Devolução:</label>
+                        <input type="text" class="form-control" 
+                               value="{{ form.instance.data_devolucao|date:'d/m/Y H:i' }}" readonly>
+                    </div>
+                </div>
+
+                <!-- Customização e Quantidade -->
+                <div class="row mb-3">
+                    <div class="form-group col-md-4">
+                        <label for="{{ form.tipo_customizacao.id_for_label }}">Customização:</label>
+                        {{ form.tipo_customizacao }}
+                        {% if form.tipo_customizacao.errors %}
+                        <div class="text-danger">{{ form.tipo_customizacao.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="{{ form.quantidade.id_for_label }}">Quantidade:</label>
+                        {{ form.quantidade }}
+                        {% if form.quantidade.errors %}
+                        <div class="text-danger">{{ form.quantidade.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="{{ form.status.id_for_label }}">Status:</label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                        <div class="text-danger">{{ form.status.errors }}</div>
+                        {% endif %}
+                    </div>
+                       <div class="form-group col-md-2">
+                        <label for="{{ form.tipo_produto.id_for_label }}">Modelo:</label>
+                        {{ form.tipo_produto }}
+                        {% if form.tipo_produto.errors %}
+                        <div class="text-danger">{{ form.tipo_produto.errors }}</div>
+                        {% endif %}
+                    </div>
+                     <div class="form-group col-md-2">
+                        <label for="{{ form.motivo.id_for_label }}">Motivo:</label>
+                        {{ form.motivo }}
+                        {% if form.motivo.errors %}
+                        <div class="text-danger">{{ form.motivo.errors }}</div>
+                        {% endif %}
+		    </div>
+
+
+
+
+                </div>
+
+                <!-- ID do Equipamento e Observações -->
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="{{ form.numero_equipamento.id_for_label }}">ID de Equipamento:</label>
+                        {{ form.numero_equipamento }}
+                        {% if form.numero_equipamento.errors %}
+                        <div class="text-danger">{{ form.numero_equipamento.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="{{ form.observacoes.id_for_label }}">Observações de Entrada:</label>
+                        {{ form.observacoes }}
+                        {% if form.observacoes.errors %}
+                        <div class="text-danger">{{ form.observacoes.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Formset para imagens adicionais -->
+                <h5 class="mt-5">Dados da Manutenção</h5>
+                {{ imagens_formset.management_form }}
+                <div id="fields-container">
+                    {% for form in imagens_formset %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <!-- Campo oculto para ID do objeto existente -->
+                            {{ form.id }}
+
+                            {% if form.instance.pk %}
+                                <h6 class="card-title">Imagem {{ forloop.counter }}</h6>
+                            {% else %}
+                                <h6 class="card-title">Novo Equipamento</h6>
+                            {% endif %}
+
+                            <div class="row mb-3">
+                                <div class="form-group col-md-3">
+                                    <label for="{{ form.id_equipamento.id_for_label }}">ID do Equipamento:</label>
+                                    {{ form.id_equipamento }}
+                                    {% if form.id_equipamento.errors %}
+                                    <div class="text-danger">{{ form.id_equipamento.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="{{ form.imagem.id_for_label }}">Imagem:</label>
+                                    {{ form.imagem }}
+                                    {% if form.imagem.errors %}
+                                    <div class="text-danger">{{ form.imagem.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="{{ form.imagem2.id_for_label }}">Imagem 2:</label>
+                                    {{ form.imagem2 }}
+                                    {% if form.imagem2.errors %}
+                                    <div class="text-danger">{{ form.imagem2.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="{{ form.faturamento.id_for_label }}">Faturamento:</label>
+                                    {{ form.faturamento }}
+                                    {% if form.faturamento.errors %}
+                                    <div class="text-danger">{{ form.faturamento.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="form-group col-md-6">
+                                    <label for="{{ form.tipo_problema.id_for_label }}">Tipo de Problema:</label>
+                                    {{ form.tipo_problema }}
+                                    {% if form.tipo_problema.errors %}
+                                    <div class="text-danger">{{ form.tipo_problema.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="{{ form.observacao2.id_for_label }}">Observações:</label>
+                                    {{ form.observacao2 }}
+                                    {% if form.observacao2.errors %}
+                                    <div class="text-danger">{{ form.observacao2.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group form-check">
+                                {{ form.DELETE }}
+                                <label class="form-check-label" for="{{ form.DELETE.id_for_label }}">
+                                    Deletar Imagem
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Botões -->
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary mt-3" onclick="addField()">Adicionar Equipamento</button>
+                    <button type="submit" class="btn btn-primary mt-3">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <a href="{% url 'entradasListView' %}" class="btn btn-secondary mt-3">Voltar</a>
+</div>
+
+
+<script>
+    function addField() {
+        const container = document.getElementById('fields-container');
+        const totalForms = document.getElementById('id_imagens-TOTAL_FORMS');
+        const currentFormCount = parseInt(totalForms.value);
+        const newFormCount = currentFormCount;
+
+        // Atualiza o TOTAL_FORMS primeiro
+        totalForms.value = newFormCount + 1;
+
+        const newCard = document.createElement('div');
+        newCard.classList.add('card', 'mb-3');
+        newCard.innerHTML = `
+            <div class="card-body">
+                <h6 class="card-title">Novo Equipamento</h6>
+
+                <!-- Campo oculto para ID (ficará vazio para novos objetos) -->
+                <input type="hidden" name="imagens-${newFormCount}-id" id="id_imagens-${newFormCount}-id">
+
+                <div class="row mb-3">
+                    <!-- ID do Equipamento -->
+                    <div class="form-group col-md-3">
+                        <label>ID do Equipamento:</label>
+                        <input type="text" 
+                               name="imagens-${newFormCount}-id_equipamento" 
+                               class="form-control" 
+                               id="id_imagens-${newFormCount}-id_equipamento">
+                    </div>
+
+                    <!-- Imagem 1 -->
+                    <div class="form-group col-md-3">
+                        <label>Imagem:</label>
+                        <input type="file" 
+                               name="imagens-${newFormCount}-imagem" 
+                               class="form-control-file" 
+                               id="id_imagens-${newFormCount}-imagem">
+                    </div>
+
+                    <!-- Imagem 2 -->
+                    <div class="form-group col-md-3">
+                        <label>Imagem 2:</label>
+                        <input type="file" 
+                               name="imagens-${newFormCount}-imagem2" 
+                               class="form-control-file" 
+                               id="id_imagens-${newFormCount}-imagem2">
+                    </div>
+
+                    <!-- Faturamento -->
+                    <div class="form-group col-md-3">
+                        <label>Faturamento:</label>
+                        <select name="imagens-${newFormCount}-faturamento" 
+                                class="form-control" 
+                                id="id_imagens-${newFormCount}-faturamento">
+                            <option value="">---------</option>
+                            <option value="Com_Custo">Com Custo</option>
+                            <option value="Sem_Custo">Sem Custo</option>
+                             
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <!-- Tipo de Problema -->
+                    <div class="form-group col-md-6">
+                        <label>Tipo de Problema:</label>
+     <select name="imagens-${newFormCount}-tipo_problema" 
+                                class="form-control" 
+                                id="id_imagens-${newFormCount}-tipo_problema">
+                            <option value="">---------</option>
+                            <option value="Oxidação">Oxidação</option>
+                            <option value="Placa Danificada">Placa Danificada</option>
+                            <option value="Placa danificada SEM CUSTO">Placa danificada SEM CUSTO</option>
+                            <option value="USB Danificado">USB Danificado</option>
+                            <option value="USB Danificado SEM CUSTO">USB Danificado SEM CUSTO</option>
+                            <option value="Botão de acionamento Danificado">Botão de acionamento Danificado</option>
+                            <option value="Botão de acionamento Danificado SEM CUSTO">Botão de acionamento Danificado SEM CUSTO</option>
+                            <option value="Antena LoRa Danificada">Antena LoRa Danificada</option>
+                            <option value="Sem problemas Identificados">Sem problemas Identificados</option>
+                            <option value="Antena 4G danificada">Antena 4G danificada</option>
+                            <option value="Avarias Fisicas Graves">Avarias Fisicas Graves</option>
+                        </select>
+                                        
+                    
+                    
+                    
+                        </div>
+
+                    <!-- Observações -->
+                    <div class="form-group col-md-6">
+                        <label>Observações:</label>
+                        <input type="text" 
+                               name="imagens-${newFormCount}-observacao2" 
+                               class="form-control" 
+                               id="id_imagens-${newFormCount}-observacao2">
+                    </div>
+                </div>
+
+                <!-- Deletar -->
+                <div class="form-group form-check">
+                    <input type="checkbox" 
+                           name="imagens-${newFormCount}-DELETE" 
+                           class="form-check-input" 
+                           id="id_imagens-${newFormCount}-DELETE">
+                    <label class="form-check-label" for="id_imagens-${newFormCount}-DELETE">
+                        Deletar Imagem
+                    </label>
+                </div>
+            </div>
+        `;
+        container.appendChild(newCard);
+    }
+
+    // Impede que a tecla ENTER submeta o formulário involuntariamente
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+        }
+    });
+</script>
+
+{% endblock %}

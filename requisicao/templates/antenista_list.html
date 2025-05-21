@@ -1,0 +1,99 @@
+
+
+{% extends 'base.html' %}
+{% block title %} | Grupo Golden Sat | {% endblock %}
+
+
+
+{% block content %}
+<style>
+    /* Seus estilos CSS existentes */
+    .card-status {
+        position: relative;
+        transition: transform 0.3s ease;
+        width: 25rem;
+    }
+
+    .card-status.Aprovado {
+        background: linear-gradient(to bottom, #a0f0a0 0%, #ffffff 100%);
+    }
+
+    /* ... outros estilos ... */
+
+    .card-status:hover {
+        transform: scale(1.05);
+    }
+
+    .card-body p {
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .card-body p:hover {
+        transform: translateY(-3px); /* Move o texto para cima */
+        color: #007bff; /* Muda a cor do texto ao passar o mouse */
+    }
+
+    
+
+   
+</style>
+<div class="container mt-5">
+    <h1 class="mb-4">Lista de Antenistas</h1>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Tipo de Produto</th>
+                <th>Telefone</th>
+                <th>Cliente</th>
+                <th>Quantidade</th>
+                <th>Equipamentos</th>
+                <th>Solicitante</th>
+	 	<th>Valor de Entrega</th>
+		<th>Contrato</th>
+                <th>Status</th> <!-- Nova coluna para Status -->
+                <th>Ações</th> <!-- Nova coluna para o botão -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for antenista in antenistas %}
+            <tr>
+                <td>{{ antenista.nome }}</td>
+                <td>{{ antenista.tipo_produto }}</td>
+                <td>{{ antenista.telefone }}</td>
+                <td>{{ antenista.cliente }}</td>
+                <td>{{ antenista.quantidade }}</td>
+                <td>{{ antenista.equipamentos }}</td>
+                <td>{{ antenista.solicitante }}</td>
+                <td>{{ antenista.valor_entrega }}</td>
+                <td>{{ antenista.contrato }}</td>
+                <td>{{ antenista.status }}</td> <!-- Exibe o status atual -->
+                <td>
+                    {% if antenista.status != 'Atualizado' %}
+                        <form action="{% url 'atualizar_atualizado' antenista.pk %}" method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-warning btn-sm">Atualizado</button>
+                        </form>
+                    {% else %}
+                        <button class="btn btn-success btn-sm" disabled>Atualizado</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">Nenhum registro encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'novo_antenista' %}" class="btn btn-primary">Novo Antenista</a>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-5">Painel de Administração</h1>
+    
+    <div class="row">
+        <div class="col-6">
+            <div class="card mb-3 text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Requisições de Vendas</h5>
+                    <p class="card-text">{{ requisicoes_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card mb-3 text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Manutenções Realizadas</h5>
+                    <p class="card-text">{{ manutencoes_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card mb-3 text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Valor Total das Vendas</h5>
+                    <p class="card-text">R$ {{ valor_total_vendas }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card mb-3 text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Quantidade de Reativações</h5>
+                    <p class="card-text">{{ reativacoes_count }}</p>
+                </div>
+            </div>
+        
+    </div>
+
+{% endblock %}

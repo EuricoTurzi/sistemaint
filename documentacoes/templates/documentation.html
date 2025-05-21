@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+  .transition-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .transition-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0.8rem 1.5rem rgba(0, 0, 0, 0.15);
+  }
+</style>
+
+<div class="container my-5">
+  <h2 class="text-center mb-5 fw-bold">Lista de Documentos</h2>
+
+  <div class="row justify-content-center gy-4"> <!-- espaçamento vertical entre os cards -->
+    {% for pdf in arquivos_pdf %}
+      <div class="col-12 col-md-6 col-lg-6">
+        <div class="card shadow-lg border-0 h-100 transition-hover">
+          <div class="card-body d-flex flex-column justify-content-between">
+            <h4 class="card-title fw-bold mb-3">{{ pdf.nome }}</h4>
+            <p class="card-text fs-6 mb-4">
+              Clique abaixo para baixar este documento em PDF com segurança.
+            </p>
+            <a href="{{ pdf.url|urlencode }}" download class="btn btn-lg btn-primary w-100 fw-semibold">
+              ⬇️ Baixar PDF
+            </a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center text-muted">Nenhum documento disponível.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

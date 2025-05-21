@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}
+| Grupo Golden Sat |
+{% endblock %}
+
+{% include 'components/_header.html' %}
+{% block content %}
+<style>
+    .card-status {
+        position: relative;
+        transition: transform 0.3s ease;
+        width: 21rem; /* Adiciona uma transição suave */
+    }
+
+    .card-status.Aprovado {
+        background: linear-gradient(to bottom, #a0f0a0 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+    }
+
+    .card-status.Reprovado {
+        background: linear-gradient(to bottom, #f0a0a0 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
+    }
+
+    .card-status.Pendente {
+        background: linear-gradient(to bottom, #d0d0d0 0%, #ffffff 100%); /* Gradiente cinza claro para branco */
+    }
+
+    .card-status.Configurado {
+        background: linear-gradient(to bottom, #ffd580 0%, #ffffff 100%); /* Gradiente laranja claro para branco */
+    }
+
+    .card-status.Reprovado-pelo-CEO {
+        background: linear-gradient(to bottom, #f08080 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
+    }
+
+    .card-status.Aprovado-pelo-CEO {
+        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+    }
+
+    .card-status.Reprovado-pela-Diretoria {
+        background: linear-gradient(to bottom, #f08080 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
+    }
+
+    .card-status.Aprovado-pela-Diretoria {
+        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+    }
+
+    .card-status.Expedido {
+        background: linear-gradient(to bottom, #ffb380 0%, #ffffff 100%); /* Gradiente laranja escuro claro para branco */
+    }
+
+    .card-status.Enviado-para-o-Cliente {
+        background: linear-gradient(to bottom, #80b3ff 0%, #ffffff 100%); /* Gradiente azul claro para branco */
+    }
+
+    .card-status.Aprovado-Inteligencia {
+        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+    }
+
+    .card-body {
+        padding: 30px; /* Adiciona um espaço interno de 30px */
+    }
+
+    .card-status:hover {
+        transform: scale(1.05); /* Faz o card crescer um pouco */
+    }
+</style>
+<div class="container">
+    <div class="row">
+        {% for registro in diretoria_list %}
+        <div class="col-md-4 mb-4">
+            <div class="card card-status {% if registro.status == 'Aprovado' %}Aprovado{% elif registro.status == 'Reprovado' %}Reprovado{% elif registro.status == 'Configurado' %}Configurado{% elif registro.status == 'Pendente' %}Pendente{% elif registro.status == 'Expedido' %}Expedido{% elif registro.status == 'Reprovado pelo CEO' %}Reprovado-pelo-CEO{% elif registro.status == 'Aprovado pelo CEO' %}Aprovado-pelo-CEO{% elif registro.status == 'Reprovado pela Diretoria' %}Reprovado-pela-Diretoria{% elif registro.status == 'Aprovado pela Diretoria' %}Aprovado-pela-Diretoria{% endif %}">
+                <div class="card-body">
+                    <h2>Entrada</h2>
+                    <h5 class="card-title"><h3>Registro #{{ registro.id }}</h3></h5>
+                    <h5 class="card-title">Nome: {{ registro.nome }}</h5>
+                    <p class="card-text"><b>Status:</b> {{ registro.status }}</p>
+                    <p class="card-text"><b>Tipo de Entrada:</b> {{ registro.tipo_entrada }}</p>
+                    <p class="card-text"><b>Tipo de Produto:</b> {{ registro.tipo_produto }}</p>
+                    <p class="card-text"><b>Customização:</b> {{ registro.customizacaoo }}</p>
+                    <p class="card-text"><b>Faturamento:</b> {{ registro.faturamento }}</p>
+                    <p class="card-text"><b>Motivo:</b> {{ registro.motivo }}</p>
+                    <p class="card-text"><b>Setor:</b> {{ registro.setor }}</p>
+                    <!-- Botões de ação -->
+                    {% if perms.qualit.view_qualit %}
+                    <a class="btn btn-success" href="{% url 'Aprovar_diretoria' registro.id %}">Aprovar</a>
+                    <a class="btn btn-danger" href="{% url 'Reprovar_diretoria' registro.id %}">Reprovar</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center">Nenhum registro encontrado.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% include 'components/_pagination.html' %}
+</div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}
+| Grupo Golden Sat |
+{% endblock %}
+
+{% include 'components/_header.html' %}
+{% block content %}
+<style>
+    .card-status {
+        position: relative;
+        transition: transform 0.3s ease; /* Adiciona uma transição suave */
+    }
+
+    .card-status.Aprovado {
+        background: linear-gradient(to bottom, #a0f0a0 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+    }
+
+    .card-status.Reprovado {
+        background: linear-gradient(to bottom, #f0a0a0 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
+    }
+
+    .card-status.Pendente {
+        background: linear-gradient(to bottom, #d0d0d0 0%, #ffffff 100%); /* Gradiente cinza claro para branco */
+    }
+
+    .card-status.Configurado {
+        background: linear-gradient(to bottom, #ffd580 0%, #ffffff 100%); /* Gradiente laranja claro para branco */
+    }
+
+    .card-status.Reprovado-pelo-CEO {
+        background: linear-gradient(to bottom, #f08080 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
+    }
+
+    .card-status.Aprovado-pelo-CEO {
+        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+    }
+
+    .card-status.Reprovado-pela-Diretoria {
+        background: linear-gradient(to bottom, #f08080 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
+    }
+
+    .card-status.Aprovado-pela-Diretoria {
+        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+    }
+
+    .card-status.Expedido {
+        background: linear-gradient(to bottom, #ffb380 0%, #ffffff 100%); /* Gradiente laranja escuro claro para branco */
+    }
+
+    .card-status.Enviado-para-o-Cliente {
+        background: linear-gradient(to bottom, #80b3ff 0%, #ffffff 100%); /* Gradiente azul claro para branco */
+    }
+
+    .card-status.Aprovado-Inteligencia {
+        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+    }
+
+    .card-body {
+        padding: 30px; /* Adiciona um espaço interno de 30px */
+    }
+
+    .card-status:hover {
+        transform: scale(1.05); /* Faz o card crescer um pouco */
+    }
+</style>
+
+<div class="container mt-4">
+    <h3 class="display-4">Historico de Requisições</h3>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get" action="{% url 'historicoListViews' %}">
+                <input type="text" class="form-control" name="nome" placeholder="Nome" value="{{ request.GET.nome }}">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form method="get" action="{% url 'historicoListViews' %}">
+                <select class='form-select' name="status">
+                    <option value="">Escolha um status</option>
+                    <option value="Aprovado" {% if request.GET.status == 'Aprovado' %}selected{% endif %}>Aprovado</option>
+                    <option value="Reprovado" {% if request.GET.status == 'Reprovado' %}selected{% endif %}>Reprovado</option>
+                    <option value="Pendente" {% if request.GET.status == 'Pendente' %}selected{% endif %}>Pendente</option>
+                    <option value="Configurado" {% if request.GET.status == 'Configurado' %}selected{% endif %}>Configurado</option>
+                    <option value="Expedido" {% if request.GET.status == 'Expedido' %}selected{% endif %}>Expedido</option>
+                    <option value="Enviado para o Cliente" {% if request.GET.status == 'Enviado para o Cliente' %}selected{% endif %}>Enviado para o Cliente</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for item in historico_list %}
+<div class="col-md-4 mb-4">
+    <div class="card card-status {% if item.status == 'Aprovado' %}Aprovado{% elif item.status == 'Reprovado' %}Reprovado{% elif item.status == 'Configurado' %}Configurado{% endif %}">
+        <div class="card-body">
+            <h2>Requisição</h2>
+            <h5 class="card-title">{{ item.nome }}</h5>
+            <p class="card-text"><h3><b>ID</b>: {{ item.id }}</h3></p>
+            <p class="card-text"><b>CNPJ</b>: {{ item.cnpj }}</p>
+            <p class="card-text"><b>Comercial</b>: {{ item.comercial }}</p>
+            <p class="card-text"><b>Data</b>: {{ item.data_alteracao }}</p>
+            <p class="card-text"><b>Data Alteração</b>: {{ item.data }}</p>
+            <p class="card-text"><b>Tipo de Produto</b>: {{ item.tipo_produto }}</p>
+            <p class="card-text"><b>Quantidade</b>: {{ item.numero_de_equipamentos }}</p>
+            <p class="card-text"><b>Observações</b>: {{ item.observacoes }}</p>
+            <p class="card-text"><b>Status</b>: {{ item.status }}</p>
+            <p class="card-text"><b>TP</b>: {{ item.TP }}</p>
+            <p class="card-text"><b>Valor Unitario</b>: {{ item.valor_unitario }}</p>
+            
+            <p class="card-text"><b>Taxa</b>: {{ item.taxa_envio }}</p>
+
+            {% if item.status == "Enviado para o Cliente" %}
+                <a class="btn btn-info" href="{% url 'gerar_pdf_saida' item.id %}">Download PDF</a>
+<a class="btn btn-info" href="{% url 'download_pdf_requisicao' item.id %}">saida PDF</a>
+            {% else %}
+ <a class="btn btn-info" href="{% url 'gerar_pdf_saida' item.id %}">Download PDF</a>
+<a class="btn btn-info" href="{% url 'download_pdf_requisicao' item.id %}">saida PDF</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+
+        {% endfor %}
+    </div>
+
+    {% include 'components/_pagination.html' %}
+</div>
+{% endblock %}

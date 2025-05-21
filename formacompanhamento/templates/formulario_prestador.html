@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2>Cadastro de Prestador</h2>
+        
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <form id="prestadorForm" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        {% if field.name == "status_prestador" %}
+                            <div class="mb-3">
+                                <label for="id_status_prestador" class="form-label">Status do Prestador</label>
+                                <select name="status_prestador" id="id_status_prestador" class="form-control">
+                                    <option value="">Selecione o status</option>
+                                    <option value="ATIVO" {% if form.status_prestador.value == "ATIVO" %}selected{% endif %}>ATIVO</option>
+                                    <option value="INATIVO" {% if form.status_prestador.value == "INATIVO" %}selected{% endif %}>INATIVO</option>
+                                    <option value="PENDENTE" {% if form.status_prestador.value == "PENDENTE" %}selected{% endif %}>PENDENTE</option>
+                                </select>
+                                <small class="text-danger" id="error_status_prestador"></small>
+                            </div>
+                        {% else %}
+                            <div class="mb-3">
+                                <label for="id_{{ field.name }}" class="form-label">{{ field.label }}</label>
+                                {{ field }}
+                                <small class="text-danger" id="error_{{ field.name }}"></small>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-success btn-lg">Salvar Prestador</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    </script>
+{% endblock %}

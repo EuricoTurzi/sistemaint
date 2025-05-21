@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}
+| Grupo Golden Sat |
+{% endblock %}
+
+{% include 'components/_header.html' %}
+{% block content %}
+<style>
+    .card-status {
+        position: relative;
+        transition: transform 0.3s ease;
+        width: 25rem;
+    }
+
+    .card-status.Aprovado {
+        background: linear-gradient(to bottom, #a0f0a0 0%, #ffffff 100%);
+    }
+
+    .card-status.Reprovado {
+        background: linear-gradient(to bottom, #f0a0a0 0%, #ffffff 100%);
+    }
+
+    .card-status.Pendente {
+        background: linear-gradient(to bottom, #d0d0d0 0%, #ffffff 100%);
+    }
+
+    .card-status.Configurado {
+        background: linear-gradient(to bottom, #ffd580 0%, #ffffff 100%);
+    }
+
+    .card-status.Reprovado-pelo-CEO {
+        background: linear-gradient(to bottom, #f08080 0%, #ffffff 100%);
+    }
+
+    .card-status.Aprovado-pelo-CEO {
+        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%);
+    }
+
+    .card-status.Reprovado-pela-Diretoria {
+        background: linear-gradient(to bottom, #f08080 0%, #ffffff 100%);
+    }
+
+    .card-status.Aprovado-pela-Diretoria {
+        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%);
+    }
+
+    .card-status.Expedido {
+        background: linear-gradient(to bottom, #ffb380 0%, #ffffff 100%);
+    }
+
+    .card-status.Enviado-para-o-Cliente {
+        background: linear-gradient(to bottom, #80b3ff 0%, #ffffff 100%);
+    }
+
+    .card-status.Aprovado-Inteligencia {
+        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%);
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .card-status:hover {
+        transform: scale(1.05);
+    }
+
+    .card-body p {
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .card-body p:hover {
+        transform: translateY(-5px); /* Move o texto para cima */
+        color: #007bff; /* Muda a cor do texto ao passar o mouse */
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-primary" href="{% url 'requisicoescrateview' %}">Criar Requisição</a>
+        </div>
+    </div>
+<br>
+<br>
+    <div class="row">
+        {% for requisicao in requisicoes %}
+        <div class="col-md-4 mb-4">
+            <div class="card card-status {% if requisicao.status == 'Aprovado' %}Aprovado{% elif requisicao.status == 'Reprovado' %}Reprovado{% elif requisicao.status == 'Configurado' %}Configurado{% elif requisicao.status == 'Pendente' %}Pendente{% elif requisicao.status == 'Expedido' %}Expedido{% elif requisicao.status == 'Reprovado pelo CEO' %}Reprovado-pelo-CEO{% elif requisicao.status == 'Aprovado pelo CEO' %}Aprovado-pelo-CEO{% elif requisicao.status == 'Reprovado pela Diretoria' %}Reprovado-pela-Diretoria{% elif requisicao.status == 'Aprovado pela Diretoria' %}Aprovado-pela-Diretoria{% endif %}">
+                <div class="card-body">
+                    <h2>Requisição</h2>
+                    <h5 class="card-title"><h3>Registro #{{ requisicao.id }}</h3></h5>
+                    <h5 class="card-title">Nome : {{ requisicao.nome }}</h5>
+                    <p class="card-text"><b>Status:</b> {{ requisicao.status }}</p>                    
+                    <p class="card-text"><b>Contrato:</b> {{ requisicao.contrato }}</p>
+                    <p class="card-text"><b>CNPJ:</b> {{ requisicao.cnpj }}</p>                   
+                    <p class="card-text"><b>Data:</b> {{ requisicao.data|date:"d/m/Y H:i:s" }}</p>
+                    <p class="card-text"><b>Motivo:</b> {{ requisicao.motivo }}</p>                   
+                    <p class="card-text"><b>Taxa de Envio:</b> {{ requisicao.taxa_envio }}</p>
+                    <p class="card-text"><b>Comercial:</b> {{ requisicao.comercial }}</p>
+                    <p class="card-text"><b>Quantidade:</b> {{ requisicao.numero_de_equipamentos }}</p>
+                    <p class="card-text"><b>Tipo de Produto:</b> {{ requisicao.tipo_produto }}</p>               
+                    <p class="card-text"><b>Tipo de Fatura:</b> {{ requisicao.tipo_fatura }}</p>
+                    <p class="card-text"><b>Valor Unitário:</b> {{ requisicao.valor_unitario }}</p>
+                    <p class="card-text"><b>Valor Total:</b> {{ requisicao.valor_total }}</p>
+                    <p class="card-text"><b>Formas de Pagamento:</b> {{ requisicao.forma_pagamento }}</p>
+                    <p class="card-text"><b>Observações:</b> {{ requisicao.observacoes }}</p>
+                    <p class="card-text"><b>TP:</b> {{ requisicao.TP }}</p>
+                   
+                    <a class="btn btn-info" href="{% url 'download_pdf_requisicao' requisicao.id %}">Download PDF</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% include 'components/_pagination.html' %}
+</div>
+{% endblock %}

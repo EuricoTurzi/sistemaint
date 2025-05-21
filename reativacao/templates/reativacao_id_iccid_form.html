@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% block title %}
+| Lista de Reativações |
+{% endblock %}
+
+{% include 'components/_header.html' %}
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #45494E; /* Cor de fundo mais escura */
+        display: flex;
+        flex-direction: column;
+        height: 100rem;
+        margin: 0;
+    }
+    .container-fluid {
+        padding: 0;
+    }
+    .row {
+        margin: 0;
+    }
+    .table-responsive {
+        padding: 0 15px;
+        margin-left: -22rem;
+        width: 115rem;
+    }
+    .form-control {
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .dropdown-status {
+        width: 10rem;
+    }
+    .filter-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0rem;
+    }
+    .thead-dark {
+        background-color: #344038;
+        color: white;
+    }
+</style>
+
+<form method="get" action="{% url 'reativacao_list' %}">
+    <div class="filter-container">
+        <div class="mb-3">
+            <select name="cliente_filtro" class="form-control dropdown-status">
+                <option value="">Selecione o Cliente</option>
+                {% for cliente in clientes_choices %}
+                    <option value="{{ cliente.id }}" {% if request.GET.cliente_filtro == cliente.id|stringformat:"s" %}selected{% endif %}>
+                        {{ cliente.nome }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <select name="status_reativacao_filtro" class="form-control dropdown-status">
+                <option value="">Selecione o Status de Reativação</option>
+                {% for status in status_reativacao_choices %}
+                    <option value="{{ status.0 }}" {% if request.GET.status_reativacao_filtro == status.0 %}selected{% endif %}>
+                        {{ status.1 }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <select name="motivo_filtro" class="form-control dropdown-status">
+                <option value="">Selecione o Motivo</option>
+                {% for motivo in motivos_choices %}
+                    <option value="{{ motivo.0 }}" {% if request.GET.motivo_filtro == motivo.0 %}selected{% endif %}>
+                        {{ motivo.1 }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-outline-secondary w-100" type="submit">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <!-- Aqui fica a listagem, se necessário -->
+</div>
+
+<!-- Formulário de criação de reativação -->
+<div class="container mt-4">
+  <div class="card mb-4">
+    <div class="card-body">
+      <form id="reativacao-form" method="post" class="form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h4 class="card-title">Formulário de Reativação</h4>
+        <!-- Campo: Nome -->
+        <div class="mb-3">
+          <label for="{{ reativacao_form.nome.id_for_label }}" class="form-label">Nome</label>
+          {{ reativacao_form.nome }}
+          {% for error in reativacao_form.nome.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <!-- Campo: Motivo da Reativação -->
+        <div class="mb-3">
+          <label for="{{ reativacao_form.motivo_reativacao.id_for_label }}" class="form-label">Motivo da Reativação</label>
+          {{ reativacao_form.motivo_reativacao }}
+          {% for error in reativacao_form.motivo_reativacao.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <!-- Campo: Canal de Solicitação -->
+        <div class="mb-3">
+          <label for="{{ reativacao_form.canal_solicitacao.id_for_label }}" class="form-label">Canal de Solicitação</label>
+          {{ reativacao_form.canal_solicitacao }}
+          {% for error in reativacao_form.canal_solicitacao.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <!-- Campo: CNPJ -->
+        <div class="mb-3">
+          <label for="{{ reativacao_form.cnpj.id_for_label }}" class="form-label">CNPJ</label>
+          {{ reativacao_form.cnpj }}
+          {% for error in reativacao_form.cnpj.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <!-- Campo: Observações -->
+        <div class="mb-3">
+          <label for="{{ reativacao_form.observacoes.id_for_label }}" class="form-label">Observações</label>
+          {{ reativacao_form.observacoes }}
+          {% for error in reativacao_form.observacoes.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <!-- Campo: Status da Reativação -->
+        
+
+        <h4 class="card-title mt-4">Adicionar Equipamentos</h4>
+        <div id="equipamento-forms">
+          {{ id_iccid_formset.management_form }}
+          {% for form in id_iccid_formset %}
+            <div class="row equipamento-form">
+              <!-- Campo: Quantidade (exibido para o usuário) -->
+              <div class="col-md-4 mb-3">
+                <label for="{{ form.quantidade.id_for_label }}" class="form-label">Quantidade</label>
+                {{ form.quantidade }}
+                {% for error in form.quantidade.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <!-- Campo: ID Equipamento -->
+              <div class="col-md-4 mb-3">
+                <label for="{{ form.id_equipamentos.id_for_label }}" class="form-label">ID Equipamento</label>
+                {{ form.id_equipamentos }}
+                {% for error in form.id_equipamentos.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              </div>
+              <!-- Campo: ICCID Equipamento -->
+              <div class="col-md-4 mb-3">
+                <label for="{{ form.ccid_equipamentos.id_for_label }}" class="form-label">ICCID Equipamento</label>
+                {{ form.ccid_equipamentos }}
+                {% for error in form.ccid_equipamentos.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      
+        <button type="submit" class="btn btn-primary mt-3">Salvar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Função para atualizar o campo "quantidade" de cada formulário, contando as linhas preenchidas em "ID Equipamento"
+  function atualizarQuantidade() {
+    document.querySelectorAll('.equipamento-form').forEach(function(formDiv) {
+      // Seleciona o textarea de ID Equipamento
+      var textarea = formDiv.querySelector('textarea[name$="id_equipamentos"]');
+      if (textarea) {
+        // Conta as linhas não vazias
+        var linhas = textarea.value.split(/\r?\n/).filter(function(linha) {
+          return linha.trim() !== "";
+        }).length;
+        // Atualiza o campo "quantidade" correspondente
+        var inputQuantidade = formDiv.querySelector('input[name$="quantidade"]');
+        if (inputQuantidade) {
+          inputQuantidade.value = linhas;
+        }
+      }
+    });
+  }
+
+  // Atualiza a quantidade em tempo real ao digitar no campo "ID Equipamento"
+  document.querySelectorAll('textarea[name$="id_equipamentos"]').forEach(function(textarea) {
+    textarea.addEventListener('input', atualizarQuantidade);
+  });
+
+  // Atualiza a quantidade antes de enviar o formulário
+  document.getElementById('reativacao-form').addEventListener('submit', function(e) {
+    atualizarQuantidade();
+  });
+
+  // Função para adicionar novo formulário dinamicamente ao formset
+  document.getElementById('add-equipamento').addEventListener('click', function() {
+    var equipamentoForms = document.getElementById('equipamento-forms');
+    var totalFormsInput = document.querySelector("input[name='id_iccid_set-TOTAL_FORMS']");
+    var formNum = parseInt(totalFormsInput.value);
+    
+    var newFormHTML = `
+      <div class="row equipamento-form">
+        <div class="col-md-4 mb-3">
+          <label for="id_iccid_set-${formNum}-quantidade" class="form-label">Quantidade</label>
+          <input type="text" name="id_iccid_set-${formNum}-quantidade" class="form-control" id="id_iccid_set-${formNum}-quantidade" value="0">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="id_iccid_set-${formNum}-id_equipamentos" class="form-label">ID Equipamento</label>
+          <textarea name="id_iccid_set-${formNum}-id_equipamentos" class="form-control" id="id_iccid_set-${formNum}-id_equipamentos"></textarea>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="id_iccid_set-${formNum}-ccid_equipamentos" class="form-label">ICCID Equipamento</label>
+          <textarea name="id_iccid_set-${formNum}-ccid_equipamentos" class="form-control" id="id_iccid_set-${formNum}-ccid_equipamentos"></textarea>
+        </div>
+      </div>
+    `;
+    
+    equipamentoForms.insertAdjacentHTML('beforeend', newFormHTML);
+    totalFormsInput.value = formNum + 1;
+    
+    // Adiciona o listener para atualizar a quantidade do novo formulário
+    var novoTextarea = document.getElementById(`id_iccid_set-${formNum}-id_equipamentos`);
+    if (novoTextarea) {
+      novoTextarea.addEventListener('input', atualizarQuantidade);
+    }
+  });
+});
+</script>
+{% endblock %}

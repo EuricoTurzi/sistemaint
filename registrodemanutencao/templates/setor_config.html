@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+| Grupo Golden Sat |
+{% endblock %}
+
+{% include 'components/_header.html' %}
+
+{% block content %}
+<!-- Seu código CSS existente aqui -->
+
+<div class="container mt-4">
+    <div class="row">
+        {% for registro in registros %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                   
+                    <p class="card-text"><h3><b>ID</b>: {{ registro.id }}</h3></p>
+                    <p class="card-text"><b>Status</b>: {{ registro.status }}</p>
+                    <p class="card-text"><b>Tipo de Entrada</b>: {{ registro.tipo_entrada }}</p>
+                    <p class="card-text"><b>Tipo de Produto</b>: {{ registro.tipo_produto }}</p>
+                    <p class="card-text"><b>Customização</b>: {{ registro.customizacao }}</p>
+                    <p class="card-text"><b>Motivo</b>: {{ registro.motivo }}</p>
+                    <!-- Botões de ação -->
+                    <a class="btn btn-primary" href="{% url 'registrodemanutencao_update' pk=registro.id %}">Editar</a>
+                    <a class="btn btn-danger" href="{% url 'registrodemanutencao_delete' pk=registro.id %}">Deletar</a>
+                    <a class="btn btn-success" href="{% url 'aprovar_manutencao' id=registro.id %}">Aprovar</a>
+                    <a class="btn btn-warning" href="{% url 'reprovar_manutencao' id=registro.id %}">Reprovar</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+
+
+
+    {% include 'components/_pagination.html' %}
+</div>
+{% endblock %}

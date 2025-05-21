@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+<h3 class="display-6">Detalhes da entrada</h3>
+
+<div class="card">
+        <div class="card-body">
+            <h3 class="card-title"><b>Nome :</b>{{ estoque.produto}}</h3>
+            
+            <p class="card-text"><b>Marca : </b> {{ estoque.marca}}</p>
+            <p class="card-text"><b>Descrição : </b> {{ estoque.descricao}}</p>
+            <p class="card-text"><b>Preço : </b> {{ estoque.preco}}</p>
+            <p class="card-text"><b>Data : </b> {{ estoque.data_criacao}}</p>
+
+
+        </div>
+    </div>
+    <a href="{% url 'estoque_list' %}" class="btn btn-secondary mt3">  Voltar</a>
+</div>
+
+{% endblock %}

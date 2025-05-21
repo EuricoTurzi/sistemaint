@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <style>
+        .card-status {
+            position: relative;
+            transition: transform 0.3s ease;
+            width: 25rem;
+        }
+
+        /* Estilização por status */
+        .card-status.Ativo,
+        .card-status.ativo {
+            background: linear-gradient(to bottom, #a0f0a0 0%, #ffffff 100%);
+            border: 2px solid #28a745;
+        }
+
+        .card-status.Inativo,
+        .card-status.inativo {
+            background: linear-gradient(to bottom, #f0a0a0 0%, #ffffff 100%);
+            border: 2px solid #dc3545;
+        }
+
+        .card-status.Pendente,
+        .card-status.pendente {
+            background: linear-gradient(to bottom, #d0d0d0 0%, #ffffff 100%);
+            border: 2px solid #6c757d;
+        }
+
+        .card-status:hover {
+            transform: scale(1.05);
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .card-body p {
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .card-body p:hover {
+            transform: translateY(-3px);
+            color: #007bff;
+        }
+
+        .badge.Ativo,
+        .badge.ativo {
+            background-color: #28a745;
+        }
+
+        .badge.Inativo,
+        .badge.inativo {
+            background-color: #dc3545;
+        }
+
+        .badge.Pendente,
+        .badge.pendente {
+            background-color: #6c757d;
+            color: #ffffff;
+        }
+    </style>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Lista de Prestadores</h1>
+
+        <form method="get" class="search-form">
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="q" class="form-label">Nome do Prestador</label>
+                    <input type="text" name="q" id="q" class="form-control" value="{{ request.GET.q }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="disponibilidade" class="form-label">Disponibilidade</label>
+                    <input type="text" name="disponibilidade" id="disponibilidade" class="form-control" value="{{ request.GET.disponibilidade }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="regiao_atuacao" class="form-label">Região de Atuação</label>
+                    <input type="text" name="regiao_atuacao" id="regiao_atuacao" class="form-control" value="{{ request.GET.regiao_atuacao }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="status" id="status" class="form-control">
+                        <option value="">Todos</option>
+                        <option value="Ativo" {% if request.GET.status == "Ativo" %}selected{% endif %}>Ativo</option>
+                        <option value="Inativo" {% if request.GET.status == "Inativo" %}selected{% endif %}>Inativo</option>
+                        <option value="Pendente" {% if request.GET.status == "Pendente" %}selected{% endif %}>Pendente</option>
+                    </select>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+                <a href="{% url 'formacompanhamento:lista_prestadores' %}" class="btn btn-secondary">Limpar</a>
+            </div>
+        </form>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for prestador in prestadores %}
+            <div class="col">
+                <div class="card h-100 shadow card-status {{ prestador.status_prestador|title }}">
+                    {% if prestador.foto %}
+                    <img src="{{ prestador.foto.url }}" class="card-img-top" alt="Foto de {{ prestador.Nome }}">
+                    {% else %}
+                    <img src="{% static 'images/default-avatar.png' %}" class="card-img-top" alt="Foto não disponível">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ prestador.Nome }}</h5>
+                        <p class="card-text">
+                            <strong>CPF/CNPJ:</strong> {{ prestador.cpf_cnpj }}<br>
+                            <strong>Telefone:</strong> {{ prestador.telefone }}<br>
+                            <strong>E-mail:</strong> {{ prestador.email }}<br>
+                            <strong>Endereço:</strong> {{ prestador.endereco }}<br>
+                            <strong>Disponibilidade:</strong> {{ prestador.disponibilidade }}<br>
+                            <strong>Região de Atuação:</strong> {{ prestador.regiao_atuacao }}<br>
+                            <strong>Valor Hora:</strong> {{ prestador.valorh }}<br>
+                            <strong>Valor KM:</strong> {{ prestador.valorkm }}<br>
+                            <strong>Status:</strong> {{ prestador.status_prestador }}<br>
+                        </p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <span class="badge {{ prestador.status_prestador|title }}">{{ prestador.status_prestador|title }}</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center">Nenhum prestador cadastrado.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

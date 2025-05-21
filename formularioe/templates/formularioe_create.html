@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h3 class="display-4">Formulario Entrada</h3>
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="form" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }} <!-- Certifique-se de que 'form' corresponde ao contexto -->
+                <button type="submit" class="btn btn-primary">Salvar Formulario</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

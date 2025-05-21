@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h3 class="display-4">Nova Manutenção</h3>
+    <div class="card">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+               
+                {{ form.as_p }}
+
+
+      
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
+    <a href="{% url 'manutencaolist' %}" class="btn btn-secondary mt-3">Voltar</a>
+</div>
+{% endblock %}

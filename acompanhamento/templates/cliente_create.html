@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4 text-dark">Cadastro de Cliente</h2>
+  <!-- Div branca com padding, borda arredondada e sombra -->
+  <div class="bg-white p-4 rounded shadow">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      
+      <!-- Linha 1: Nome e Nome Fantasia -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="{{ form.nome.id_for_label }}" class="form-label text-dark">Nome</label>
+            {{ form.nome }}
+            {% for error in form.nome.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="{{ form.nome_fantasia.id_for_label }}" class="form-label text-dark">Nome Fantasia</label>
+            {{ form.nome_fantasia }}
+            {% for error in form.nome_fantasia.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Linha 2: Endereço -->
+      <div class="mb-3">
+        <label for="{{ form.endereco.id_for_label }}" class="form-label text-dark">Endereço</label>
+        {{ form.endereco }}
+        {% for error in form.endereco.errors %}
+          <small class="text-danger">{{ error }}</small>
+        {% endfor %}
+      </div>
+      
+      <!-- Linha 3: CNPJ, Tipo de Contrato e Status -->
+      <div class="row">
+        <div class="col-md-4">
+          <div class="mb-3">
+            <label for="{{ form.cnpj.id_for_label }}" class="form-label text-dark">CNPJ</label>
+            {{ form.cnpj }}
+            {% for error in form.cnpj.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="mb-2">
+            <label for="{{ form.tipo_contrato.id_for_label }}" class="form-label text-dark">Tipo de Contrato</label>
+            {{ form.tipo_contrato }}
+            {% for error in form.tipo_contrato.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="mb-2">
+            <label for="{{ form.status.id_for_label }}" class="form-label text-dark">Status</label>
+            {{ form.status }}
+            {% for error in form.status.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+          </div>
+         <div class="col-md-2">
+          <div class="mb-2">
+            <label for="{{ form.comercial.id_for_label }}" class="form-label text-dark">comercial</label>
+            {{ form.comercial }}
+            {% for error in form.comercial.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          
+          </div> 
+        </div>
+        <!-- Campo que será mostrado/ocultado dinamicamente -->
+        <div class="col-md-2" id="div-quantidade-em-contrato" style="display:none;">
+          <div class="mb-2">
+            <label for="{{ form.quantidade_em_contrato.id_for_label }}" class="form-label text-dark">QTD em Contrato</label>
+            {{ form.quantidade_em_contrato }}
+            {% for error in form.quantidade_em_contrato.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Linha 4: Início, Vigência e Término do Contrato -->
+      <div class="row">
+        <div class="col-md-4">
+          <div class="mb-3">
+            <label for="{{ form.inicio_de_contrato.id_for_label }}" class="form-label text-dark">Início do Contrato</label>
+            {{ form.inicio_de_contrato }}
+            {% for error in form.inicio_de_contrato.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="mb-3">
+            <label for="{{ form.vigencia.id_for_label }}" class="form-label text-dark">Vigência</label>
+            {{ form.vigencia }}
+            {% for error in form.vigencia.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="mb-3">
+            <label for="{{ form.termino.id_for_label }}" class="form-label text-dark">Término</label>
+            {{ form.termino }}
+            {% for error in form.termino.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Linha 5: Equipamento e Quantidade -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="{{ form.equipamento.id_for_label }}" class="form-label text-dark">Equipamento</label>
+            {{ form.equipamento }}
+            {% for error in form.equipamento.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="{{ form.quantidade.id_for_label }}" class="form-label text-dark">Quantidade</label>
+            {{ form.quantidade }}
+            {% for error in form.quantidade.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Linha 6: GR, Corretora e Seguradora -->
+      <div class="row">
+        <div class="col-md-4">
+          <div class="mb-3">
+            <label for="{{ form.gr.id_for_label }}" class="form-label text-dark">GR</label>
+            {{ form.gr }}
+            {% for error in form.gr.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="mb-3">
+            <label for="{{ form.corretora.id_for_label }}" class="form-label text-dark">Corretora</label>
+            {{ form.corretora }}
+            {% for error in form.corretora.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="mb-3">
+            <label for="{{ form.seguradora.id_for_label }}" class="form-label text-dark">Seguradora</label>
+            {{ form.seguradora }}
+            {% for error in form.seguradora.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center">
+        <button type="submit" class="btn btn-success">Cadastrar Cliente</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Script para mostrar/ocultar o campo QTD em Contrato -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  var tipoContrato = document.getElementById("id_tipo_contrato");
+  var divQuantidade = document.getElementById("div-quantidade-em-contrato");
+
+  function toggleQuantidade() {
+    if (tipoContrato.value === "Retornavel") {
+      divQuantidade.style.display = "block";
+    } else {
+      divQuantidade.style.display = "none";
+    }
+  }
+
+  // Verifica no carregamento inicial
+  toggleQuantidade();
+
+  // Atualiza quando o usuário muda a seleção
+  tipoContrato.addEventListener("change", toggleQuantidade);
+});
+</script>
+{% endblock %}

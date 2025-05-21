@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+| Grupo Golden Sat |
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>NOME</th>
+                <th>FRANQUIA KM</th>
+                <th>FRANQUIA HORA</th>
+                <th>VALOR ACIONAMENTO</th>
+                <th>VALOR KM EXCEDENTE</th>
+                <th>VALOR EXCEDENTE</th>
+                
+                
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for prestador in prestador_list %}
+            <tr>
+                <td>{{ prestador.id }} <!-- Use o nome do campo correto -->
+                <td>{{ prestador.nome }} <!-- Use o nome do campo correto -->
+                <td>{{ prestador.franquia_km }} <!-- Use o nome do campo correto -->
+                <td>{{ prestador.franquiah }}<!-- Use o nome do campo correto -->
+                <td>{{ prestador.valor_acionamento }}<!-- Use o nome do campo correto -->
+                <td>{{ prestador.valorkm }}<!-- Use o nome do campo correto -->
+                <!-- Use o nome do campo correto -->
+                <td>{{ prestador.valor_exedente }}<!-- Use o nome do campo correto -->
+                
+    
+                </td>    
+                </tr>
+
+                   
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

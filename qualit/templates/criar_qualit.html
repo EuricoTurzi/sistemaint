@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.container-fluid {
+    height: 100vh; /* 100% da altura da tela */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px; /* Ajuste conforme necessário */
+    box-sizing: border-box;
+}
+
+.form-group {
+    flex: 1 1 30%; /* Ajuste conforme necessário */
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+</style>
+
+{% block content %}
+<div class="container-fluid mt-15">
+    <h3 class="display-10">Criar</h3>
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="form row">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_data">Data</label>
+                    {{ form.data }}
+                </div>
+                <div class="form-group">
+                    <label for="id_numero_requisicao">Número Requisição</label>
+                    {{ form.numero_requisicao }}
+                </div>
+                <div class="form-group">
+                    <label for="id_tipo_pedido">Tipo Pedido</label>
+                    {{ form.tipo_pedido }}
+                </div>
+                <div class="form-group">
+                    <label for="id_comercial">Comercial</label>
+                    {{ form.comercial }}
+                </div>
+                <div class="form-group">
+                    <label for="id_cliente">Cliente</label>
+                    {{ form.cliente }}
+                </div>
+                <div class="form-group">
+                    <label for="id_imei">IMEI</label>
+                    {{ form.imei }}
+                </div>
+                <div class="form-group">
+                    <label for="id_id_equipamento">ID Equipamento</label>
+                    {{ form.id_equipamento }}
+                </div>
+                <div class="form-group">
+                    <label for="id_device_id">Device ID</label>
+                    {{ form.device_id }}
+                </div>
+                <div class="form-group">
+                    <label for="id_iccid_novo">ICCID Novo</label>
+                    {{ form.iccid_novo }}
+                </div>
+                <div class="form-group">
+                    <label for="id_contrato">Contrato</label>
+                    {{ form.contrato }}
+                </div>
+                <div class="form-group">
+                    <label for="id_modelo">Modelo</label>
+                    {{ form.modelo }}
+                </div>
+                <div class="form-group">
+                    <label for="id_tp">TP</label>
+                    {{ form.tp }}
+                </div>
+                <div class="form-group">
+                    <label for="id_operadora">Operadora</label>
+                    {{ form.operadora }}
+                </div>
+                <div class="form-group">
+                    <label for="id_usuario">Usuário</label>
+                    {{ form.usuario }}
+                </div>
+                <div class="form-group">
+                    <label for="id_observacoes">Observações</label>
+                    {{ form.observacoes }}
+                </div>
+                <div class="form-group">
+                    <label for="id_customizacao">Customização</label>
+                    {{ form.customizacao }}
+                </div>
+                <div class="form-group col-12 text-center">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <a href="{% url 'listar_qualits' %}" class="btn btn-secondary">Cancelar e Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

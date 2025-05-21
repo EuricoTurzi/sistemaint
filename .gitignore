@@ -1,0 +1,30 @@
+# Arquivos de banco de dados SQLite
+*.sqlite3
+*.sqlite
+*.db
+
+# Ambiente virtual (virtualenv)
+venv/
+env/
+
+# Arquivos Python compilados
+__pycache__/
+*.pyc
+
+# Arquivos de log
+*.log
+
+# Pasta de uploads / mídia
+media/
+
+# Arquivos estáticos coletados
+staticfiles/
+
+# Configurações do editor (exemplo: VSCode)
+.vscode/
+.idea/
+
+# Arquivos temporários do sistema operacional
+.DS_Store
+Thumbs.db
+venv

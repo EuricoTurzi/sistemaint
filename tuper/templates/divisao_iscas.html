@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Divisão de Iscas</h1>
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="transportadora" class="form-label">Transportadora</label>
+                    {{ form.transportadora }}
+                </div>
+                <div class="mb-3">
+                    <label for="destino" class="form-label">Destino</label>
+                    {{ form.destino }}
+                </div>
+                <div class="mb-3">
+                    <label for="quantidade" class="form-label">Quantidade</label>
+                    {{ form.quantidade }}
+                </div>
+                <div class="mb-3">
+                    <label for="tipo_produto" class="form-label">Tipo de Produto</label>
+                    {{ form.tipo_produto }}
+                </div>
+                <div class="mb-3">
+                    <label for="Id_equipamentos" class="form-label">ID Equipamentos</label>
+                    {{ form.Id_equipamentos }}
+                </div>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Consulta de Horas por Funcionário</h2>
+
+  <!-- Formulário de Filtro -->
+  <form method="get" class="mb-4">
+    <div class="row">
+      <div class="col-md-4">
+        <label for="data_inicial" class="form-label">Data Inicial</label>
+        <input
+          type="date"
+          name="data_inicial"
+          id="data_inicial"
+          class="form-control"
+          value="{{ request.GET.data_inicial }}"
+        />
+      </div>
+      <div class="col-md-4">
+        <label for="data_final" class="form-label">Data Final</label>
+        <input
+          type="date"
+          name="data_final"
+          id="data_final"
+          class="form-control"
+          value="{{ request.GET.data_final }}"
+        />
+      </div>
+      <div class="col-md-4 align-self-end text-end">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Botões de Ação -->
+  <div class="mb-4 d-flex justify-content-end gap-2">
+    <a
+      href="{% url 'consulta_horas_pdf' %}?data_inicial={{ request.GET.data_inicial }}&data_final={{ request.GET.data_final }}"
+      class="btn btn-secondary"
+      target="_blank"
+    >
+      <i class="bi bi-file-earmark-pdf"></i> Exportar PDF
+    </a>
+    <form
+      method="get"
+      action="{% url 'enviar_email_relatorio_horas' %}"
+      class="d-inline"
+    >
+      <input
+        type="hidden"
+        name="data_inicial"
+        value="{{ request.GET.data_inicial }}"
+      />
+      <input
+        type="hidden"
+        name="data_final"
+        value="{{ request.GET.data_final }}"
+      />
+      <button type="submit" class="btn btn-success">
+        <i class="bi bi-envelope"></i> Enviar por E‑mail
+      </button>
+    </form>
+  </div>
+
+  {% for employee in employee_data %}
+  <h3>Funcionário: {{ employee.funcionario }}</h3>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover mb-5">
+      <thead class="table-light text-nowrap">
+        <tr>
+          <th>Funcionário</th>
+          <th>Hora Inicial</th>
+          <th>Comprovante Hora Inicial</th>
+          <th>Hora Final</th>
+          <th>Comprovante Hora Final</th>
+          <th>Motivo</th>
+          <th>Total</th>
+
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in employee.records %}
+        <tr>
+          <td>{{ item.funcionario }}</td>
+          <td>{{ item.hora_inicial }}</td>
+          <td>
+            {% if item.comprovante1 %}
+            <img
+              src="{{ item.comprovante1.url }}"
+              alt="Comprovante 1"
+              style="max-width: 100px"
+            />
+            {% endif %}
+          </td>
+          <td>{{ item.hora_final }}</td>
+          <td>
+            {% if item.comprovante2 %}
+            <img
+              src="{{ item.comprovante2.url }}"
+              alt="Comprovante 2"
+              style="max-width: 100px"
+            />
+            {% endif %}
+          </td>
+          <td>{{ item.motivo }}</td>
+          <td>{{ item.total }}</td>
+
+          <td>
+            <!-- Botão Validar -->
+            <button
+              type="button"
+              id="botao-{{ item.pk }}"
+              onclick="validar(event, '{{ item.pk }}')"
+              class="btn btn-warning btn-sm ms-2"
+            >
+              Validar
+            </button>
+            <!-- Botão Update -->
+            <a
+              href="{% url 'update_horas' item.pk %}"
+              class="btn btn-primary btn-sm ms-1"
+            >
+              Update
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="text-center">
+            Nenhum registro encontrado para este funcionário.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="7" class="text-end"><strong>Total de Horas:</strong></td>
+          <td><strong>{{ employee.total }}</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  {% empty %}
+  <p class="text-center">Nenhum registro encontrado.</p>
+  {% endfor %}
+</div>
+
+<script>
+  // Função auxiliar para ler o cookie CSRF
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      document.cookie.split(";").forEach((c) => {
+        const [k, v] = c.trim().split("=");
+        if (k === name) cookieValue = decodeURIComponent(v);
+      });
+    }
+    return cookieValue;
+  }
+
+  function validar(event, id) {
+    event.preventDefault();
+    fetch("{% url 'validar_hora' %}", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({ pk: id }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          document.getElementById("botao-" + id).style.display = "none";
+          const statusEl = document.getElementById("status-" + id);
+          statusEl.innerText = "Aprovado";
+          statusEl.style.fontWeight = "bold";
+          statusEl.style.color = "green";
+        } else {
+          pass
+        }
+      })
+      ;
+  }
+</script>
+{% endblock %}

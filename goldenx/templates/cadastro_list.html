@@ -1,0 +1,166 @@
+{# templates/cadastro_list.html #}
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+h2 {
+  color: #020202;
+}
+
+.container {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 80%;
+  width: 70%;
+}
+
+
+label {
+  color: #080808;
+  font-weight: 500;
+}
+
+</style>
+
+
+<div class="container-fluid mt-4">
+  <h2>Lista de Cadastros</h2>
+  {# === FILTROS === #}
+  <form method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+      <label for="id_data_inicio" class="form-label">Data Início</label>
+      <input
+        type="date"
+        name="data_inicio"
+        id="id_data_inicio"
+        class="form-control"
+        value="{{ request.GET.data_inicio }}"
+      >
+    </div>
+    <div class="col-md-3">
+      <label for="id_data_fim" class="form-label">Data Fim</label>
+      <input
+        type="date"
+        name="data_fim"
+        id="id_data_fim"
+        class="form-control"
+        value="{{ request.GET.data_fim }}"
+      >
+    </div>
+
+	<div class="col-auto">
+      <label for="empresa" class="form-label">Empresa</label>
+      <input
+        type="text"
+        name="empresa"
+        id="empresa"
+        class="form-control"
+        placeholder="Ex: EmpresaA,EmpresaB"
+        value="{{ request.GET.empresa }}"
+      >
+    </div>
+
+    <!-- Perfil -->
+    <div class="col-auto">
+      <label for="perfil" class="form-label">Perfil</label>
+      <input
+        type="text"
+        name="perfil"
+        id="perfil"
+        class="form-control"
+        placeholder="Ex: Admin,User"
+        value="{{ request.GET.perfil }}"
+      >
+    </div>
+
+    <div class="col-auto align-self-end">
+      <button type="submit" class="btn btn-primary">Filtrar</button>
+      <a href="{{ request.path }}" class="btn btn-secondary ms-2">Limpar</a>
+    </div>
+  </form>
+  {# === FIM FILTROS === #}
+  <table class="table table-striped table-bordered">
+    <thead class="thead-light">
+      <tr>
+        <th>Empresa</th>
+        <th>Data de Entrada</th>
+        <th>Pesquisa</th>
+        <th>Estado 1</th>
+        <th>Estado 2</th>
+        <th>Estado 3</th>
+        <th>Estado 4</th>
+        <th>Estado 5</th>
+        <th>Status</th>
+        <th>Hora Devolutiva</th>
+        <th>SLA</th>
+        <th>Período</th>
+        <th>Estados</th>
+        <th>Açôes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in cadastro %}
+      <tr>
+        <td>{{ item.empresa }}</td>
+        <td>{{ item.data_entrada }}</td>
+        <td>{{ item.pesquisa }}</td>
+        <td>{{ item.estado1 }}</td>
+        <td>{{ item.estado2 }}</td>
+        <td>{{ item.estado3 }}</td>
+        <td>{{ item.estado4 }}</td>
+        <td>{{ item.estado5 }}</td>
+        <td>{{ item.status }}</td>
+        <td>{{ item.hora_devolutiva }}</td>
+        <td>{{ item.sla }}</td>
+        <td>{{ item.periodo }}</td>
+        <td>{{ item.estados }}</td>
+        <td>
+          <a href="{% url 'pesquisa_update' item.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="13" class="text-center">Nenhum cadastro encontrado.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {# Paginação #}
+  {% if is_paginated %}
+  <nav aria-label="Navegação de páginas">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+          « Anterior
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">« Anterior</span></li>
+      {% endif %}
+
+      {% for num in paginator.page_range %}
+        {% if page_obj.number == num %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Próximo">
+          Próximo »
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">Próximo »</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
+</div>
+{% endblock %}

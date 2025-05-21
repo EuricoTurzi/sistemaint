@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .filter-container {
+        border: 1px solid #ddd;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    }
+</style>
+
+<div class="container mt-4">
+    <h3 class="display-4">Registros T42</h3>
+    <div class="filter-container mb-3">
+        <form method="get" action="{% url 't42_view' %}">
+            <div class="form-row">
+                <div class="col">
+                    <input type="text" name="search" class="form-control" placeholder="Buscar por Nome ou ID Equipamento" value="{{ request.GET.search }}">
+                </div>
+                <div class="col">
+                    <select name="estoque_status" class="form-control">
+                        <option value="">Todos os Status de Estoque</option>
+                        <option value="estoque" {% if request.GET.estoque_status == "estoque" %}selected{% endif %}>estoque</option>
+                        <option value="retornando" {% if request.GET.estoque_status == "retornando" %}selected{% endif %}>Retornando</option>
+                        <option value="enviado" {% if request.GET.estoque_status == "enviado" %}selected{% endif %}>Enviado</option>
+                        <option value="extraviado" {% if request.GET.estoque_status == "extraviado" %}selected{% endif %}>Extraviado</option>
+                        <option value="Manutenção" {% if request.GET.estoque_status == "Manutenção" %}selected{% endif %}>Manutenção</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <a href="{% url 't42_create' %}" class="btn btn-primary mb-3">Adicionar Novo Registro</a>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered w-100">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Data</th>
+                    <th>Equipamento</th>
+                    <th>Status</th>
+                    <th>ID Equipamento</th>
+                    <th>Fazenda</th>
+                    <th>Reversa</th>
+                    <th>Estoque Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in registros %}
+                <tr>
+                    <td>{{ registro.id }}</td>
+                    <td>{{ registro.nome }}</td>
+                    <td>{{ registro.data }}</td>
+                    <td>{{ registro.equipamento }}</td>
+                    <td>{{ registro.status }}</td>
+                    <td>{{ registro.id_equipamento }}</td>
+                    <td>{{ registro.fazenda }}</td>
+                    <td>{{ registro.reversa }}</td>
+                    <td>
+                        <form id="estoque-form-{{ registro.id }}" method="post" action="{% url 'update_estoque_status' registro.id %}">
+                            {% csrf_token %}
+                            <select name="estoque_status" class="form-control" onchange="updateEstoqueStatus('{{ registro.id }}')">
+                                <option value="Estoque" {% if registro.estoque_status == "Estoque" %}selected{% endif %}>Estoque</option>
+                                <option value="retornando" {% if registro.estoque_status == "retornando" %}selected{% endif %}>Retornando</option>
+                                <option value="enviado" {% if registro.estoque_status == "enviado" %}selected{% endif %}>Enviado</option>
+                                <option value="extraviado" {% if registro.estoque_status == "extraviado" %}selected{% endif %}>Extraviado</option>
+                                <option value="Manutenção" {% if registro.estoque_status == "Manutenção" %}selected{% endif %}>Manutenção</option>
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">Nenhum registro encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'components/_pagination.html' %}
+</div>
+
+<script>
+    function updateEstoqueStatus(registroId) {
+        var form = document.getElementById('estoque-form-' + registroId);
+        var formData = new FormData(form);
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(response => {
+            if (response.ok) {
+                console.log('Status atualizado com sucesso');
+            } else {
+                console.error('Erro ao atualizar o status');
+            }
+        }).catch(error => {
+            console.error('Erro ao atualizar o status', error);
+        });
+    }
+</script>
+{% endblock %}

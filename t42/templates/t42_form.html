@@ -1,0 +1,87 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="display-4">Reversa</h3>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post" class="form">
+                {% csrf_token %}
+                <h4 class="card-title">Formulário Reversa</h4>
+                {{ form.as_p }}
+
+                <h4 class="card-title mt-4">Adicionar Equipamentos</h4>
+                <div id="equipamento-forms">
+                    <!-- Campos dinâmicos serão adicionados aqui -->
+                </div>
+                <input type="hidden" id="id_total_forms" name="total_forms" value="0">
+                <button type="button" class="btn btn-secondary" id="add-equipamento">Adicionar Equipamento</button>
+                <button type="submit" class="btn btn-primary mt-3">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+
+
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault(); // Bloqueia a tecla Enter
+        }
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('add-equipamento').addEventListener('click', function() {
+            var equipamentoForms = document.getElementById('equipamento-forms');
+            var totalForms = document.getElementById('id_total_forms');
+            var formNum = parseInt(totalForms.value); // Número de formulários já adicionados
+    
+            var newForm = document.createElement('div');
+            newForm.classList.add('row', 'mb-3');
+            newForm.innerHTML = `
+                <div class="col-md-3 mb-3">
+                    <label for="id_equipamento-${formNum}" class="form-label">ID Equipamento</label>
+                    <input type="text" name="equipamento-${formNum}-id_equipamento" class="form-control" id="id_equipamento-${formNum}" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="equipamento-${formNum}" class="form-label">Equipamento</label>
+                    <select name="equipamento-${formNum}-equipamento" class="form-control" id="equipamento-${formNum}" required>
+                        <option value="TETS">TETS</option>
+                        <option value="TETS R">TETS R</option>
+                        <option value="LOKIES">LOKIES</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="id_status-${formNum}" class="form-label">Status</label>
+                    <select name="equipamento-${formNum}-status" class="form-control" id="id_status-${formNum}" required>
+                        <option value="Atualizado e Configurado">Atualizado e Configurado</option>
+                        <option value="Não Atualizado">Não Atualizado</option>
+                        <option value="Não Configuradoado">Não Configurado</option>
+                        <option value="Manutenção">Manutenção</option>
+                        
+                    </select>
+                    
+              
+                    </div>
+                <div class="col-md-3 mb-3">
+                    <label for="id_estoque_status-${formNum}" class="form-label">Estoque Status</label>
+                    <select name="equipamento-${formNum}-estoque_status" class="form-control" id="id_estoque_status-${formNum}" required>
+                        <option value="Estoque">Estoque</option>
+                        <option value="Retornando">Retornando</option>
+                        <option value="Enviado">Enviado</option>
+                        <option value="Estraviado">Estraviado</option>
+                        <option value="Manutenção">Manutenção</option>
+                    </select>
+                </div>
+            `;
+    
+            equipamentoForms.appendChild(newForm);
+            totalForms.value = formNum + 1; // Atualiza o valor TOTAL_FORMS
+        });
+    });
+    </script>
+        </script>
+{% endblock %}

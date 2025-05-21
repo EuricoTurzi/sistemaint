@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}
+| Grupo Golden Sat |
+{% endblock %}
+
+{% block content %}
+
+<div class="row mb-3">
+    <div class="coll-md-6">
+        <form method="get" action="{% url 'cliente_list' %}">
+        <div class="input-group">
+            <input type="text" class="form-control" name="nome" placeholder="nome" value="{{ request.GET.name }}">
+            <button type="submit" class="btn btn-primary"> 
+                <i class="bi bi-search"></i>
+            </button>
+            
+        </form>
+        
+        </div>
+        
+        </div>
+
+    </div>
+              
+   <div class="row mb-3">
+    
+    <div class="col-md-12">
+        <a href="{% url 'cliente_create' %}" class="btn btn-primary float-end">
+            <i class="bi bi-box-arrow-in-up-right"></i> Criar cliente
+        </a>
+   </div>
+
+</div>
+
+</div>
+
+    </div>
+
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>NOME</th>
+                <th>FANTASIA</th>
+                <th>ENDEREÇO</th>
+                <th>CNPJ</th>
+                <th>COMERCIAL</th>
+                <th>TIPO DE CONTRATO</th>
+                <th>INICIO DE CONTRATO</th>
+                <th>VIGENCIA</th>
+                <th>STATUS</th>
+                <th>TERMINO</th>
+                <th>EQUIPAMENTO</th>
+                <th>QUANTIDADE</th>
+                <th>GR</th>
+                <th>CORRETORA</th>
+                <th>TRANSPORTADORA</th>
+
+                <th>Açôes</th>
+              
+                
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in cliente %}
+            <tr>
+                <td>{{ cliente.id }} <!-- Use o nome do campo correto -->
+                <td>{{ cliente.nome }} <!-- Use o nome do campo correto -->
+                <td>{{ cliente.nome_fantasia }} <!-- Use o nome do campo correto -->
+                <td>{{ cliente.endereco }} <!-- Use o nome do campo correto -->
+                <td>{{ cliente.cnpj }}<!-- Use o nome do campo correto -->
+                <td>{{ cliente.comercial }}<!-- Use o nome do campo correto -->
+                <td>{{ cliente.tipo_contrato }}<!-- Use o nome do campo correto -->
+                <td>{{ cliente.inicio_de_contrato }}<!-- Use o nome do campo correto -->
+                <td>{{ cliente.vigencia }}<!-- Use o nome do campo correto -->
+                <td>{{ cliente.status }}<!-- Use o nome do campo correto -->
+                <td>{{ cliente.termino }}<!-- Use o nome do campo correto -->
+                <td>{{ cliente.equipamento }}<!-- Use o nome do campo correto -->
+                <td>{{ cliente.quantidade_em_contrato }}<!-- Use o nome do campo correto -->
+                <td>{{ cliente.gr }}<!-- Use o nome do campo correto -->
+                <td>{{ cliente.corretora }}<!-- Use o nome do campo correto -->
+                <td>{{ cliente.transportadora }}</td><!-- Use o nome do campo correto -->
+                <td><a href="{% url 'cliente_update' cliente.id%}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
+                    {% if perm.cliente.change_clientes %}<!-- Use o nome do campo correto -->
+                    <td><a href="{% url 'cliente_detail' cliente.id%}" class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a>
+                    <a href="{% url 'cliente_delete' cliente.id%}" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
+                </td>    
+                </tr>
+                {% endif%}
+
+                   
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% include 'components/_pagination.html' %}
+{% endblock %}

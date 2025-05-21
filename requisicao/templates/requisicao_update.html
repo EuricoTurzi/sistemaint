@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+| Editar Requisição | Grupo Golden Sat |
+{% endblock %}
+
+{% include 'components/_header.html' %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h3 class="display-4">Editar</h3>
+    <h2>Editar Requisição #{{ object.id }}</h2>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="form">
+    
+   
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+</div>
+</div>
+        
+        <a href="{% url 'requisicoes_list' %}" class="btn btn-secondary">Cancelar</a>
+      
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Estoque dos Antenistas</h1>
+    {% if perms.registrodemanutencao.change_registrodemanutencao %}
+    {% if perms.requisicao.add_requisicoes %}
+    {% if perms.produto.add_produto %}
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="tipo_produto" class="form-label">Nome</label>
+                    {{ form.nome }}
+                </div>
+                <div class="mb-3">
+                    <label for="tipo_produto" class="form-label">Tipo de Produto</label>
+                    {{ form.tipo_produto }}
+                </div>
+                <div class="mb-3">
+                    <label for="tipo_produto" class="form-label">Estado</label>
+                    {{ form.endereco }}
+                </div>
+                <div class="mb-3">
+                    <label for="quantidade" class="form-label">Quantidade</label>
+                    {{ form.quantidade }}
+                </div>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+{% endif %}
+<div class="container mt-4">
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Modelo</th>
+                <th scope="col">Cidade/Estado</th>
+                
+                <th scope="col">Quantidade em Estoque</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for estoque in estoques %}
+            <tr>
+                <td>{{ estoque.nome }}</td>
+                <td>{{ estoque.tipo_produto }}</td>
+                <td>{{ estoque.endereco }}</td>
+                
+                <td>{{ estoque.quantidade }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

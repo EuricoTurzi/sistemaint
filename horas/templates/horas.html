@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Cadastrar Horas</h4>
+        </div>
+        <div class="card-body">
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            
+            {# Campo Funcionário (Select) #}
+            <div class="mb-3">
+              <label for="{{ form.funcionario.id_for_label }}" class="form-label">Funcionário</label>
+              <select name="{{ form.funcionario.html_name }}" id="{{ form.funcionario.id_for_label }}" class="form-select">
+                {% for value, label in form.funcionario.field.choices %}
+                  <option value="{{ value }}" {% if form.funcionario.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>
+                    {{ label }}
+                  </option>
+                {% endfor %}
+              </select>
+              {% for error in form.funcionario.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+            
+            {# Campo Hora Inicial #}
+            <div class="mb-3">
+              <label for="{{ form.hora_inicial.id_for_label }}" class="form-label">Hora Inicial</label>
+              <input type="text"
+                     name="{{ form.hora_inicial.html_name }}"
+                     id="{{ form.hora_inicial.id_for_label }}"
+                     class="form-control"
+                     value="{{ form.hora_inicial.value|default:'' }}"
+                     onclick="fillCurrentDateTime('{{ form.hora_inicial.id_for_label }}')">
+              {% for error in form.hora_inicial.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+            
+            {# Campo Hora Final #}
+            <div class="mb-3">
+              <label for="{{ form.hora_final.id_for_label }}" class="form-label">Hora Final</label>
+              <input type="text"
+                     name="{{ form.hora_final.html_name }}"
+                     id="{{ form.hora_final.id_for_label }}"
+                     class="form-control"
+                     value="{{ form.hora_final.value|default:'' }}"
+                     onclick="fillCurrentDateTime('{{ form.hora_final.id_for_label }}')">
+              {% for error in form.hora_final.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+            
+            {# Campo Comprovante 1 (Arquivo) #}
+            <div class="mb-3">
+              <label for="{{ form.comprovante1.id_for_label }}" class="form-label">Comprovante 1</label>
+              <input type="file"
+                     name="{{ form.comprovante1.html_name }}"
+                     id="{{ form.comprovante1.id_for_label }}"
+                     class="form-control">
+              {% for error in form.comprovante1.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+            
+            {# Campo Comprovante 2 (Arquivo) #}
+            <div class="mb-3">
+              <label for="{{ form.comprovante2.id_for_label }}" class="form-label">Comprovante 2</label>
+              <input type="file"
+                     name="{{ form.comprovante2.html_name }}"
+                     id="{{ form.comprovante2.id_for_label }}"
+                     class="form-control">
+              {% for error in form.comprovante2.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+            
+            {# Campo Motivo #}
+            <div class="mb-3">
+              <label for="{{ form.motivo.id_for_label }}" class="form-label">Motivo</label>
+              <input type="text"
+                     name="{{ form.motivo.html_name }}"
+                     id="{{ form.motivo.id_for_label }}"
+                     class="form-control"
+                     value="{{ form.motivo.value|default:'' }}">
+              {% for error in form.motivo.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+            
+            {# Campo Total #}
+            <div class="mb-3">
+              <label for="{{ form.total.id_for_label }}" class="form-label">Total</label>
+              <input type="number"
+                     step="0.01"
+                     name="{{ form.total.html_name }}"
+                     id="{{ form.total.id_for_label }}"
+                     class="form-control"
+                     value="{{ form.total.value|default:'' }}">
+              {% for error in form.total.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Salvar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Função JavaScript para preencher os campos de hora com data e hora atual -->
+<script>
+function fillCurrentDateTime(fieldId) {
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = ('0' + (now.getMonth() + 1)).slice(-2);
+  var day = ('0' + now.getDate()).slice(-2);
+  var hours = ('0' + now.getHours()).slice(-2);
+  var minutes = ('0' + now.getMinutes()).slice(-2);
+  var seconds = ('0' + now.getSeconds()).slice(-2);
+  // Formata a data e hora no padrão: AAAA-MM-DD HH:MM:SS
+  var dateTimeString = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+  document.getElementById(fieldId).value = dateTimeString;
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Historico de Paradas</h2>
+
+<!-- Formulário de Filtro por Embarcador -->
+<form method="get" action=".">
+    <div class="form-group">
+        <label for="embarcador">Pesquisar por Embarcador:</label>
+        <input type="text" name="embarcador" id="embarcador" class="form-control" placeholder="Digite o nome do embarcador" value="{{ request.GET.embarcador }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+    <a href="{% url 'historico_parada' %}" class="btn btn-secondary">Limpar Filtros</a>
+</form>
+
+<!-- Cards para Exibir a Lista de Paradas -->
+<div class="row mt-4">
+    {% for item in pa %}
+    <div class="col-md-4 mb-4">
+        <div class="card card-status">
+            <div class="card-body">
+                <h5 class="card-title">{{ item.embarcador }}</h5>
+                <p><strong>ID:</strong> {{ item.id }}</p>
+                <p><strong>Transportador:</strong> {{ item.transportador }}</p>
+                <p><strong>Nome do Motorista:</strong> {{ item.nome_motorista }}</p>
+                <p><strong>Placa Cavalo:</strong> {{ item.placa_cavalo }}</p>
+                <p><strong>Placa Carreta:</strong> {{ item.placa_carreta }}</p>
+                <p><strong>Nome do Posto:</strong> {{ item.get_tipo_posto_display }}</p>
+                <p><strong>Iscas:</strong> {{ item.id_rastreador }}</p>
+                <p><strong>Cadeados:</strong> {{ item.id_cadeado }}</p>
+                <p><strong>Data de Criação:</strong> {{ item.data_criacao|date:"d/m/Y" }}</p>
+                <p><strong>Status:</strong> {{ item.status }}</p>
+
+                <!-- Exibir Saída apenas se o Status for 'EM VIAGEM' -->
+                {% if item.status == "EM VIAGEM" %}
+                <p><strong>Data/Hora de Saída:</strong> {{ item.saida|date:"d/m/Y H:i:s" }}</p>
+                {% endif %}
+
+                <!-- Botões de Ação -->
+                <a href="{% url 'Parada2DetailView' item.id %}" class="btn btn-primary">Visualizar</a>
+                
+
+              
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p>Nenhuma parada encontrada.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Paginação -->
+{% include 'components/_pagination.html' %}
+</div>
+
+{% endblock %}

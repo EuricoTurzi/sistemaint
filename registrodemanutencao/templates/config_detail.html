@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}
+| Detalhes da Configuração |
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Detalhes da Configuração</h1>
+    
+    <div class="card">
+        <div class="card-body table-bordered">
+            <h3 class="card-title">{{ registro.nome }}</h3>
+            <p class="card-text"> Nome : {{ registro.nome }}</p>
+            <p class="card-text"> Endereço : {{ registro.endereco }}</p>
+            <p class="card-text"> Contrato : {{ registro.contrato }}</p>
+            <p class="card-text"> CNPJ :  {{ registro.cnpj }}</p>
+            <p class="card-text"> Inicio do contrato :  {{ registro.inicio_de_contrato }}</p>
+            <p class="card-text"> Vigência : {{ registro.vigencia }}</p>
+            <p class="card-text"> Data : {{ registro.data }}</p>
+            <p class="card-text"> Motivo : {{ registro.motivo }}</p>
+            <p class="card-text"> Envio : {{ registro.envio }}</p>
+            <p class="card-text"> Comercial : {{ registro.comercial }}</p>
+            <p class="card-text"> Tipo de acesso :{{ registro.tipo_acesso }}</p>
+            <p class="card-text"> Tipo de produto :{{ registro.tipo_produto }}</p>
+            <p class="card-text"> Carregador :{{ registro.carregador }}</p>
+            <p class="card-text"> Cabo : {{ registro.cabo }}</p>
+            <p class="card-text"> Tipo de fatura : {{ registro.tipo_fatura }}</p>
+            <p class="card-text"> Valor unitário :{{ registro.valor_unitario }}</p>
+            <p class="card-text"> Valor total : {{ registro.valor_total }}</p>
+            <p class="card-text"> Formas de pagamento :{{ registro.forma_pagamento }}</p>
+            <p class="card-text"> Observações : {{ registro.observacoes }}</p>
+            <p class="card-text"> Status : {{ registro.status }}</p>
+            <p class="card-text"> TP : {{ registro.TP }}</p>
+        </div>
+    </div>
+
+    <h2>Imagens do Registro</h2>
+    {% for imagem in imagens_registro %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="card-text"><strong>Descrição:</strong> {{ imagem.descricao }}</p>
+                <p class="card-text"><strong>Tipo de Problema:</strong> {{ imagem.tipo_problema }}</p>
+                <p class="card-text"><strong>Setor:</strong> {{ imagem.setorid }}</p>
+            </div>
+        </div>
+    {% empty %}
+        <p>Nenhuma imagem encontrada para este registro.</p>
+    {% endfor %}
+
+    <h2>Requisições Relacionadas</h2>
+    {% for requisicao in requisicoes %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="card-text"><strong>ID:</strong> {{ requisicao.id }}</p>
+                <p class="card-text"><strong>Nome:</strong> {{ requisicao.nome }}</p>
+                <p class="card-text"><strong>Endereço:</strong> {{ requisicao.endereco }}</p>
+                <p class="card-text"><strong>Contrato:</strong> {{ requisicao.contrato }}</p>
+                <p class="card-text"><strong>CNPJ:</strong> {{ requisicao.cnpj }}</p>
+                <p class="card-text"><strong>Início do Contrato:</strong> {{ requisicao.inicio_de_contrato }}</p>
+                <p class="card-text"><strong>Vigência:</strong> {{ requisicao.vigencia }}</p>
+                <p class="card-text"><strong>Data:</strong> {{ requisicao.data }}</p>
+                <p class="card-text"><strong>Motivo:</strong> {{ requisicao.motivo }}</p>
+                <p class="card-text"><strong>Envio:</strong> {{ requisicao.envio }}</p>
+                <p class="card-text"><strong>Comercial:</strong> {{ requisicao.comercial }}</p>
+                <p class="card-text"><strong>Tipo de Produto:</strong> {{ requisicao.tipo_produto }}</p>
+                <p class="card-text"><strong>Carregador:</strong> {{ requisicao.carregador }}</p>
+                <p class="card-text"><strong>Cabo:</strong> {{ requisicao.cabo }}</p>
+                <p class="card-text"><strong>Tipo de Fatura:</strong> {{ requisicao.tipo_fatura }}</p>
+                <p class="card-text"><strong>Valor Unitário:</strong> {{ requisicao.valor_unitario }}</p>
+                <p class="card-text"><strong>Valor Total:</strong> {{ requisicao.valor_total }}</p>
+                <p class="card-text"><strong>Formas de Pagamento:</strong> {{ requisicao.forma_pagamento }}</p>
+                <p class="card-text"><strong>Observações:</strong> {{ requisicao.observacoes }}</p>
+                <p class="card-text"><strong>Status:</strong> {{ requisicao.status }}</p>
+                <p class="card-text"><strong>TP:</strong> {{ requisicao.TP }}</p>
+            </div>
+        </div>
+    {% empty %}
+        <p>Nenhuma requisição encontrada para este registro.</p>
+    {% endfor %}
+</div>
+{% endblock %}

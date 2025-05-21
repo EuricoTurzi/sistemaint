@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="container py-4 bg-white shadow-sm rounded text-dark" style="gap: 5px;">
+        <h2>{% if form.instance.pk %}Editar Cliente{% else %}Novo Cliente{% endif %}</h2>
+        <form method="post" novalidate style="gap: 5px;">
+            {% csrf_token %}
+            
+            <div class="form-group" style="margin-bottom: 5px;">
+                <label for="id_nome">Nome</label>
+                <input type="text" name="nome" id="id_nome" class="form-control" value="{{ form.instance.nome }}" placeholder="Digite o nome do cliente">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 5px;">
+                <label for="id_franquiakm">Franquia de KM</label>
+                <input type="number" step="0.01" name="franquiakm" id="id_franquiakm" class="form-control" value="{{ form.instance.franquiakm }}" placeholder="Digite a franquia em KM">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 5px;">
+                <label for="id_franquiahora">Franquia de Hora</label>
+                <input type="number" step="0.01" name="franquiahora" id="id_franquiahora" class="form-control" value="{{ form.instance.franquiahora }}" placeholder="Digite a franquia em horas">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 5px;">
+                <label for="id_valordeacionamento">Valor de Acionamento</label>
+                <input type="number" step="0.01" name="valordeacionamento" id="id_valordeacionamento" class="form-control" value="{{ form.instance.valordeacionamento }}" placeholder="Digite o valor de acionamento">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 5px;">
+                <label for="id_valor_km">Valor por KM Excedente</label>
+                <input type="number" step="0.01" name="valor_km" id="id_valor_km" class="form-control" value="{{ form.instance.valor_km }}" placeholder="Digite o valor por KM">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 5px;">
+                <label for="id_valor_hora">Valor por Hora Excedente</label>
+                <input type="number" step="0.01" name="valor_hora" id="id_valor_hora" class="form-control" value="{{ form.instance.valor_hora }}" placeholder="Digite o valor por hora">
+            </div>
+
+            <button type="submit" class="btn btn-success">Salvar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

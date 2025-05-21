@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="display-4">Adicionar Equipamentos</h3>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post" class="form">
+                {% csrf_token %}
+                
+                <!-- Linha para Cliente, Requisicao ID e Quantidade -->
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.cliente.label_tag }}{{ form.cliente }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.requisicao_id.label_tag }}{{ form.requisicao_id }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.quantidade.label_tag }}{{ form.quantidade }}
+                    </div>
+                </div>
+                
+                <!-- Linhas para Equipamentos em pares de 2 colunas -->
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.iccid_equipamento1.label_tag }}{{ form.iccid_equipamento1 }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.id_equipamento1.label_tag }}{{ form.id_equipamento1 }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.iccid_equipamento2.label_tag }}{{ form.iccid_equipamento2 }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.id_equipamento2.label_tag }}{{ form.id_equipamento2 }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.iccid_equipamento3.label_tag }}{{ form.iccid_equipamento3 }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.id_equipamento3.label_tag }}{{ form.id_equipamento3 }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.iccid_equipamento4.label_tag }}{{ form.iccid_equipamento4 }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.id_equipamento4.label_tag }}{{ form.id_equipamento4 }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.iccid_equipamento5.label_tag }}{{ form.iccid_equipamento5 }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.id_equipamento5.label_tag }}{{ form.id_equipamento5 }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.iccid_equipamento6.label_tag }}{{ form.iccid_equipamento6 }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.id_equipamento6.label_tag }}{{ form.id_equipamento6 }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.iccid_equipamento7.label_tag }}{{ form.iccid_equipamento7 }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.id_equipamento7.label_tag }}{{ form.id_equipamento7 }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.iccid_equipamento8.label_tag }}{{ form.iccid_equipamento8 }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.id_equipamento8.label_tag }}{{ form.id_equipamento8 }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.iccid_equipamento9.label_tag }}{{ form.iccid_equipamento9 }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.id_equipamento9.label_tag }}{{ form.id_equipamento9 }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.iccid_equipamento10.label_tag }}{{ form.iccid_equipamento10 }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.id_equipamento10.label_tag }}{{ form.id_equipamento10 }}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Bloquear o Enter para evitar o envio do formulário
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault(); // Bloqueia a tecla Enter
+            }
+        });
+    
+        // Lógica para processar todos os campos de entrada
+        document.addEventListener("input", function(e) {
+            // Verifica se o campo de entrada está no formulário
+            if (e.target && e.target.tagName === 'INPUT') {
+                var input = e.target;
+                var value = input.value;
+                var patterns = ["35154", "35642", "86590", "86325", "35196"]; // Padrões a serem encontrados
+    
+                var quantidade = 0;
+    
+                // Loop para detectar os padrões e contar as ocorrências
+                patterns.forEach(function(pattern) {
+                    var regex = new RegExp(pattern, "g"); // Cria uma expressão regular
+                    var count = (value.match(regex) || []).length; // Conta as ocorrências do padrão
+                    if (count > 0) {
+                        console.log("Padrão detectado: " + pattern + " - " + count + " vezes"); // Log para depuração
+                        value = value.replace(regex, ""); // Substitui o padrão por vazio
+                    }
+                });
+    
+                // Conta os campos preenchidos
+                document.querySelectorAll('input').forEach(function(input) {
+                    if (input.value.trim() !== "") {
+                        quantidade += 1;
+                    }
+                });
+    
+                input.value = value; // Atualiza o valor do campo de entrada sem os padrões
+    
+                // Atualiza o campo oculto de quantidade
+                document.getElementById("quantidade").value = Math.floor(quantidade / 2);
+                console.log("Quantidade total de padrões encontrados: " + Math.floor(quantidade / 2)); // Log para depuração
+            }
+        });
+    });
+    </script>
+{% endblock %}

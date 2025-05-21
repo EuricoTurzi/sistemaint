@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-4">
+  <h2>Vouchers Externos</h2>
+  {% if vouchers %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Motorista</th>
+        <th>Data de Criação</th>
+        <th>Placa</th>
+        <th>Embarcador</th>
+        <th>Telefone</th>
+        <th>Status</th>
+        <th>Data de Utilização</th>
+        <th>Alterado Por</th>
+        <th>Saldo</th>
+        <th>Consumo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in vouchers %}
+      <tr>
+        <td>{{ v.motorista }}</td>
+        <td>{{ v.data|date:"d/m/Y H:i" }}</td>
+        <td>{{ v.placa }}</td>
+        <td>{{ v.embarcador }}</td>
+        <td>{{ v.telefone }}</td>
+        <td>{{ v.status }}</td>
+        <td>{{ v.updated_at|date:"d/m/Y H:i" }}</td>
+        <td>{{ v.updated_by }}</td>
+
+        {# Gasto #}
+        <td>{{ v.valor|floatformat:2 }}</td>
+
+        {# Saldo calculado no view #}
+        <td>
+          {% if v.valor is not None %} {{ v.saldo|floatformat:2 }} {% else %} -
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>Nenhum voucher encontrado ou falha na requisição.</p>
+  {% endif %}
+</div>
+{% endblock %}

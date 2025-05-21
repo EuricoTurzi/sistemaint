@@ -1,0 +1,45 @@
+<!-- templates/lista_retornos.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios de Laudos</title>
+    
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Relatórios de Laudos</h2>
+        <div class="row">
+            {% for item in laudo %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% if item.imagem %}
+                        <img src="{{ item.imagem.url }}" class="card-img-top" alt="Imagem do Laudo">
+                    {% else %}
+
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="card-title">ID da Requisição: #{{ item.id_manutenção }}#</h3>
+                        <h5 class="card-title">{{ item.nome }}</h5>
+                        <p class="card-text"><strong>Motivo:</strong> {{ item.motivo }}</p>
+                        <p class="card-text"><strong>Tipo de Produto:</strong> {{ item.tipo_produto }}</p>
+                        <p class="card-text"><strong>Faturamento:</strong> {{ item.faturamento }}</p>
+                        <p class="card-text"><strong>Status:</strong> {{ item.tratativa }}</p>
+                        <a class="btn btn-warning" href="{% url 'download_pdfmanutencao' item.id %}">Laudo de Saída</a>
+                        
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>Nenhum laudo encontrado.</p>
+        {% endfor %}
+        </div>
+        
+    </div>
+    
+</body>
+</html>
+{% endblock %}

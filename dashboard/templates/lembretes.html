@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Lembretes</h1>
+        <button id="add-lembrete-btn" class="btn btn-primary mb-4">Adicionar Lembrete</button>
+        <div id="lembretes-container" class="row">
+            {% for lembrete in lembretes %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ lembrete.titulo }}</h5>
+                            <p class="card-text">{{ lembrete.descricao }}</p>
+                            <form method="post" action="{% url 'deletar_lembrete' lembrete.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Apagar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div id="lembrete-form-container" class="card p-4" style="display: none;">
+            <h2 class="card-title">Adicionar Lembrete</h2>
+            <form method="post" id="lembrete-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Salvar</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.getElementById('add-lembrete-btn').addEventListener('click', function() {
+            document.getElementById('lembrete-form-container').style.display = 'block';
+        });
+
+        document.getElementById('lembrete-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            this.submit();
+        });
+    </script>
+{% endblock %}

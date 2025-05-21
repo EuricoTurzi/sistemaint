@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="display-4">{% if form.instance.pk %}Editar Pagamento{% else %}Novo Acionamento{% endif %}</h3>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post" 
+                  action="{% if form.instance.pk %}{% url 'formacompanhamento:registro_pagamento_update' form.instance.pk %}{% else %}{% url 'formacompanhamento:registro_pagamento_create' %}{% endif %}" 
+                  enctype="multipart/form-data">
+
+                {% csrf_token %}
+                
+                <!-- Campos Cliente e Prestador -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="id_cliente" class="form-label">Cliente</label>
+                        {{ form.cliente }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_protocolo" class="form-label">Protocolo</label>
+                        {{ form.protocolo }}
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-2">
+                        <label for="id_prestador" class="form-label">Prestador</label>
+                        {{ form.prestador }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_placas" class="form-label">Placas</label>
+                        {{ form.placas }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_franquia_hora" class="form-label">Franquia de Horas</label>
+                        {{ form.franquia_hora }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_km_franquia" class="form-label">Franquia de KM</label>
+                        {{ form.km_franquia }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_acionamento" class="form-label">Valor de Acionamento</label>
+                        {{ form.acionamento }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_valor_hora_excedente" class="form-label">Valor da Hora</label>
+                        {{ form.valor_hora_excedente }}
+                    </div>
+                </div>
+
+                <p><h3>Dados do Acionamento</h3></p>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="id_solicitante" class="form-label">Solicitante</label>
+                        {{ form.solicitante }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_tipo_contato" class="form-label">Tipo de Contato</label>
+                        {{ form.tipo_contato }}
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="id_tipo" class="form-label">Tipo</label>
+                        {{ form.tipo }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_quantidade_agentes" class="form-label">Quantidade de Agentes</label>
+                        {{ form.quantidade_agentes }}
+                    </div>
+                </div>
+                
+                <!-- Campos Data e Hora Inicial/Final -->
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="id_data_hora_inicial" class="form-label">Data e Hora (Início de Operação)</label>
+                        <div class="input-group">
+                            {{ form.data_hora_inicial }}
+                            <button type="button" class="btn btn-outline-secondary" id="registrarDataHoraInicialButton">
+                                Registrar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_sla" class="form-label">SLA (MM)</label>
+                        {{ form.sla }}
+                        {% if form.sla.errors %}
+                            <div class="text-danger">
+                                {% for error in form.sla.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_previsa_chegada" class="form-label">Previsão de Chegada</label>
+                        {{ form.previsa_chegada }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_data_hora_chegada" class="form-label">Data e Hora (Chegada)</label>
+                        <div class="input-group">
+                            {{ form.data_hora_chegada }}
+                            <button type="button" class="btn btn-outline-secondary" id="registrarDataHoraChegadaButton">
+                                Registrar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="id_data_hora_final" class="form-label">Data e Hora (Final de Operação)</label>
+                        <div class="input-group">
+                            {{ form.data_hora_final }}
+                            <button type="button" class="btn btn-outline-secondary" id="registrarDataHoraFinalButton">
+                                Registrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <label for="id_km_inicial" class="form-label">Km Inicial</label>
+                        {{ form.km_inicial }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_km_final" class="form-label">Km Final</label>
+                        {{ form.km_final }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_km_total" class="form-label">Km Total</label>
+                        {{ form.km_total }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_km_excedente" class="form-label">Km Excedente</label>
+                        {{ form.km_excedente }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_pedagio" class="form-label">Pedágio</label>
+                        {{ form.pedagio }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_valor_km_excedente" class="form-label">Valor do KM</label>
+                        {{ form.valor_km_excedente }}
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="id_descricao" class="form-label">Descrição</label>
+                        {{ form.descricao }}
+                    </div>
+                </div>
+
+                   <!-- Renderizando os campos de imagens -->
+                   <div class="row mb-3">
+                    <div class="col-md-2">
+                        <label for="id_imagem1" class="form-label">Imagem 1</label>
+                        {{ form.imagem1 }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_imagem2" class="form-label">Imagem 2</label>
+                        {{ form.imagem2 }}
+                    </div>
+               
+                
+                    <div class="col-md-2">
+                        <label for="id_imagem3" class="form-label">Imagem 3</label>
+                        {{ form.imagem3 }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_imagem4" class="form-label">Imagem 4</label>
+                        {{ form.imagem4 }}
+                    </div>
+                
+               
+                    <div class="col-md-2">
+                        <label for="id_imagem5" class="form-label">Imagem 5</label>
+                        {{ form.imagem5 }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_imagem6" class="form-label">Imagem 6</label>
+                        {{ form.imagem6 }}
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <label for="id_imagem7" class="form-label">Imagem 7</label>
+                        {{ form.imagem7 }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_imagem8" class="form-label">Imagem 8</label>
+                        {{ form.imagem8 }}
+                    </div>
+                
+                
+                    <div class="col-md-2">
+                        <label for="id_imagem9" class="form-label">Imagem 9</label>
+                        {{ form.imagem9 }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_imagem10" class="form-label">Imagem 10</label>
+                        {{ form.imagem10 }}
+                    </div>
+                
+               
+                    <div class="col-md-2">
+                        <label for="id_imagem11" class="form-label">Imagem 11</label>
+                        {{ form.imagem11 }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="id_imagem12" class="form-label">Imagem 12</label>
+                        {{ form.imagem12 }}
+                    </div>
+                </div>
+          
+
+
+                <!-- Botões de Ação -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <a href="{% url 'formacompanhamento:registro_pagamento_list' %}" class="btn btn-secondary">Cancelar e Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if form.errors %}
+    <div class="alert alert-danger">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                <li><strong>{{ field }}</strong>: {{ errors|join:", " }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const dataHoraFinalInput = document.getElementById('id_data_hora_final');
+    const dataHoraChegadaInput = document.getElementById('id_data_hora_chegada');
+    const registrarDataHoraFinalButton = document.getElementById('registrarDataHoraFinalButton');
+    const registrarDataHoraChegadaButton = document.getElementById('registrarDataHoraChegadaButton');
+
+    function getFormattedDateTime() {
+        const now = new Date();
+        return now.toISOString().slice(0, 16).replace("T", " ");
+    }
+
+    registrarDataHoraFinalButton?.addEventListener('click', function () {
+        if (dataHoraFinalInput) {
+            dataHoraFinalInput.value = getFormattedDateTime();
+        }
+    });
+
+    registrarDataHoraChegadaButton?.addEventListener('click', function () {
+        if (dataHoraChegadaInput) {
+            dataHoraChegadaInput.value = getFormattedDateTime();
+        }
+    });
+});
+</script>
+{% endblock %}

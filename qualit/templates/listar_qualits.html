@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #45494E; /* Cor de fundo mais escura */
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0;
+    }
+    .container-fluid {
+        padding: 0;
+    }
+    .row {
+        margin: 0;
+    }
+    .table-responsive {
+        padding: 0 15px;
+        margin-left: -55vh;
+        width: 160rem;
+    }
+    .form-control {
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .dropdown-status {
+        width: 10rem; /* Ajuste a largura conforme necessário */
+    }
+    .filter-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0rem; /* Aumente o espaçamento entre os campos */
+    }
+    .thead-dark {
+        background-color: #344038; /* Substitua pelo valor exato da cor da sua barra de navegação */
+        color: white;
+    }
+    .texto {
+        text-align: center; /* Centraliza o texto */
+        color: white; /* Define a cor do texto como branco */
+    }
+</style>
+<br>
+<br>
+<br>
+<div class="container mt-5">
+    <div class="texto">
+        <h2>Consulta de ID</h2>
+    </div>
+
+    <form method="GET" action="">
+        <div class="row mb-3">
+            <div class="col">
+                <input type="text" name="ID" class="form-control" placeholder="ID" value="{{ request.GET.ID }}">
+            </div>
+            <div class="col">
+                <input type="text" name="ICCID_NOVO" class="form-control" placeholder="ICCID Novo" value="{{ request.GET.ICCID_NOVO }}">
+            </div>
+            <div class="col">
+                <input type="text" name="CLIENTE" class="form-control" placeholder="Cliente" value="{{ request.GET.CLIENTE }}">
+            </div>
+            <div class="col">
+                <button class="btn btn btn-primary" type="submit">Filtrar</button>
+            </div>
+        </div>
+    </form>
+
+    {% if request.GET.ID or request.GET.ICCID_NOVO or request.GET.CLIENTE %}
+        {% if qualits.exists %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Nº</th>
+                        <th>Data</th>
+                        <th>ID</th>
+                        
+                        <th>ICCID Novo</th>
+                        <th>Contrato</th>
+                        <th>Operadora</th>
+                        <th>Cliente</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for qualit in qualits %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ qualit.Data }}</td>
+                        <td>{{ qualit.ID }}</td>
+                        
+                        <td>{{ qualit.ICCID_NOVO }}</td>
+                        <td>{{ qualit.CONTRATO }}</td>
+                        <td>{{ qualit.OPERADORA }}</td>
+                        <td>{{ qualit.CLIENTE }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-white">Nenhum resultado encontrado.</p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
+

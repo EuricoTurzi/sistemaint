@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Registro de Estoque</h1>
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="tipo_produto" class="form-label">Tipo de Produto</label>
+                    {{ form.tipo_produto }}
+                </div>
+                <div class="mb-3">
+                    <label for="quantidade" class="form-label">Quantidade</label>
+                    {{ form.quantidade }}
+                </div>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container mt-4">
+    <h1>Equipamentos em Estoque</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Modelo</th>
+                <th scope="col">Quantidade em Estoque</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for estoque in estoques %}
+            <tr>
+                <td>{{ estoque.tipo_produto }}</td>
+                <td>{{ estoque.quantidade }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

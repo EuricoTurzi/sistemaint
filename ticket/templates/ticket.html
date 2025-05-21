@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+
+    .container {
+        max-width: 80rem; /* Define a largura máxima do container */
+        margin: 0 auto; /* Centraliza o container na tela */
+    }
+    
+    .card {
+        padding: 20px; /* Adiciona espaçamento interno ao card */
+    }
+    
+    .card-body {
+        padding: 15px; /* Adiciona espaçamento interno ao corpo do card */
+    }
+    
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* Adiciona espaçamento entre os elementos do formulário */
+    }
+    
+    input[type="submit"], .btn-secondary {
+    width: fit-content; /* Ajusta a largura dos botões ao conteúdo */
+    align-self: center; /* Centraliza os botões no formulário */
+}
+
+h3.display-4 {
+    font-size: 2rem; /* Ajusta o tamanho da fonte do título */
+    text-align: center; /* Centraliza o título */
+}
+</style>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="container mt-4">
+<h3 class="display-4"> <strong> Cadastro de Ticket</h3></strong>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" class="form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary"> Salvar </button>
+        </form>
+    </div>
+</div>
+
+</div>
+{% endblock %}

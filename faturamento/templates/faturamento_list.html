@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% block title %}
+| Faturamento |
+{% endblock %}
+
+{% include 'components/_header.html' %}
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #45494E; /* Cor de fundo mais escura */
+        display: flex;
+        flex-direction: column;
+        height: 80rem;
+        margin: 0px;
+    }
+    .container-fluid {
+        padding: 0;
+    }
+    .row {
+        margin: 0;
+    }
+    .table-responsive {
+        padding: 0 15px;
+        margin-left: -55vh;
+        width: 160rem;
+    }
+    .form-control {
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .dropdown-status {
+        width: 10rem; /* Ajuste a largura conforme necessário */
+    }
+    .filter-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0rem; /* Aumente o espaçamento entre os campos */
+    }
+    .thead-dark {
+        background-color: #344038; /* Substitua pelo valor exato da cor da sua barra de navegação */
+        color: white;
+    }
+</style>
+
+<div class="container-fluid mt-4">
+    <div class="row mb-1">
+        <div class="col-md-12">
+            <form method="get" action="{% url 'faturamento_list' %}">
+                <div class="filter-container">
+                    <div class="mb-4">
+                        {{ form.data }}
+                    </div>
+                    <div class="mb-3">
+                        <input type="date" name="data_inicio" class="form-control" placeholder="Data Início">
+                    </div>
+                    <div class="mb-3">
+                        <input type="date" name="data_fim" class="form-control" placeholder="Data Fim">
+                    </div>
+                    <div class="mb-3">
+                        <select name="status_faturamento_filtro" class="form-control dropdown-status">
+                            <option value="">Selecione o Status de Faturamento</option>
+                            {% for status in status_faturamento_choices %}
+                                <option value="{{ status.0 }}" {% if request.GET.status_faturamento_filtro == status.0 %}selected{% endif %}>{{ status.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <select name="cliente_filtro" class="form-control dropdown-status">
+                            <option value="">Selecione o Cliente</option>
+                            {% for cliente in clientes_choices %}
+                                <option value="{{ cliente.id }}" {% if request.GET.cliente_filtro == cliente.id|stringformat:"s" %}selected{% endif %}>{{ cliente.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <select name="motivo_filtro" class="form-control dropdown-status">
+                            <option value="">Selecione o Motivo</option>
+                            {% for motivo in motivo_choices %}
+                                <option value="{{ motivo.0 }}" {% if request.GET.motivo_filtro == motivo.0 %}selected{% endif %}>{{ motivo.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <select name="tipo_produto_filtro" class="form-control dropdown-status">
+                            <option value="">Selecione o Tipo de Produto</option>
+                            {% for produto in tipo_produto_choices %}
+                                <option value="{{ produto.id }}" {% if request.GET.tipo_produto_filtro == produto.id|stringformat:"s" %}selected{% endif %}>{{ produto.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <select name="contrato_tipo_filtro" class="form-control dropdown-status">
+                            <option value="">Selecione o Tipo de Contrato</option>
+                            {% for contrato in contrato_tipo_choices %}
+                                <option value="{{ contrato.0 }}" {% if request.GET.contrato_tipo_filtro == contrato.0 %}selected{% endif %}>{{ contrato.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <select name="fatura_tipo_filtro" class="form-control dropdown-status">
+                            <option value="">Selecione o Tipo de Fatura</option>
+                            {% for fatura in fatura_tipo_choices %}
+                                <option value="{{ fatura.0 }}" {% if request.GET.fatura_tipo_filtro == fatura.0 %}selected{% endif %}>{{ fatura.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-outline-secondary w-100" type="submit">Filtrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered w-100">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Data</th>
+                    <th>Nome</th>
+                    <th>Status</th>
+                    <th>Endereço</th>
+                    <th>Contrato</th>
+                    <th>CNPJ</th>
+                    <th>Início do Contrato</th>
+                    <th>Vigência</th>
+                    <th>Motivo</th>
+                    <th>Envio</th>
+                    <th>Comercial</th>
+                    <th>Tipo de Produto</th>
+                    <th>quantidade</th>
+                    <th>Carregador</th>
+                    <th>Cabo</th>
+                    <th>Tipo de Fatura</th>
+                    <th>Valor Unitário</th>
+                    <th>Valor Total</th>
+                    <th>Formas de Pagamento</th>
+                    <th>Taxa de Envio</th>
+                    <th>Observações</th>
+                    <th>Atualização</th>
+                    
+                    <th>Status Faturamento</th>
+                
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in requisicoes %}
+                <tr class="status-{{ registro.status|lower }}">
+                    <td>{{ registro.id }}</td>
+                    <td>{{ registro.data }}</td>
+                    <td>{{ registro.nome }}</td>
+                    <td>{{ registro.status }}</td>
+                    <td>{{ registro.endereco }}</td>
+                    <td>{{ registro.contrato }}</td>
+                    <td>{{ registro.cnpj }}</td>
+                    <td>{{ registro.inicio_de_contrato }}</td>
+                    <td>{{ registro.vigencia }}</td>
+                    <td>{{ registro.motivo }}</td>
+                    <td>{{ registro.envio }}</td>
+                    <td>{{ registro.comercial }}</td>
+                    <td>{{ registro.tipo_produto.nome }}</td>
+                    <td>{{ registro.numero_de_equipamentos }}</td>
+                    <td>{{ registro.carregador }}</td>
+                    <td>{{ registro.cabo }}</td>
+                    <td>{{ registro.tipo_fatura }}</td>
+                    <td>{{ registro.valor_unitario }}</td>
+                    <td>{{ registro.valor_total }}</td>
+                    <td>{{ registro.forma_pagamento }}</td>
+                    <td>{{ registro.taxa_envio }}</td>
+                    <td>{{ registro.observacoes }}</td>
+                    <td>
+                        <form method="post" action="{% url 'atualizar_observacoes' registro.id %}">
+                            {% csrf_token %}
+                            <input type="text" name="observacoes" class="form-control" value="{{ registro.observacoes }}">
+                            <button type="submit" class="btn btn-primary mt-2">Atualizar</button>
+                        </form>
+                    </td>
+                    
+                    <td>
+                        <form id="status-form-{{ registro.id }}" method="post" action="{% url 'atualizar_status_faturamento' registro.id %}">
+                            {% csrf_token %}
+                            <select name="status_faturamento" class="form-control dropdown-status" onchange="updateStatus('{{ registro.id }}')">
+                                <option value="">Selecione o Status de Faturamento</option>
+                                {% for status in status_faturamento_choices %}
+                                    <option value="{{ status.0 }}" {% if registro.status_faturamento == status.0 %}selected{% endif %}>{{ status.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                        
+                        <script>
+                        function updateStatus(registroId) {
+                            var form = document.getElementById('status-form-' + registroId);
+                            var formData = new FormData(form);
+                        
+                            fetch(form.action, {
+                                method: 'POST',
+                                body: formData,
+                                headers: {
+                                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Status atualizado com sucesso:', data);
+                            })
+                            .catch(error => {
+                                console.error('Erro ao atualizar o status:', error);
+                            });
+                        }
+                        </script>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="23" class="text-center">Nenhum registro encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% include 'components/_pagination.html' %}
+</div>
+{% endblock %}

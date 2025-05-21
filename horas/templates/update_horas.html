@@ -1,0 +1,121 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0">Atualizar Horas - {{ instance.funcionario }}</h3>
+    </div>
+    <div class="card-body">
+      {% if mensagem %}
+      <div class="alert alert-info" role="alert">{{ mensagem }}</div>
+      {% endif %}
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+          {% for field in form %}
+          <div class="mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label"
+              >{{ field.label }}</label
+            >
+            {{ field }} {% if field.help_text %}
+            <div class="form-text">{{ field.help_text }}</div>
+            {% endif %} {% for error in field.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+        <div class="row mt-4">
+          <div class="col-sm-6">
+            <button
+              type="submit"
+              name="action"
+              value="update"
+              class="btn btn-primary w-100"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+      </form>
+      <div class="mt-3">
+        <!-- Botão para preencher a hora final com o momento atual -->
+        <button
+          type="button"
+          class="btn btn-secondary"
+          onclick="fillCurrentDateTime('id_hora_final')"
+        >
+          Preencher Hora Final Agora
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Função para preencher o campo com a data/hora atual -->
+<script>
+  function fillCurrentDateTime(fieldId) {
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var day = ("0" + now.getDate()).slice(-2);
+    var hours = ("0" + now.getHours()).slice(-2);
+    var minutes = ("0" + now.getMinutes()).slice(-2);
+    var seconds = ("0" + now.getSeconds()).slice(-2);
+    var dateTimeString =
+      year +
+      "-" +
+      month +
+      "-" +
+      day +
+      " " +
+      hours +
+      ":" +
+      minutes +
+      ":" +
+      seconds;
+    document.getElementById(fieldId).value = dateTimeString;
+    calculateTotal(); // Atualiza o total sempre que a hora final for preenchida
+  }
+
+  // Função para calcular a diferença entre hora final e hora inicial
+  function calculateTotal() {
+    var inicio = document.getElementById("id_hora_inicial").value;
+    var fim = document.getElementById("id_hora_final").value;
+    if (inicio && fim) {
+      // Para um formato "YYYY-MM-DD HH:MM:SS", substituímos o espaço por "T"
+      var inicioISO = inicio.replace(" ", "T");
+      var fimISO = fim.replace(" ", "T");
+      var dtInicio = new Date(inicioISO);
+      var dtFim = new Date(fimISO);
+      if (dtFim > dtInicio) {
+        var diff = dtFim - dtInicio; // Diferença em milissegundos
+        var totalSeconds = Math.floor(diff / 1000);
+        var hours = Math.floor(totalSeconds / 3600);
+        var minutes = Math.floor((totalSeconds % 3600) / 60);
+        var seconds = totalSeconds % 60;
+        var formatted =
+          ("0" + hours).slice(-2) +
+          ":" +
+          ("0" + minutes).slice(-2) +
+          ":" +
+          ("0" + seconds).slice(-2);
+        document.getElementById("id_total").value = formatted;
+      } else {
+        document.getElementById("id_total").value = "00:00:00";
+      }
+    }
+  }
+
+  // Adiciona event listeners para atualizar o total sempre que os campos de hora mudarem
+  document.addEventListener("DOMContentLoaded", function () {
+    var horaInicial = document.getElementById("id_hora_inicial");
+    var horaFinal = document.getElementById("id_hora_final");
+    if (horaInicial) {
+      horaInicial.addEventListener("change", calculateTotal);
+    }
+    if (horaFinal) {
+      horaFinal.addEventListener("change", calculateTotal);
+    }
+  });
+</script>
+{% endblock %}

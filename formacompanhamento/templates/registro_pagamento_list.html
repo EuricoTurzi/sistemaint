@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <div class="table-responsive">
+        <a href="{% url 'formacompanhamento:registro_pagamento_create' %}" class="btn btn-primary mb-3">Novo Registro</a>
+        <table class="table table-bordered table-hover table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    
+                    <th>Prestador</th>
+                    <th>Hora Total</th>
+                    <th>Franquia Hora</th>
+                    <th>Valor Hora Excedente</th>
+                    <th>Valor Total Hora Excedente</th>
+                   
+                    <th>KM Total</th>
+                    <th>KM Franquia</th>
+                    <th>KM Excedente</th>
+                    <th>Valor KM Excedente</th>
+                    <th>Valor Total KM Excedente</th>
+                    <th>Pedágio</th>
+                    
+                    <th>Total Acionamento</th>
+                    <th>Previsão de Chegada</th>
+                    <th>Chegada</th>
+                    <th>Acionamento</th>
+                    <th>Progresso</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% now "U" as current_time %}
+                {% for registro in registros %}
+                <tr class="table-row" data-descricao="{{ registro.descricao }}">
+                    <td>{{ registro.id }}</td>
+                    <td>{{ registro.cliente }}</td>
+                  
+                    <td>{{ registro.prestador }}</td>
+                    <td>{{ registro.calcular_hora_total|floatformat:2 }} horas</td>
+                    <td>{{ registro.franquia_hora }}</td>
+                    <td>R$ {{ registro.valor_hora_excedente|floatformat:2 }}</td>
+                    <td>R$ {{ registro.calcular_valor_total_hora_excedente|floatformat:2 }}</td>
+                    
+                    <td>{{ registro.calcular_km_total|floatformat:2 }} km</td>
+                    <td>{{ registro.km_franquia|floatformat:2 }} km</td>
+                    <td>{{ registro.calcular_km_excedente|floatformat:2 }} km</td>
+                    <td>R$ {{ registro.valor_km_excedente|floatformat:2 }}</td>
+                    <td>R$ {{ registro.calcular_valor_total_km_excedente|floatformat:2 }}</td>
+                    <td>R$ {{ registro.pedagio|floatformat:2 }}</td>
+                    
+                    <td>R$ {{ registro.calcular_total_acionamento|floatformat:2 }}</td>
+                    <td>{{ registro.previsa_chegada|date:"d/m/Y H:i" }}</td>
+                    <td>{{ registro.data_hora_chegada|date:"d/m/Y H:i" }}</td>
+                    <td>{{ registro.acionamento }}</td>
+                    <td>
+                        {% if registro.previsa_chegada %}
+                            {% with previsa_chegada_timestamp=registro.previsa_chegada|date:"U" %}
+                                {% if registro.data_hora_final %}
+                                    {% if registro.data_hora_chegada and registro.data_hora_chegada|date:"U" > previsa_chegada_timestamp %}
+                                        <i class="fas fa-circle text-success"></i> Concluído
+                                        <i class="fas fa-circle text-danger"></i> Com Atraso
+                                    {% else %}
+                                        <i class="fas fa-circle text-success"></i> Concluído
+                                    {% endif %}
+                                {% elif registro.data_hora_chegada %}
+                                    {% if registro.data_hora_chegada|date:"U" > previsa_chegada_timestamp %}
+                                        <i class="fas fa-circle text-primary"></i> Chegada Confirmada
+                                        <i class="fas fa-circle text-danger"></i> Atrasado
+                                    {% else %}
+                                        <i class="fas fa-circle text-primary"></i> Chegada Confirmada
+                                    {% endif %}
+                                {% elif current_time >= previsa_chegada_timestamp %}
+                                    <i class="fas fa-circle text-danger"></i> Atrasado
+                                {% elif current_time >= previsa_chegada_timestamp|add:"-1200" %}
+                                    <i class="fas fa-circle text-warning"></i> Menos de 20 minutos
+                                {% else %}
+                                    <i class="fas fa-circle text-success"></i> Em Progresso
+                                {% endif %}
+                            {% endwith %}
+                        {% else %}
+                            <i class="fas fa-circle text-muted"></i> Sem previsão
+                        {% endif %}
+                    </td>
+                    <td>{{ registro.status }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{% url 'formacompanhamento:registro_pagamento_update' registro.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="{% url 'formacompanhamento:validar' registro.pk %}" class="btn btn-info btn-sm">Validar</a>
+                            {% if registro.status == 'A Faturar' %}
+                            <a href="{% url 'formacompanhamento:download_pdf' registro.pk %}" class="btn btn-danger btn-sm">Download</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="25" class="text-center">Nenhum registro encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- Modal -->
+<div class="modal fade" id="descricaoModal" tabindex="-1" aria-labelledby="descricaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="descricaoModalLabel">Descrição</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-dark">
+                <p id="descricaoTexto"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #45494E;
+        margin: 0;
+        padding: 0;
+    }
+
+    .table-responsive {
+        width: 200%;
+        margin-left: -40rem;
+    }
+
+    .table {
+        width: 100%;
+        table-layout: auto;
+        border-collapse: collapse;
+    }
+
+    .thead-dark {
+        background-color: #344038;
+        color: white;
+    }
+
+    th, td {
+        white-space: nowrap;
+        text-align: center;
+        padding: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+    }
+
+    .btn {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f8f9fa;
+    }
+
+    .table-hover tbody tr:hover {
+        cursor: pointer;
+        background-color: #e9ecef;
+    }
+
+    .fas.fa-circle {
+        font-size: 16px;
+        margin-right: 5px;
+        vertical-align: middle;
+    }
+
+    img {
+        border-radius: 5px;
+    }
+
+    .modal-body.text-dark {
+        color: #000;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll(".table-row");
+        const modal = new bootstrap.Modal(document.getElementById("descricaoModal"));
+        const descricaoTexto = document.getElementById("descricaoTexto");
+
+        rows.forEach(row => {
+            row.addEventListener("click", function () {
+                const descricao = this.dataset.descricao || "Sem descrição disponível.";
+                descricaoTexto.textContent = descricao;
+                modal.show();
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Lista de Clientes Acionamento</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-striped mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Franquia KM</th>
+                        <th>Franquia Hora</th>
+                        <th>Valor de Acionamento</th>
+                        <th>Valor do KM</th>
+                        <th>Valor da Hora</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes %}
+                    <tr>
+                        <td>{{ cliente.id }}</td>
+                        <td>{{ cliente.nome }}</td>
+                        <td>{{ cliente.franquiakm }}</td>
+                        <td>{{ cliente.franquiahora }}</td>
+                        <td>{{ cliente.valordeacionamento }}</td>
+                        <td>{{ cliente.valor_km }}</td>
+                        <td>{{ cliente.valor_hora }}</td>
+                        <td>
+                            <a href="{% url 'formacompanhamento:ClienteUpdateView' cliente.pk %}" class="btn btn-sm btn-warning">Editar</a>
+
+                            
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">Nenhum cliente encontrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
