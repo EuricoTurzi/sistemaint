@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 SECRET_KEY = 'django-insecure-88)5ylc$&!#l7%0$oq&bdfn$*gzc#!-sk+*yj(216bb7-aq%y2'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', 'intgoldensat.com.br', 'www.intgoldensat.com.br']
 
 
 #LOGGING = {
@@ -34,7 +34,8 @@ ROLESPERMISSIONS_MODULE = 'app.roles'
 
 CSRF_TRUSTED_ORIGINS = [
     'https://intgoldensat.com.br',
-    'https://www.intgoldensat.com.br'
+    'https://www.intgoldensat.com.br',
+    'http://127.0.0.1:8000',
 ]
 
 # Application definition
@@ -96,8 +97,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'app.urls'
-
-ALLOWED_HOSTS = ['intgoldensat.com.br', 'www.intgoldensat.com.br']
 
 
 
