@@ -3,7 +3,6 @@
 | Grupo Golden Sat | 
 {% endblock %}
 
-{% include 'components/_header.html' %}
 {% block content %}
 
 <style>
@@ -63,30 +62,32 @@
     }
 </style>
 
-<div class="container mt-4">
-    <a class="btn btn-success" href="{% url 'criar_retorno' %}">Relatorio de Retorno</a>
 
     <!-- Formulário de Pesquisa -->
     <form method="GET" class="mb-4">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <input type="text" name="id" class="form-control" placeholder="Buscar por ID" value="{{ request.GET.id }}">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <input type="text" name="nome" class="form-control" placeholder="Buscar por Nome" value="{{ request.GET.nome }}">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+                
+                <input type="text" class="form-control" id="numero_equipamento" name="numero_equipamento" placeholder="Buscar por Equipamento" value="{{ request.GET.numero_equipamento|default:'' }}">
+            </div>
+            <div class="col-md-3">
                 <select name="status" class="form-control">
                     <option value="">Selecione o Status</option>
                     <option value="Pendente" {% if request.GET.status == 'Pendente' %}selected{% endif %}>Pendente</option>
                     <option value="Manutenção" {% if request.GET.status == 'Manutenção' %}selected{% endif %}>Manutenção</option>
-                    <option value="Reprovado pela Inteligência" {% if request.GET.status == 'Reprovado pela Inteligência' %}selected{% endif %}>Reprovado pela Inteligência</option>
                     <option value="Aguardando Aprovação" {% if request.GET.status == 'Aguardando Aprovação' %}selected{% endif %}>Aguardando Aprovação</option>
                 </select>
             </div>
         </div>
         <button type="submit" class="btn btn-primary mt-3">Buscar</button>
     </form>
+
 
     <!-- Exibição dos Registros -->
     <div class="row">
@@ -103,10 +104,9 @@
                     <p><b>Tipo de Produto:</b> {{ registro.tipo_produto }}</p>
                     <p><b>Customização:</b> {{ registro.customizacaoo }}</p>
                     <p><b>Motivo:</b> {{ registro.motivo }}</p>
-                    
+                    <p><b>Equipamento:</b> {{ registro.numero_equipamento }}</p>
 
                     <!-- Botões de ação -->
-                    
                     <a class="btn btn-primary" href="{% url 'FormulariosUpdateView' registro.id %}">Editar</a>
                     <a class="btn btn-info" href="{% url 'download_pdfmanutencao' registro.id %}">Relatorio<i class="bi bi-cloud-download-fill"></i></a>
                     <a class="btn btn-success" href="{% url 'editado_manutencao' registro.id %}">Manutenção Concluida</a>
@@ -116,8 +116,8 @@
                     <a class="btn btn-info" href="{% url 'download_protocolo_entrada' registro.id %}">Protocolo <i class="bi bi-clipboard2-check"></i></a>
                     <a class="btn btn-danger" href="{% url 'Reprovado_Inteligência' registro.id %}">Diretoria</a>
                     <a class="btn btn-danger" href="{% url 'Reprovado_Inteligência2' registro.id %}">Reprovado</a>
-                    
                     {% endif %}
+                    
                     {% if registro.has_retorno_images %}
                     <a class="btn btn-warning" href="{% url 'download_laudo_saida' registro.id %}">Laudo de Saída</a>
                     {% endif %}
@@ -133,5 +133,4 @@
 
     {% include 'components/_pagination.html' %}
 </div>
-
 {% endblock %}

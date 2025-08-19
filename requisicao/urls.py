@@ -14,8 +14,8 @@ urlpatterns = [
     path('requisicaocreate', views.RequisicaoCreateView.as_view(), name='requisicoescrateview'),
     path('antenistaview', views.RegistrarEstoqueantenistaView.as_view(), name='RegistrarEstoqueantenistaView'),
     path('requisicoes/list', views.RequisicaoDetailView.as_view(), name='RequisicaoDetailView'),
-    path('requisicao/requisicao/', views.RequisicaoUpdateView.as_view(), name='RequisicaoUpdateView'),
-    path('requisicao/<int:pk>/update/', views.requisicoesdeleteview.as_view(), name='requisicoesdeleteview'),
+    path('requisicao/<int:pk>/update/', views.RequisicaoUpdateView.as_view(), name='RequisicaoUpdateView'),
+    path('requisicao/<int:pk>/delete/', views.requisicoesDeleteView.as_view(), name='requisicoesdeleteview'),
 #----------------------------------------------------------------------------------------------------------------
 
 #--------------------------------------------------------------------------------------------------------------------
@@ -73,10 +73,5 @@ path('novo-antenista/', AntenistaCreateView.as_view(), name='novo_antenista'),
      
     path('antenista/<int:pk>/atualizado/', views.atualizar_status_atualizado, name='atualizar_atualizado'),
 path('requisicoes/<int:pk>/editar/', RequisicaoUpdateView.as_view(), name='requisicao_update'),
-
-
-
-
-]
-
 path('manutencao/configurado/<int:id>/', views.configurado_manutencao, name='configurado_manutencao'),
+]

@@ -1,0 +1,1044 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load nestle_filters %}
+
+{% block content %}
+
+<style>
+/* Typography */
+.main-content,
+.table,
+.table th,
+.table td,
+.badge,
+.btn {
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Layout */
+.main-content {
+    width: 210%;
+    margin-left: -750px;
+    min-height: 92vh;
+    padding: 1.5rem 2rem;
+    background-color: #f0f2f5;
+}
+
+.grid-container {
+    height: calc(100vh - 200px);
+    overflow: auto;
+}
+
+/* Table */
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #817a8583;
+    color: #0c0b0b;
+    z-index: 1;
+    font-weight: 700;
+    border-bottom: 2px solid #B0BEC5;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table tbody tr {
+    background-color: #FFFFFF;
+    transition: background-color 0.2s;
+}
+
+.table tbody tr:hover {
+    background-color: #FFF5E6;
+}
+
+.table td,
+.table th {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ECECEC;
+    vertical-align: middle;
+    color: #1d1c1c;
+    font-size: 0.95rem;
+}
+
+/* Scrollbar */
+.table-section::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-section::-webkit-scrollbar-track {
+    background: #F0F0F0;
+    border-radius: 4px;
+}
+
+.table-section::-webkit-scrollbar-thumb {
+    background: #C0C0C0;
+    border-radius: 4px;
+}
+
+.table-section::-webkit-scrollbar-thumb:hover {
+    background: #A0A0A0;
+}
+
+/* SLA Table */
+.table-bordered.table-sm {
+    background-color: #FAFAFA;
+    border: 1px solid #E0E0E0;
+    width: auto;
+}
+
+.table-bordered.table-sm thead th {
+    background-color: #DDEBF7;
+    color: #333333;
+    border-bottom: 2px solid #C0C0C0;
+    font-weight: 600;
+}
+
+.table-bordered.table-sm tbody td {
+    background-color: #FFFFFF;
+    color: #555555;
+}
+
+.table-secondary td {
+    background-color: #F0F0F0 !important;
+    color: #555555;
+}
+
+.table-warning td {
+    background-color: #FFF3E0 !important;
+    color: #8B5A2B;
+}
+
+/* Badges */
+.badge {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.4em 0.75em;
+    border-radius: 0.5rem;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.badge.bg-success {
+    background-color: #DFF5E1;
+    color: #2E7D32;
+}
+
+.badge.bg-warning {
+    background-color: #FFF9C4;
+    color: #F9A825;
+}
+
+.badge.bg-info {
+    background-color: #E3F2FD;
+    color: #1565C0;
+}
+
+.badge.bg-danger {
+    background-color: #FFEBEE;
+    color: #f3f2f2;
+}
+
+.badge.bg-dark {
+    background-color: #7788a5 !important;
+    color: #fff;
+}
+
+.badge-rounded {
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    background-color: #E8F5E9;
+    color: #2E7D32;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.btn:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background-color: #8AB6D6;
+    border-color: #7A9FB4;
+    color: #FFFFFF;
+}
+
+.btn-primary:hover {
+    background-color: #7A9FB4;
+    border-color: #6A8B9C;
+    color: #FFFFFF;
+}
+
+.btn-warning {
+    background-color: #FFE59D;
+    border-color: #EEDD8A;
+    color: #333333;
+}
+
+.btn-warning:hover {
+    background-color: #EEDD8A;
+    border-color: #D4CC74;
+    color: #333333;
+}
+
+.btn-outline-primary {
+    color: #8AB6D6;
+    border-color: #8AB6D6;
+    background-color: transparent;
+}
+
+.btn-outline-primary:hover {
+    background-color: #8AB6D6;
+    color: #FFFFFF;
+    border-color: #7A9FB4;
+}
+
+.btn-outline-success {
+    color: #A8D5BA;
+    border-color: #A8D5BA;
+    background-color: transparent;
+}
+
+.btn-outline-success:hover {
+    background-color: #A8D5BA;
+    color: #FFFFFF;
+    border-color: #8EC79C;
+}
+
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+    background-color: #ffffff;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: #ffffff;
+}
+
+.btn-light-green {
+    background-color: #b2dfdb;
+    color: #212529;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 0.45rem 1rem;
+}
+
+.btn-light-green:hover {
+    background-color: #a5ccc8;
+    color: #212529;
+}
+
+.btn-success {
+    background-color: #105f30bd;
+    color: #FFFFFF;
+}
+
+/* SLA Cards */
+.sla-card {
+    background: #ffffff;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+    border-left: 5px solid #ccc;
+    text-align: left;
+}
+
+.sla-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: #333;
+}
+
+.sla-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+/* Colored Borders */
+.border-left-green   { border-left-color: #28a745; }
+.border-left-gray    { border-left-color: #6c757d; }
+.border-left-yellow  { border-left-color: #ffc107; }
+.border-left-cyan    { border-left-color: #17a2b8; }
+.border-left-blue    { border-left-color: #007bff; }
+.border-left-orange  { border-left-color: #fd7e14; }
+.border-left-pink    { border-left-color: #e83e8c; }
+.border-left-indigo  { border-left-color: #6610f2; }
+.border-left-purple  { border-left-color: #6f42c1; }
+.border-left-teal    { border-left-color: #20c997; }
+.border-left-red     { border-left-color: #dc3545; }
+
+.border-left-warning {
+    border-left: 4px solid #ffae00;
+    background-color: #fff8e1;
+}
+
+/* Modal */
+.modal-title {
+    color: #333 !important;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table thead th,
+    .table td {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+
+.card-header.bg-primary {
+    background: linear-gradient(90deg, #0056b3 0%, #009BDE 100%);
+    border-color: #004494; /* opcional: ajustar borda para um tom harmônico */
+}
+</style>
+
+<main class="main-content">
+    <div class="card shadow-sm">
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Grid Internacional</h4>
+            <div class="d-flex gap-2">
+                {# Botão “Novo Registro” #}
+                <a href="{% url 'grid_internacional_create' %}" class="btn btn-light-green">
+                    <i class="fas fa-plus me-2"></i> Novo Registro
+                </a>
+
+                {# Botão “Ver Finalizados” #}
+                <a href="{% url 'grid_internacional_finalizados' %}" class="btn btn-light-green">
+                    <i class="fas fa-check me-2"></i> Ver Finalizados
+                </a>
+            </div>
+        </div>
+
+        <!-- Card Body: este bloco deve englobar SLAs, filtros, tabela, etc. -->
+        <div class="card-body">
+            <!-- 1) Cards Resumo de SLAs -->
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3 mb-4 mt-3">
+                <div class="col">
+                    <div class="sla-card border-left-green">
+                        <h5 class="sla-value">{{ sla_medias_grid.sla_insercao|default:'-' }}</h5>
+                        <p class="sla-label">SLA Inserção</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="sla-card border-left-gray">
+                        <h5 class="sla-value">{{ sla_medias_grid.sla_retirada|default:'-' }}</h5>
+                        <p class="sla-label">SLA Retirada</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="sla-card border-left-yellow">
+                        <h5 class="sla-value">{{ sla_medias_grid.sla_envio_brasil|default:'-' }}</h5>
+                        <p class="sla-label">SLA Envio Brasil</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="sla-card border-left-cyan">
+                        <h5 class="sla-value">{{ sla_medias_grid.sla_chegada_brasil|default:'-' }}</h5>
+                        <p class="sla-label">SLA Chegada Brasil</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="sla-card border-left-blue">
+                        <h5 class="sla-value">{{ sla_medias_grid.sla_porto_nacional|default:'-' }}</h5>
+                        <p class="sla-label">SLA Terrestre Nacional</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="sla-card border-left-orange">
+                        <h5 class="sla-value">{{ sla_medias_grid.sla_embarque|default:'-' }}</h5>
+                        <p class="sla-label">SLA Embarque</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="sla-card border-left-pink">
+                        <h5 class="sla-value">{{ sla_medias_grid.sla_maritimo|default:'-' }}</h5>
+                        <p class="sla-label">SLA Marítimo</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="sla-card border-left-indigo">
+                        <h5 class="sla-value">{{ sla_medias_grid.sla_terrestre_internacional|default:'-' }}</h5>
+                        <p class="sla-label">SLA Porto Internacional</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="sla-card border-left-purple">
+                        <h5 class="sla-value">{{ sla_medias_grid.sla_terrestre|default:'-' }}</h5>
+                        <p class="sla-label">SLA Terrestre</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="sla-card border-left-teal">
+                        <h5 class="sla-value">{{ sla_medias_grid.sla_internacional|default:'-' }}</h5>
+                        <p class="sla-label">SLA Internacional</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="sla-card border-left-red">
+                        <h5 class="sla-value">{{ sla_medias_grid.sla_liberacao|default:'-' }}</h5>
+                        <p class="sla-label">SLA Liberação</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="sla-card border-left-warning text-center">
+                        <h6 class="text-muted text-uppercase mb-1" style="font-size: 0.85rem;">
+                            SOMA TOTAL DOS SLAs
+                        </h6>
+                        <p class="fw-bold text-dark mb-0">{{ sla_medias_grid.sla_soma_total|default:'-' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2) Caixas de Informações do Cliente (exibe somente se GET.cliente estiver presente) -->
+            {% if request.GET.cliente %}
+                <div class="mb-2 d-flex gap-4 align-items-end justify-content-start" style="width: fit-content;">
+                    <div style="width:80px;height:50px;display:flex;align-items:center;justify-content:center;
+                                background:#0d6efd;color:#fff;border-radius:8px;font-size:1.5rem;font-weight:bold;">
+                        {{ equipamentos_count|default:'0' }}
+                    </div>
+                    <div style="width:80px;height:50px;display:flex;align-items:center;justify-content:center;
+                                background:#198754;color:#fff;border-radius:8px;font-size:1.5rem;font-weight:bold;">
+                        {{ quantidade_cliente|default:'0' }}
+                    </div>
+                    <div style="width:80px;height:50px;display:flex;align-items:center;justify-content:center;
+                                background:#fd7e14;color:#fff;border-radius:8px;font-size:1.5rem;font-weight:bold;">
+                        {{ diferenca_qtd|default:'0' }}
+                    </div>
+                </div>
+                <div class="mb-3 d-flex gap-4 justify-content-start" style="font-size:0.9rem;width:fit-content;">
+                    <span style="width:80px;text-align:center;color:#0d6efd;font-weight:bold;">
+                        Quantidade no Grid
+                    </span>
+                    <span style="width:80px;text-align:center;color:#198754;font-weight:bold;">
+                        Quantidade Contratada
+                    </span>
+                    <span style="width:80px;text-align:center;color:#fd7e14;font-weight:bold;">
+                        Diferença
+                    </span>
+                </div>
+            {% endif %}
+
+            <!-- 3) Filtros -->
+            <div class="filters-section">
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <form method="get" class="row g-3">
+                            <!-- Seleção de Cliente -->
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <select name="cliente" class="form-select" id="clienteFilter">
+                                        <option value="">Selecione um Cliente</option>
+                                        {% for cliente in clientes %}
+                                            <option value="{{ cliente.cliente }}"
+                                                {% if request.GET.cliente == cliente.cliente %}selected{% endif %}>
+                                                {{ cliente.cliente }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="clienteFilter">Cliente</label>
+                                </div>
+                            </div>
+
+                            <!-- Campo Container -->
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <input
+                                        type="text"
+                                        name="container"
+                                        class="form-control"
+                                        placeholder="Container"
+                                        value="{{ request.GET.container }}">
+                                    <label>Container</label>
+                                </div>
+                            </div>
+
+                            <!-- Seleção de Status -->
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <select name="status_operacao" class="form-select">
+                                        <option value="">Todos os Status</option>
+                                        <option value="Aguardando Liberação RFB"
+                                            {% if request.GET.status_operacao == 'Aguardando Liberação RFB' %}selected{% endif %}>
+                                            Aguardando Liberação RFB
+                                        </option>
+                                        <option value="Aguardando Chegada na Base"
+                                            {% if request.GET.status_operacao == 'Aguardando Chegada na Base' %}selected{% endif %}>
+                                            Aguardando Chegada na Base
+                                        </option>
+                                        <option value="Aguardando Coleta"
+                                            {% if request.GET.status_operacao == 'Aguardando Coleta' %}selected{% endif %}>
+                                            Aguardando Coleta
+                                        </option>
+                                        <option value="Aguardando Embarque Internacional"
+                                            {% if request.GET.status_operacao == 'Aguardando Embarque Internacional' %}selected{% endif %}>
+                                            Aguardando Embarque Internacional
+                                        </option>
+                                        <option value="Em reversa para o Brasil"
+                                            {% if request.GET.status_operacao == 'Em reversa para o Brasil' %}selected{% endif %}>
+                                            Em reversa para o Brasil
+                                        </option>
+                                        <option value="Retirado, Ag. Envio"
+                                            {% if request.GET.status_operacao == 'Retirado, Ag. Envio' %}selected{% endif %}>
+                                            Retirado, Ag. Envio
+                                        </option>
+                                        <option value="Em viagem"
+                                            {% if request.GET.status_operacao == 'Em viagem' %}selected{% endif %}>
+                                            Em viagem
+                                        </option>
+                                        <option value="No destino"
+                                            {% if request.GET.status_operacao == 'No destino' %}selected{% endif %}>
+                                            No destino
+                                        </option>
+                                        <option value="Estoque Cliente"
+                                            {% if request.GET.status_operacao == 'Estoque Cliente' %}selected{% endif %}>
+                                            Estoque Cliente
+                                        </option>
+                                        <option value="Danificado"
+                                            {% if request.GET.status_operacao == 'Danificado' %}selected{% endif %}>
+                                            Danificado
+                                        </option>
+                                        <option value="Extraviado"
+                                            {% if request.GET.status_operacao == 'Extraviado' %}selected{% endif %}>
+                                            Extraviado
+                                        </option>
+                                    </select>
+                                    <label>Status</label>
+                                </div>
+                            </div>
+
+                            <!-- Botões Filtrar e Aguardando Dados -->
+                            <div class="col-md-3 d-flex gap-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search me-2"></i>Filtrar
+                                </button>
+                                <a href="?sem_dados=1" class="btn btn-warning w-100 text-center">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Aguardando Dados
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4) Filtro por lista de IDs -->
+            <form method="get" class="row g-3 mb-2">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <textarea
+                            name="ids"
+                            class="form-control"
+                            placeholder="IDs separados por vírgula ou quebra de linha"
+                            style="height: 60px; min-height: 40px;"></textarea>
+                        <label>Filtrar por IDs</label>
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center px-3" style="height: 58px;">
+                        <i class="fas fa-filter me-2"></i> Filtrar IDs
+                    </button>
+                </div>
+            </form>
+
+            <!-- 5) Alteração em Massa / Enviar planilha por email -->
+            <form method="post" class="row g-3 mb-4" style="align-items:end;">
+                {% csrf_token %}
+                <div class="mb-2 d-flex gap-2">
+                    <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#massStatusCollapse"
+                        aria-expanded="false"
+                        aria-controls="massStatusCollapse">
+                        🔁 Alterar Status em Massa
+                    </button>
+
+                    <button type="submit" class="btn btn-danger d-flex align-items-center gap-2">
+                        <i class="fas fa-envelope"></i> Enviar planilha por email
+                    </button>
+                </div>
+
+                <div class="collapse" id="massStatusCollapse">
+                    <form method="post" class="row g-3 mb-4 align-items-end">
+                        {% csrf_token %}
+                        <div class="row g-3 mb-4 align-items-end">
+                            <!-- IDs para alterar status em massa -->
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <textarea
+                                        name="ids_mass"
+                                        class="form-control"
+                                        placeholder="IDs separados por vírgula ou quebra de linha"
+                                        style="height: 60px; min-height: 40px;"></textarea>
+                                    <label>IDs para alterar status</label>
+                                </div>
+                            </div>
+
+                            <!-- Novo Status -->
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select name="novo_status" class="form-select">
+                                        <option value="">Escolha o novo status</option>
+                                        <option value="Aguardando Liberação RFB">Aguardando Liberação RFB</option>
+                                        <option value="Aguardando Chegada na Base">Aguardando Chegada na Base</option>
+                                        <option value="Aguardando Coleta">Aguardando Coleta</option>
+                                        <option value="Aguardando Embarque Internacional">Aguardando Embarque Internacional</option>
+                                        <option value="Em reversa para o Brasil">Em reversa para o Brasil</option>
+                                        <option value="Retirado, Ag. Envio">Retirado, Ag. Envio</option>
+                                        <option value="Em viagem">Em viagem</option>
+                                        <option value="No destino">No destino</option>
+                                        <option value="Estoque Cliente">Estoque Cliente</option>
+                                        <option value="Danificado">Danificado</option>
+                                        <option value="Extraviado">Extraviado</option>
+                                    </select>
+                                    <label>Novo Status</label>
+                                </div>
+                            </div>
+
+                            <!-- Botão Alterar Status em Massa -->
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button
+                                    type="submit"
+                                    class="btn btn-success w-100 d-flex align-items-center justify-content-center"
+                                    style="height: 58px;">
+                                    Alterar Status em Massa
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </form>
+
+            <!-- 6) Contagem de Status dos filtrados -->
+            {% if status_counts_filtrados %}
+                <div class="mb-2 d-flex gap-2 flex-wrap">
+                    {% for status, count in status_counts_filtrados.items %}
+                        <a href="?status_operacao={{ status|urlencode }}" style="text-decoration:none;">
+                            <span class="badge {% if status == 'Extraviado' %}bg-danger{% elif status == 'Equipamento na Base' %}bg-secondary{% else %}bg-dark{% endif %}"
+                                  style="font-size:1rem; cursor:pointer;">
+                                {{ status }}: <b>{{ count }}</b>
+                            </span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- 7) Tabela de Registros -->
+            <div class="table-section">
+                <div class="table-responsive">
+                    <form method="post" action="{% url 'grid_internacional_send_email' %}" class="mb-3">
+                        {% csrf_token %}
+                        <input type="hidden" name="cliente" value="{{ request.GET.cliente }}">
+                        <input type="hidden" name="container" value="{{ request.GET.container }}">
+                        <input type="hidden" name="status_operacao" value="{{ request.GET.status_operacao }}">
+                        <input type="hidden" name="ids" value="{{ request.GET.ids }}">
+                    </form>
+
+                    <table class="table table-hover table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Requisição</th>
+                                <th>Cliente</th>
+                                <th>Local Entrega</th>
+                                <th>Modelo</th>
+                                <th>Destino</th>
+                                <th>BL</th>
+                                <th>Container</th>
+                                <th>Local</th>
+                                <th>Status Operação</th>
+                                <th>Entrega</th>
+                                <th>Inserção</th>
+                                <th>SLA Inserção</th>
+                                <th>Porto Brasil</th>
+                                <th>Embarque Marítimo</th>
+                                <th>Desembarque Marítimo</th>
+                                <th>Chegada Destino</th>
+                                <th>Retirada</th>
+                                <th>Envio Brasil</th>
+                                <th>Invoice</th>
+                                <th>RF Invoice</th>
+                                <th>Coleta</th>
+                                <th>Chegada Brasil</th>
+                                <th>Data Brasil</th>
+                                <th>SLA Liberação</th>
+                                <th>SLA Chegada Brasil</th>
+                                <th>Liberacao</th>
+                                <th>GoldenSat</th>
+                                <th>SLA Operação</th>
+                                <th>Observação</th>
+                                <th class="text-end">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for grid in object_list %}
+                                <tr>
+                                    <td>{{ grid.id_planilha }}</td>
+                                    <td class="editable-cell" data-field="requisicao" data-pk="{{ grid.pk }}">{{ grid.requisicao }}</td>
+                                    <td class="editable-cell" data-field="cliente" data-pk="{{ grid.pk }}">{{ grid.cliente }}</td>
+                                    <td class="editable-cell" data-field="local_de_entrega" data-pk="{{ grid.pk }}">{{ grid.local_de_entrega }}</td>
+                                    <td class="editable-cell" data-field="modelo" data-pk="{{ grid.pk }}">{{ grid.modelo }}</td>
+                                    <td class="editable-cell" data-field="destino" data-pk="{{ grid.pk }}">{{ grid.destino }}</td>
+                                    <td class="editable-cell" data-field="bl" data-pk="{{ grid.pk }}">{{ grid.bl }}</td>
+                                    <td class="editable-cell" data-field="container" data-pk="{{ grid.pk }}">{{ grid.container }}</td>
+                                    <td class="editable-cell" data-field="local" data-pk="{{ grid.pk }}">{{ grid.local }}</td>
+                                    <td class="editable-cell text-center" data-field="status_operacao" data-pk="{{ grid.pk }}">
+                                        <span class="badge" style="{{ grid.get_status_automatico|badge_style }}">
+                                            {{ grid.get_status_automatico }}
+                                        </span>
+                                    </td>
+                                    <td class="editable-cell" data-field="data_envio" data-pk="{{ grid.pk }}">{{ grid.data_envio|date:"d/m/Y" }}</td>
+                                    <td class="editable-cell" data-field="data_insercao" data-pk="{{ grid.pk }}">{{ grid.data_insercao|date:"d/m/Y" }}</td>
+                                    <td data-field="sla_insercao" data-pk="{{ grid.pk }}">{{ grid.sla_insercao|default:'-' }}</td>
+                                    <td class="editable-cell" data-field="data_chegada_porto" data-pk="{{ grid.pk }}">{{ grid.data_chegada_porto|date:"d/m/Y" }}</td>
+                                    <td class="editable-cell" data-field="data_embarque_maritimo" data-pk="{{ grid.pk }}">{{ grid.data_embarque_maritimo|date:"d/m/Y" }}</td>
+                                    <td class="editable-cell" data-field="data_desembarque_maritimo" data-pk="{{ grid.pk }}">{{ grid.data_desembarque_maritimo|date:"d/m/Y" }}</td>
+                                    <td class="editable-cell" data-field="data_chegada_destino" data-pk="{{ grid.pk }}">{{ grid.data_chegada_destino|date:"d/m/Y" }}</td>
+                                    <td class="editable-cell" data-field="data_retirada" data-pk="{{ grid.pk }}">{{ grid.data_retirada|date:"d/m/Y" }}</td>
+                                    <td class="editable-cell" data-field="data_envio_brasil" data-pk="{{ grid.pk }}">{{ grid.data_envio_brasil|date:"d/m/Y" }}</td>
+                                    <td class="editable-cell" data-field="data_envoice" data-pk="{{ grid.pk }}">{{ grid.data_envoice|date:"d/m/Y" }}</td>
+                                    <td class="editable-cell" data-field="rf_invoice" data-pk="{{ grid.pk }}">{{ grid.rf_invoice }}</td>
+                                    <td class="editable-cell" data-field="coleta" data-pk="{{ grid.pk }}">{{ grid.coleta|date:"d/m/Y" }}</td>
+                                    <td class="editable-cell" data-field="data_brasil" data-pk="{{ grid.pk }}">{{ grid.data_brasil|date:"d/m/Y" }}</td>
+                                    <td class="editable-cell" data-field="sla_liberacao" data-pk="{{ grid.pk }}">{{ grid.sla_liberacao }}</td>
+                                    <td class="editable-cell" data-field="sla_chegada_brasil" data-pk="{{ grid.pk }}">{{ grid.sla_chegada_brasil }}</td>
+                                    <td class="editable-cell" data-field="liberacao" data-pk="{{ grid.pk }}">{{ grid.liberacao|date:"d/m/Y" }}</td>
+                                    <td class="editable-cell" data-field="golden_sat" data-pk="{{ grid.pk }}">{{ grid.golden_sat|date:"d/m/Y" }}</td>
+                                    <td>
+                                        {{ grid.sla_operacao_dias|default:'-' }}
+                                    </td>
+                                    <td class="editable-cell" data-field="observacao" data-pk="{{ grid.pk }}">{{ grid.observacao|truncatechars:50 }}</td>
+                                    <td class="text-end">
+                                        <div class="btn-group">
+                                            <a href="{% url 'grid_internacional_detail' grid.pk %}" class="btn btn-sm btn-info" title="Detalhes">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{% url 'grid_internacional_update' grid.pk %}" class="btn btn-sm btn-warning" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="38" class="text-center py-4">
+                                        <div class="text-muted">
+                                            <i class="fas fa-inbox fa-2x mb-3"></i>
+                                            <p>Nenhum registro encontrado.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 8) Paginação -->
+            <div class="pagination-section">
+                {% if is_paginated %}
+                    <nav aria-label="Navegação de páginas" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1
+                                        {% if request.GET.cliente %}&cliente={{ request.GET.cliente }}{% endif %}
+                                        {% if request.GET.container %}&container={{ request.GET.container }}{% endif %}
+                                        {% if request.GET.status_operacao %}&status_operacao={{ request.GET.status_operacao }}{% endif %}"
+                                       aria-label="Primeira">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}
+                                        {% if request.GET.cliente %}&cliente={{ request.GET.cliente }}{% endif %}
+                                        {% if request.GET.container %}&container={{ request.GET.container }}{% endif %}
+                                        {% if request.GET.status_operacao %}&status_operacao={{ request.GET.status_operacao }}{% endif %}"
+                                       aria-label="Anterior">
+                                        <i class="fas fa-angle-left"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ num }}</span>
+                                    </li>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}
+                                            {% if request.GET.cliente %}&cliente={{ request.GET.cliente }}{% endif %}
+                                            {% if request.GET.container %}&container={{ request.GET.container }}{% endif %}
+                                            {% if request.GET.status_operacao %}&status_operacao={{ request.GET.status_operacao }}{% endif %}">
+                                            {{ num }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}
+                                        {% if request.GET.cliente %}&cliente={{ request.GET.cliente }}{% endif %}
+                                        {% if request.GET.container %}&container={{ request.GET.container }}{% endif %}
+                                        {% if request.GET.status_operacao %}&status_operacao={{ request.GET.status_operacao }}{% endif %}"
+                                       aria-label="Próxima">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}
+                                        {% if request.GET.cliente %}&cliente={{ request.GET.cliente }}{% endif %}
+                                        {% if request.GET.container %}&container={{ request.GET.container }}{% endif %}
+                                        {% if request.GET.status_operacao %}&status_operacao={{ request.GET.status_operacao }}{% endif %}"
+                                       aria-label="Última">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            </div>
+
+            <!-- 9) Badge mostrando total filtrado -->
+            {% if total_filtrado is not None %}
+                <div class="mb-2">
+                    <span class="badge bg-dark p-2">
+                        Total no filtro: <b>{{ total_filtrado }}</b>
+                    </span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
+
+<!-- Modal de Edição Rápida -->
+<div class="modal fade" id="quickEditModal" tabindex="-1" aria-labelledby="quickEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickEditModalLabel">Editar Campo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quickEditForm" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" id="editField" name="field">
+                    <input type="hidden" id="editPk" name="pk">
+                    <div class="mb-3">
+                        <label for="editValue" class="form-label">Valor</label>
+                        <input type="text" class="form-control" id="editValue" name="value">
+                        <select class="form-select mt-2" id="statusSelect" style="display: none;">
+                            <option value="Aguardando Liberação RFB">Aguardando Liberação RFB</option>
+                            <option value="Aguardando Chegada na Base">Aguardando Chegada na Base</option>
+                            <option value="Aguardando Coleta">Aguardando Coleta</option>
+                            <option value="Aguardando Embarque Internacional">Aguardando Embarque Internacional</option>
+                            <option value="Em reversa para o Brasil">Em reversa para o Brasil</option>
+                            <option value="Retirado, Ag. Envio">Retirado, Ag. Envio</option>
+                            <option value="Em viagem">Em viagem</option>
+                            <option value="No destino">No destino</option>
+                            <option value="Estoque Cliente">Estoque Cliente</option>
+                            <option value="Danificado">Danificado</option>
+                            <option value="Extraviado">Extraviado</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="saveQuickEdit">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configurar edição rápida
+    const quickEditModal = new bootstrap.Modal(document.getElementById('quickEditModal'));
+    const quickEditForm = document.getElementById('quickEditForm');
+    const editField = document.getElementById('editField');
+    const editPk = document.getElementById('editPk');
+    const editValue = document.getElementById('editValue');
+    const statusSelect = document.getElementById('statusSelect');
+    const saveQuickEdit = document.getElementById('saveQuickEdit');
+
+    // Adicionar evento de clique nas células editáveis
+    document.querySelectorAll('.editable-cell').forEach(cell => {
+        cell.addEventListener('click', function() {
+            const field = this.dataset.field;
+            const pk = this.dataset.pk;
+            const value = this.textContent.trim();
+
+            editField.value = field;
+            editPk.value = pk;
+
+            // Configurar o título do modal
+            const modalTitle = document.getElementById('quickEditModalLabel');
+            modalTitle.textContent = `Editar ${field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}`;
+
+            // Se for campo de status, mostrar o select
+            if (field === 'status_operacao') {
+                editValue.style.display = 'none';
+                statusSelect.style.display = 'block';
+                statusSelect.value = value;
+            } else {
+                editValue.style.display = 'block';
+                statusSelect.style.display = 'none';
+
+                // Configurar o tipo de input baseado no campo
+                if (field === 'data_envoice' || field.includes('data_') || field === 'liberacao' || field === 'coleta' || field === 'golden_sat') {
+                    editValue.type = 'date';
+                    // Converter a data do formato dd/mm/yyyy para yyyy-mm-dd
+                    if (value && value !== '-') {
+                        const [day, month, year] = value.split('/');
+                        if (day && month && year) {
+                            editValue.value = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                        }
+                    } else {
+                        editValue.value = '';
+                    }
+                } else {
+                    editValue.type = 'text';
+                    editValue.value = value;
+                }
+            }
+
+            quickEditModal.show();
+        });
+    });
+
+    // Salvar edição rápida
+    saveQuickEdit.addEventListener('click', function() {
+        const formData = new FormData(quickEditForm);
+        const field = formData.get('field');
+
+        // Se for campo de status, pegar o valor do select
+        if (field === 'status_operacao') {
+            formData.set('value', statusSelect.value);
+        }
+
+        const value = formData.get('value');
+
+        // Se for campo de data, converter para o formato correto
+        if (field === 'data_envoice' || field.includes('data_') || field === 'liberacao' || field === 'coleta' || field === 'golden_sat') {
+            if (value) {
+                formData.set('value', value);
+            }
+        }
+
+        fetch('{% url "grid_internacional_quick_edit" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const field = formData.get('field');
+                const pk = formData.get('pk');
+                const cell = document.querySelector(`[data-field="${field}"][data-pk="${pk}"]`);
+                if (cell) {
+                    if (field === 'status_operacao') {
+                        let badgeClass = '';
+                        const value = data.value;
+                        if (value === 'Reversa Finalizada') {
+                            badgeClass = 'bg-success';
+                        } else if (value === 'Em Viagem') {
+                            badgeClass = 'bg-warning';
+                        } else if (value === 'Estoque Cliente') {
+                            badgeClass = 'bg-info';
+                        } else if (value === 'Estoque Golden') {
+                            badgeClass = 'bg-primary';
+                        } else if (value === 'Extraviado' || value === 'Danificado') {
+                            badgeClass = 'bg-danger';
+                        } else if (value === 'Retirado, Ag. Envio') {
+                            badgeClass = 'bg-secondary';
+                        } else if (value === 'Aguardando Envio') {
+                            badgeClass = 'bg-warning';
+                        } else if (value === 'Em reversa para o Brasil') {
+                            badgeClass = 'bg-info';
+                        } else if (value === 'No destino') {
+                            badgeClass = 'bg-secondary';
+                        } else {
+                            badgeClass = 'bg-secondary';
+                        }
+                        cell.innerHTML = `<span class="badge ${badgeClass}">${value}</span>`;
+                    } else {
+                        cell.textContent = data.value;
+                    }
+                }
+
+                // Se for um campo de data, atualizar os SLAs relacionados
+                if (field.startsWith('data_') || field === 'liberacao' || field === 'coleta' || field === 'golden_sat') {
+                    const slaFields = [
+                        'sla_insercao', 'sla_viagem', 'sla_retirada', 'sla_envio_brasil', 'sla_chegada_brasil',
+                        'sla_operacao', 'sla_porto_nacional', 'sla_terrestre', 'sla_maritimo',
+                        'sla_terminal_internacional', 'sla_terrestre_internacional', 'sla_internacional'
+                    ];
+                    slaFields.forEach(function(slaField) {
+                        if (data[slaField] !== undefined) {
+                            const slaCell = document.querySelector(`[data-field="${slaField}"][data-pk="${pk}"]`);
+                            if (slaCell) {
+                                slaCell.textContent = data[slaField];
+                            }
+                        }
+                    });
+                }
+
+                // Atualizar a soma total após a edição
+                atualizarSomaTotal();
+                quickEditModal.hide();
+            }
+        });
+    });
+
+    // Atualizar a soma total dos SLAs
+    function atualizarSomaTotal() {
+        fetch('{% url "grid_internacional_sla_resumo" %}')
+            .then(response => response.json())
+            .then(data => {
+                if (data && typeof data.sla_soma_total !== 'undefined') {
+                    document.getElementById('slaSomaTotal').textContent = data.sla_soma_total;
+                } else {
+                    document.getElementById('slaSomaTotal').textContent = '-';
+                }
+            })
+            .catch(() => {
+                document.getElementById('slaSomaTotal').textContent = '-';
+            });
+    }
+
+    // Chamar a função inicialmente
+    atualizarSomaTotal();
+});
+</script>
+
+{% endblock %}

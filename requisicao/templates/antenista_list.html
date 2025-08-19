@@ -60,6 +60,7 @@
 	 	<th>Valor de Entrega</th>
 		<th>Contrato</th>
                 <th>Status</th> <!-- Nova coluna para Status -->
+                <th>Data de Criação</th>
                 <th>Ações</th> <!-- Nova coluna para o botão -->
             </tr>
         </thead>
@@ -76,6 +77,7 @@
                 <td>{{ antenista.valor_entrega }}</td>
                 <td>{{ antenista.contrato }}</td>
                 <td>{{ antenista.status }}</td> <!-- Exibe o status atual -->
+                <td>{{ antenista.data_criacao|date:"d/m/Y" }}</td>
                 <td>
                     {% if antenista.status != 'Atualizado' %}
                         <form action="{% url 'atualizar_atualizado' antenista.pk %}" method="POST" style="display: inline;">

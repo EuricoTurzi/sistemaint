@@ -6,6 +6,7 @@ class Reativacao(models.Model):
     STATUS_CHOICES = [
         ('Faturado', 'Faturado'),
         ('Não Faturado', 'Não Faturado'),
+	('Sem Custo','Sem Custo'),
     ]
     MOTIVO_CHOICES = [
         ('Retornavel', 'Retornavel'),

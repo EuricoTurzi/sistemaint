@@ -2,6 +2,45 @@ from django.shortcuts import render, redirect
 from .forms import HorasForm
 from .models import horas  # Se o seu modelo for "Horas", ajuste para "from .models import Horas"
 import datetime
+from dateutil.parser import parse as parse_dt
+
+def parse_datetime_flexible(datetime_str):
+    """
+    Tenta converter string de data/hora em datetime usando múltiplos formatos.
+    Aceita formatos brasileiros e internacionais.
+    """
+    if not datetime_str or not datetime_str.strip():
+        return None
+    
+    datetime_str = datetime_str.strip()
+    
+    # Lista de formatos para tentar
+    formats = [
+        "%Y-%m-%d %H:%M:%S",  # 2024-01-15 14:30:25
+        "%Y-%m-%d %H:%M",     # 2024-01-15 14:30
+        "%d/%m/%Y %H:%M:%S",  # 15/01/2024 14:30:25
+        "%d/%m/%Y %H:%M",     # 15/01/2024 14:30
+        "%d/%m/%Y",           # 15/01/2024
+        "%Y-%m-%d",           # 2024-01-15
+    ]
+    
+    # Tenta formatos específicos primeiro
+    for fmt in formats:
+        try:
+            dt = datetime.datetime.strptime(datetime_str, fmt)
+            # Se o formato não inclui hora, assume 00:00:00
+            if fmt in ["%d/%m/%Y", "%Y-%m-%d"]:
+                dt = dt.replace(hour=0, minute=0, second=0)
+            return dt
+        except ValueError:
+            continue
+    
+    # Fallback para dateutil.parser (mais flexível)
+    try:
+        dt = parse_dt(datetime_str)
+        return dt
+    except:
+        return None
 
 def cadastrar_horas(request):
     if request.method == 'POST':
@@ -14,11 +53,12 @@ def cadastrar_horas(request):
             if not hora_final_str or hora_final_str.strip() == "" or hora_final_str.strip() == "0":
                 formatted_time = "00:00:00"
             else:
-                try:
-                    hora_inicial = datetime.datetime.strptime(hora_inicial_str, "%Y-%m-%d %H:%M:%S")
-                    hora_final = datetime.datetime.strptime(hora_final_str, "%Y-%m-%d %H:%M:%S")
-                except ValueError:
-                    form.add_error(None, 'Formato inválido. Use AAAA-MM-DD HH:MM:SS para as datas.')
+                # Usa a função flexível para parsing
+                hora_inicial = parse_datetime_flexible(hora_inicial_str)
+                hora_final = parse_datetime_flexible(hora_final_str)
+                
+                if not hora_inicial or not hora_final:
+                    form.add_error(None, 'Formato inválido. Use DD/MM/AAAA HH:MM:SS ou AAAA-MM-DD HH:MM:SS para as datas.')
                     return render(request, 'horas.html', {'form': form})
                 
                 if hora_final <= hora_inicial:
@@ -75,13 +115,10 @@ def consulta_horas(request):
 
         # soma os intervalos somente dos não-aprovados
         for item in records:
-            try:
-                hi = datetime.datetime.strptime(item.hora_inicial, "%Y-%m-%d %H:%M:%S")
-                hf = datetime.datetime.strptime(item.hora_final,  "%Y-%m-%d %H:%M:%S")
-                if hf > hi:
-                    total_seconds += int((hf - hi).total_seconds())
-            except:
-                continue
+            hi = parse_datetime_flexible(item.hora_inicial)
+            hf = parse_datetime_flexible(item.hora_final)
+            if hi and hf and hf > hi:
+                total_seconds += int((hf - hi).total_seconds())
 
         grand_seconds += total_seconds
 
@@ -204,20 +241,8 @@ def consulta_horas_pdf(request):
     if data_ini and data_fin:
         qs = qs.filter(hora_inicial__gte=data_ini, hora_final__lte=data_fin)
 
-    # Função de parsing robusto
-    def safe_parse(s):
-        if not s or not s.strip():
-            return None
-        s = s.strip()
-        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
-            try:
-                return datetime.datetime.strptime(s, fmt)
-            except ValueError:
-                pass
-        try:
-            return parse_dt(s)
-        except:
-            return None
+    # Usa a função flexível de parsing já definida
+    # (parse_datetime_flexible já está disponível globalmente)
 
     # Agrupa dados por funcionário
     employee_data = []
@@ -226,17 +251,20 @@ def consulta_horas_pdf(request):
         total_seconds = 0
         rows = []
         for it in records:
-            hi = safe_parse(it.hora_inicial)
-            hf = safe_parse(it.hora_final)
+            hi = parse_datetime_flexible(it.hora_inicial)
+            hf = parse_datetime_flexible(it.hora_final)
             diff = (hf - hi).total_seconds() if hi and hf and hf > hi else 0
             total_seconds += int(diff)
             h, rem = divmod(int(diff), 3600)
             m, s = divmod(rem, 60)
             row_total = f"{h:02d}:{m:02d}:{s:02d}"
+            # Formatar datas para DD/MM/AAAA
+            hi_str = hi.strftime("%d/%m/%Y") if hi else ""
+            hf_str = hf.strftime("%d/%m/%Y") if hf else ""
             rows.append({
-                'hora_inicial': it.hora_inicial or "",
-                'hora_final':   it.hora_final   or "",
-                'motivo':       it.motivo       or "",
+                'hora_inicial': hi_str,
+                'hora_final':   hf_str,
+                'motivo':       it.motivo or "",
                 'total':        row_total,
             })
         # Total agregado por funcionário

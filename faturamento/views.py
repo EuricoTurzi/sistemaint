@@ -18,8 +18,18 @@ class FaturamentoListView(PermissionRequiredMixin, LoginRequiredMixin, ListView)
     permission_required = 'faturamento.view_formulario'  # Substitua 'faturamento' pelo nome do seu aplicativo
 
     def get_queryset(self):
-        queryset = super().get_queryset().order_by('-id')  # Ordena por ID em ordem decrescente
+        queryset = super().get_queryset()
         queryset = queryset.exclude(status='Reprovado pelo CEO')
+        
+        # Aplicar ordenação
+        ordenacao = self.request.GET.get('ordenacao')
+        if ordenacao:
+            queryset = queryset.order_by(ordenacao)
+        else:
+            queryset = queryset.order_by('-id')  # Ordenação padrão por ID em ordem decrescente
+        
+        # Obter parâmetros dos filtros
+        data = self.request.GET.get('data')
         data_inicio = self.request.GET.get('data_inicio')
         data_fim = self.request.GET.get('data_fim')
         status_faturamento = self.request.GET.get('status_faturamento_filtro')
@@ -29,27 +39,51 @@ class FaturamentoListView(PermissionRequiredMixin, LoginRequiredMixin, ListView)
         contrato_tipo = self.request.GET.get('contrato_tipo_filtro')
         fatura_tipo = self.request.GET.get('fatura_tipo_filtro')
         status = self.request.GET.get('status')
-
-        # Aplicar filtros
-        if data_inicio and data_fim:
-            queryset = queryset.filter(data__range=[data_inicio, data_fim])
-        if status_faturamento:
-            queryset = queryset.filter(status_faturamento=status_faturamento)
-        if cliente:
-            queryset = queryset.filter(nome=cliente)
-        if motivo:
-            queryset = queryset.filter(motivo=motivo)
-        if tipo_produto:
-            queryset = queryset.filter(tipo_produto=tipo_produto)
-        if contrato_tipo:
-            queryset = queryset.filter(contrato=contrato_tipo)
-        if fatura_tipo:
-            queryset = queryset.filter(tipo_fatura=fatura_tipo)
+        comercial = self.request.GET.get('comercial')
+        cnpj = self.request.GET.get('cnpj')
+        busca = self.request.GET.get('busca')
         
 
-        # Desativar paginação se algum filtro for aplicado
-        if data_inicio or data_fim or status_faturamento or cliente or motivo or tipo_produto or contrato_tipo or fatura_tipo:
-            self.paginate_by = None
+        # Aplicar filtros
+        if data:
+            queryset = queryset.filter(data__date=data)
+        elif data_inicio and data_fim:
+            queryset = queryset.filter(data__date__range=[data_inicio, data_fim])
+        elif data_inicio:
+            queryset = queryset.filter(data__date__gte=data_inicio)
+        elif data_fim:
+            queryset = queryset.filter(data__date__lte=data_fim)
+            
+        if status_faturamento:
+            queryset = queryset.filter(status_faturamento=status_faturamento)
+            
+        if cliente:
+            queryset = queryset.filter(nome_id=cliente)
+            
+        if motivo:
+            queryset = queryset.filter(motivo=motivo)
+            
+        if tipo_produto:
+            queryset = queryset.filter(tipo_produto_id=tipo_produto)
+            
+        if contrato_tipo:
+            queryset = queryset.filter(contrato=contrato_tipo)
+            
+        if fatura_tipo:
+            queryset = queryset.filter(tipo_fatura=fatura_tipo)
+            
+        if status:
+            queryset = queryset.filter(status=status)
+            
+        if comercial:
+            queryset = queryset.filter(comercial=comercial)
+            
+        if cnpj:
+            queryset = queryset.filter(cnpj__icontains=cnpj)
+            
+        if busca:
+            queryset = queryset.filter(nome__nome__icontains=busca)
+        
 
         return queryset
     def get_context_data(self, **kwargs):
@@ -60,7 +94,27 @@ class FaturamentoListView(PermissionRequiredMixin, LoginRequiredMixin, ListView)
         context['tipo_produto_choices'] = Produto.objects.all()
         context['contrato_tipo_choices'] = Requisicoes._meta.get_field('contrato').choices
         context['fatura_tipo_choices'] = Requisicoes._meta.get_field('tipo_fatura').choices
-        context['status'] = Requisicoes._meta.get_field('status').choices
+        context['status_choices'] = Requisicoes._meta.get_field('status').choices
+        context['comercial_choices'] = Requisicoes._meta.get_field('comercial').choices
+        
+        # Manter os filtros aplicados no contexto para a paginação
+        context['filtros_aplicados'] = {
+            'data': self.request.GET.get('data', ''),
+            'data_inicio': self.request.GET.get('data_inicio', ''),
+            'data_fim': self.request.GET.get('data_fim', ''),
+            'status_faturamento_filtro': self.request.GET.get('status_faturamento_filtro', ''),
+            'cliente_filtro': self.request.GET.get('cliente_filtro', ''),
+            'motivo_filtro': self.request.GET.get('motivo_filtro', ''),
+            'tipo_produto_filtro': self.request.GET.get('tipo_produto_filtro', ''),
+            'contrato_tipo_filtro': self.request.GET.get('contrato_tipo_filtro', ''),
+            'fatura_tipo_filtro': self.request.GET.get('fatura_tipo_filtro', ''),
+            'status': self.request.GET.get('status', ''),
+            'comercial': self.request.GET.get('comercial', ''),
+            'cnpj': self.request.GET.get('cnpj', ''),
+            'busca': self.request.GET.get('busca', ''),
+            'ordenacao': self.request.GET.get('ordenacao', ''),
+        }
+        
         return context
 
 def update_status_faturamento(request, id):
@@ -106,7 +160,12 @@ def atualizar_observacoes(request, id):
         observacoes = request.POST.get('observacoes')
         registro.observacoes = observacoes
         registro.save()
-        return redirect('faturamento_list')  # Redireciona para
+        
+        # Manter os filtros aplicados no redirecionamento
+        params = request.GET.copy()
+        if params:
+            return redirect(f"{reverse('faturamento_list')}?{params.urlencode()}")
+        return redirect('faturamento_list')
     
 
 from django.shortcuts import render

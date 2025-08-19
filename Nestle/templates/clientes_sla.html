@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load dict_extras %}
+{% block content %}
+<h2>Resumo de Clientes e SLAs</h2>
+
+<!-- Tabela Resumo Principal -->
+<table class="table table-bordered table-sm" style="font-size: 0.95em;">
+    <thead class="table-dark">
+        <tr>
+            <th>Cliente</th>
+            {% for label in status_labels %}
+                <th>{{ label }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for cliente in clientes_info %}
+        <tr>
+            <td><b>{{ cliente.nome }}</b></td>
+            {% for label in status_labels %}
+                <td>{{ cliente.status_count|get_item:label }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        <tr class="table-secondary">
+            <td><b>Total Operação</b></td>
+            {% for label in status_labels %}
+                <td><b>{{ totais|get_item:label }}</b></td>
+            {% endfor %}
+        </tr>
+    </tbody>
+</table>
+
+<!-- Tabela de Médias de SLA -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <table class="table table-bordered table-sm" style="width: auto;">
+            <thead class="table-warning">
+                <tr><th colspan="2">Média de SLA (Dias)</th></tr>
+            </thead>
+            <tbody>
+                {% for sla in sla_labels %}
+                <tr>
+                    <td>{{ sla_nomes|get_item:sla }}</td>
+                    <td>{{ sla_media_geral|get_item:sla|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <table class="table table-bordered table-sm" style="width: auto;">
+            <thead class="table-info">
+                <tr><th colspan="2">Resumo da Operação</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Menos de 75 dias</td><td>{{ totais|get_item:'Menos de 75 dias' }}</td></tr>
+                <tr><td>Mais de 75 dias</td><td>{{ totais|get_item:'Mais de 75 dias' }}</td></tr>
+                <tr><td>Retirado Ag. Envio</td><td>{{ totais|get_item:'Retirado Ag. Envio' }}</td></tr>
+                <tr><td>Em Reversa Para o Brasil</td><td>{{ totais|get_item:'Em Reversa Para o Brasil' }}</td></tr>
+                <tr><td>Reversa Finalizada</td><td>{{ totais|get_item:'Reversa Finalizada' }}</td></tr>
+                <tr><td>Resumo Para Envio</td><td>{{ totais|get_item:'Resumo Para Envio' }}</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Tabela vertical igual à da imagem, com médias das SLAs por etapa -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <table class="table table-bordered table-striped" style="width: 100%; background: #e6c96a;">
+            <thead>
+                <tr><th colspan="2" style="text-align:center; background: #bfa13a; color: #fff;">Primeira Etapa - Média de SLA (Dias)</th></tr>
+            </thead>
+            <tbody>
+                {% for sla in sla_labels %}
+                <tr>
+                    <td><b>{{ sla_nomes|get_item:sla }}</b></td>
+                    <td style="text-align:center;">{{ sla_media_por_etapa|get_item:sla|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

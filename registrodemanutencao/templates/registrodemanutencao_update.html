@@ -67,6 +67,8 @@
                         <div class="text-danger">{{ form.quantidade.errors }}</div>
                         {% endif %}
                     </div>
+
+			{% if perms.t42.change_t42model %}
                     <div class="form-group col-md-2">
                         <label for="{{ form.status.id_for_label }}">Status:</label>
                         {{ form.status }}
@@ -74,6 +76,7 @@
                         <div class="text-danger">{{ form.status.errors }}</div>
                         {% endif %}
                     </div>
+			{% endif %}
                        <div class="form-group col-md-2">
                         <label for="{{ form.tipo_produto.id_for_label }}">Modelo:</label>
                         {{ form.tipo_produto }}

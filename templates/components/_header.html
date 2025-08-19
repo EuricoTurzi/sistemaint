@@ -95,20 +95,11 @@
                             </a>
                             {% endif %}
                     </li>
+
+                    <!-- Projeto Nestle -->
+                  
+
                    <!-- <li class="nav-item dropdown">
-                        {% if perms.projetos.view_registro %}
-                            <a class="nav-link dropdown-toggle" href="#" id="dropdownAcompanhamento" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-bookshelf"></i> Projetos
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownAcompanhamento">
-                                {% if perms.projetos.add_registro %}
-                                    <li><a class="dropdown-item" href="{% url 'criar_registro' %}">Criar Registro</a></li>
-                                {% endif %}
-                                <li><a class="dropdown-item" href="{% url 'dashboard' %}">DashBoard</a></li>
-                                <li><a class="dropdown-item" href="{% url 'listar_registros' %}">Lista de Registros</a></li>
-                            </ul>
-                        {% endif %}
-                    </li>
                     -->
                     
                     {% if perms.registrodemanutencao.view_registrodemanutencao %}
@@ -130,6 +121,7 @@
                             {% if perms.registrodemanutencao.add_registrodemanutencao %}
 				{% if perms.projetos.add_registro %}
                             <li><a class="dropdown-item" href="{% url 'FormulariosCreateView' %}">Entrada / Manutenção</a></li>
+			   <li><a class="dropdown-item" href="{% url 'historicoListViews' %}">Historico Requisiçoes</a></li>
                             {% endif %}
                             {% endif %}
 				{% endif %}
@@ -292,28 +284,29 @@
                         Histórico de Manutenção
                     </a>
                 </li>
-                <li>
-                    <a class="dropdown-item" href="{% url 'historicoListViews' %}">
-                        Histórico de Requisições
-                    </a>
-                </li>
+                <li><a class="dropdown-item" href="{% url 'reativacao_list' %}">Historico de Reativações</a></li>
             {% endif %}
         </ul>
     </li>
 {% endif %}
             
-                   <!--{% if perms.t42.view_t42model %}
+                   {% if perms.t42.view_t42model %}
                    <li class="nav-item dropdown">
                        <a class="nav-link dropdown-toggle" href="#" id="dropdownAcompanhamento" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                           <i class="bi bi-airplane"></i> Projeto Container
+                           <i class="bi bi-airplane"></i> Projeto Nestle
                        </a>
-                       <ul class="dropdown-menu" aria-labelledby="dropdownAcompanhamento">
-                           <li><a class="dropdown-item" href="{% url 't42_view' %}">Status</a></li>
-                           <li><a class="dropdown-item" href="{% url 'registrar_estoque_t42' %}">Estoque</a></li>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownAcompanhamento">
+                           <li><a class="dropdown-item" href="{% url 'grid_internacional_list' %}">Lista Grid</a></li>
+                           <li><a class="dropdown-item" href="{% url 'grid_internacional_create' %}">Novo Grid</a></li>
+                           <li><a class="dropdown-item" href="{% url 'clientes_nestle_list' %}">Lista de Clientes</a></li>
+                           <li><a class="dropdown-item" href="{% url 'clientes_nestle_create' %}">Novo Cliente</a></li>
+                           <li><a class="dropdown-item" href="{% url 'carga-list' %}">Cotaçoes</a></li>
+			   <li><a class="dropdown-item" href="{% url 'valores_mensais' %}">Envios Mensais</a></li>
+                           
                        </ul>
                    </li>
                {% endif %}
--->
+
                    {% if perms.t42.change_t42model %}
                    <li class="nav-item dropdown">
                        <a class="nav-link dropdown-toggle" href="#" id="dropdownAcompanhamento" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -325,6 +318,7 @@
                    </li>
                {% endif %}
                    {% if perms.pparada.view_paradasegura %}
+<!---
                    <li class="nav-item dropdown">
                        <a class="nav-link dropdown-toggle" href="#" id="dropdownAcompanhamento" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-bank2"></i> Parada Segura 
@@ -338,11 +332,11 @@
                         
                         </ul>
                           
-                   </li>
+                   </li>--->
                    {% endif %}
                  
 			{% if perms.t42.view_t42model %}
-		  <li class="nav-item dropdown">
+		  <!---<li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="dropdownAcompanhamento" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                      <i class="bi bi-bank2"></i> GoldenX 
                     </a>
@@ -359,6 +353,7 @@
 
 
 		 </li>
+--->
 {% endif %}
                    <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="dropdownAcompanhamento" role="button" data-bs-toggle="dropdown" aria-expanded="false">

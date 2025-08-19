@@ -36,13 +36,8 @@ class Clientes(models.Model):
     nome = models.CharField(max_length=100)
     nome_fantasia = models.CharField(max_length=100, null=True)
     endereco = models.CharField(max_length=255)
-
-
     cnpj = models.CharField(max_length=20)
     comercial = models.CharField(max_length=20, null=True,blank=True)
-
-    
-
     tipo_contrato = models.CharField(choices=contratos, max_length=50, null=True,blank=True)
     inicio_de_contrato = models.DateField(null=True, blank=True)
     quantidade_em_contrato = models.CharField(max_length=50,null=True,blank=True) 
@@ -54,6 +49,7 @@ class Clientes(models.Model):
     gr = models.CharField(null=True, blank=True,max_length=50)
     corretora = models.CharField(null=True, blank=True,max_length=50)
     seguradora = models.CharField(null=True, blank=True,max_length=50)
+    data_treinamento = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.nome

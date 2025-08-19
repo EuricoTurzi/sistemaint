@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .card-header.bg-primary {
+        background: linear-gradient(90deg, #0056b3 0%, #009BDE 100%) !important;
+        border-color: #004494;
+    }
+
+    /* Container principal */
+    .clientes-container {
+        padding: 1.5rem;
+        font-size: 15px;
+    }
+
+    .cliente-card {
+        border: none;
+        border-radius: 0.75rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+        background-color: #ffffff;
+        font-size: 15px;
+        border-top: 4px solid #0d6efd;
+    }
+
+    .cliente-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .cliente-card .card-body {
+        padding: 1.25rem;
+    }
+
+    .cliente-card .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #333333;
+        margin-bottom: 0.75rem;
+    }
+
+    .cliente-card .card-text {
+        font-size: 0.95rem;
+        color: #555555;
+        margin-bottom: 0.5rem;
+    }
+    .cliente-card .card-text strong {
+        color: #333333;
+    }
+
+    .cliente-card .btn-outline-primary {
+        border-color: #0d6efd;
+        color: #0d6efd;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .cliente-card .btn-outline-primary:hover {
+        background-color: #0d6efd;
+        color: #ffffff;
+    }
+    .cliente-card .btn-outline-danger {
+        border-color: #dc3545;
+        color: #dc3545;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .cliente-card .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: #ffffff;
+    }
+
+    /* Header da lista */
+    .lista-clientes-header {
+        background-color: #0d6efd;
+        color: #ffffff;
+        border-radius: 0.75rem 0.75rem 0 0;
+    }
+    .lista-clientes-header h4 {
+        margin: 0;
+        font-weight: 600;
+    }
+    .btn-novo-cliente {
+        background-color: #ffffff;
+        color: #0d6efd;
+        border: 1px solid #ffffff;
+        transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .btn-novo-cliente:hover {
+        background-color: #0b5ed7;
+        color: #ffffff;
+        border-color: #0b5ed7;
+    }
+
+    /* Mensagem de nenhum cliente */
+    .alert-nenhum-cliente {
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        color: #0c5460;
+        background-color: #cff4fc;
+        border-color: #b6effb;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="card shadow-sm">
+        <!-- Aqui: utiliza bg-primary, então o CSS acima (com gradiente) será aplicado -->
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Lista de Clientes</h4>
+            <a href="{% url 'clientes_nestle_create' %}" class="btn btn-light">
+                <i class="fas fa-plus me-2"></i>Novo Cliente
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for cliente in clientes %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 cliente-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ cliente.cliente }}</h5>
+                            <p class="card-text mb-1"><strong>CNPJ:</strong> {{ cliente.cnpj }}</p>
+                            <p class="card-text mb-1"><strong>Endereço:</strong> {{ cliente.endereco }}</p>
+                            <p class="card-text mb-1"><strong>Quantidade:</strong> {{ cliente.quantidade }}</p>
+                            <p class="card-text mb-1"><strong>Valor:</strong> R$ {{ cliente.valor|floatformat:2 }}</p>
+                            <p class="card-text mb-3"><strong>Local:</strong> {{ cliente.local }}</p>
+                            <div class="d-flex justify-content-end">
+                                <a href="{% url 'clientes_nestle_update' cliente.id %}" class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="tooltip" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'clientes_nestle_delete' cliente.id %}" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center mb-0">
+                        Nenhum cliente cadastrado.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para ativar tooltips nos botões -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (el) {
+        return new bootstrap.Tooltip(el);
+    });
+});
+</script>
+{% endblock %}

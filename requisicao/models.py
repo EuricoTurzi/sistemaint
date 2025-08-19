@@ -80,15 +80,12 @@ class Requisicoes(models.Model):
 
     # Definição das escolhas de status
     STATUS_CHOICES = [
-        ('Aprovado', 'Aprovado'),
-        ('Reprovado', 'Reprovado'),
+        
         ('Pendente', 'Pendente'),
         ('Configurado', 'Configurado'),
         ('Reprovado pelo CEO', 'Reprovado pelo CEO'),
         ('Aprovado pelo CEO', 'Aprovado pelo CEO'),
-        ('Reprovado pela Diretoria', 'Reprovado pela Diretoria'),
-        ('Aprovado pela Diretoria', 'Aprovado pela Diretoria'),
-        ('Pedido para o cliente', 'Pedido para o cliente'),
+        ('Enviado para o cliente', 'Enviado para o cliente'),
     ]
     customizacoes = [
 
@@ -301,7 +298,7 @@ class Requisicoes(models.Model):
     forma_pagamento = models.CharField(max_length=100,null=True, blank=True, default='')
     observacoes = models.TextField(max_length=250,null=True, blank=True, default='')
     aos_cuidados = models.TextField(max_length=250,null=True, blank=True, default='')
-    status = models.CharField(default='Pendente', null=True, blank=True, max_length=50)
+    status = models.CharField(choices=STATUS_CHOICES,default='Pendente', null=True, blank=True, max_length=50)
     TP = models.CharField(choices=TP, null=True, blank=True, max_length=50)
     status_faturamento = models.CharField(choices=statusfat,  default="Pendente",null=True, blank=True, max_length=50)
     id_equipamentos= models.TextField(max_length=180000, null=True, blank=True, default='')
@@ -439,6 +436,7 @@ class estoque_antenista(models.Model):
     tipo_produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='antenista_produto')
     endereco = models.CharField(max_length=255, blank=True, null=True)
     quantidade = models.IntegerField(null=True, blank=True)
+    data = models.DateField(null=True, blank=True)
     
 
     def __str__(self):
@@ -628,6 +626,7 @@ class antenista_CARD(models.Model):
     equipamentos = models.CharField(max_length=1000, blank=True, null=True)
     contrato = models.CharField(choices=TIPO,max_length=1000, blank=True, null=True)
     valor_entrega  = models.CharField(max_length=1000, blank=True, null=True)
+    data_criacao = models.DateField(auto_now_add=True, null=True, blank=True)
     status = models.CharField(
         max_length=50,
         choices=[

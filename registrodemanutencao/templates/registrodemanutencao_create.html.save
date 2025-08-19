@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .container {
+        max-width: 70rem;
+        margin: 0 auto;
+        height: 80rem;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    input[type="submit"], .btn-secondary {
+        width: fit-content;
+        align-self: center;
+    }
+
+    h3.display-4 {
+        font-size: 2rem;
+        text-align: center;
+    }
+</style>
+
+<div class="container mt-4">
+    <h3 class="display-4"><strong>Criar Entrada</strong></h3>
+    <div class="card">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                
+                
+                </div>
+
+                <button type="submit" class="btn btn-primary">Salvar Entrada</button>
+            </form>
+            <a href="{% url 'FormulariosCreateView' %}" class="btn btn-secondary mt-3">Cancelar e Voltar</a>
+        </div>
+    </div>
+</div>
+
+<script>
+   document.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        e.preventDefault(); // Bloqueia a tecla Enter
+    }
+});
+
+document.addEventListener("input", function (e) {
+    var input = e.target;
+    var value = input.value;
+    var patterns = ["","35154", "35642", "86590", "86325", "35196","35643"]; // Padrões a serem encontrados
+
+    // Recupera o campo do formulário de quantidade
+    var quantidadeCampo = document.getElementById("id_quantidade"); // Campo do formulário
+    var quantidadeAtual = parseInt(quantidadeCampo.value || "0", 10); // Valor atual do campo
+    var quantidadeEncontrada = 0; // Contador para padrões encontrados
+
+    // Itera pelos padrões e substitui cada ocorrência
+    patterns.forEach(function (pattern) {
+        var regex = new RegExp(pattern, "g"); // Regex global para encontrar o padrão
+        value = value.replace(regex, function () {
+            quantidadeEncontrada += 1; // Incrementa a quantidade para cada correspondência encontrada
+            return "     "; // Substitui o padrão por 5 espaços
+        });
+    });
+
+    // Atualiza o valor do campo de entrada sem os padrões
+    input.value = value;
+
+    // Incrementa a quantidade total e atualiza o campo do formulário
+    var novaQuantidade = quantidadeAtual + quantidadeEncontrada;
+    quantidadeCampo.value = novaQuantidade; // Atualiza o campo do formulário diretamente
+
+    console.log(`Quantidade encontrada nesta entrada: ${quantidadeEncontrada}`);
+    console.log(`Quantidade total acumulada: ${novaQuantidade}`);
+});
+
+
+</script>
+{% endblock %}

@@ -6,7 +6,7 @@ class ClienteForm(forms.ModelForm):
     class Meta:
         model = Clientes
 
-        fields = ['nome', 'nome_fantasia','quantidade_em_contrato','endereco', 'cnpj','comercial','tipo_contrato','inicio_de_contrato','vigencia','termino','status','equipamento','quantidade','gr','corretora','seguradora']
+        fields = ['nome', 'nome_fantasia','quantidade_em_contrato','endereco', 'cnpj','comercial','tipo_contrato','inicio_de_contrato','vigencia','termino','status','equipamento','quantidade','gr','corretora','seguradora','data_treinamento']
 
        
 
@@ -27,4 +27,5 @@ class ClienteForm(forms.ModelForm):
             'gr': forms.Textarea(attrs={'class' : 'form-control', 'rows':1}),
             'corretora': forms.Textarea(attrs={'class' : 'form-control', 'rows':1}),
             'seguradora': forms.Textarea(attrs={'class' : 'form-control', 'rows':1}),
+            'data_treinamento': forms.TextInput(attrs={'class': 'form-control'}),
         }

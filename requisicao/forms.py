@@ -10,7 +10,7 @@ class RequisicaoForm(forms.ModelForm):
             'vigencia', 'motivo', 'antenista', 'envio', 'comercial', 'tipo_produto', 
             'aos_cuidados', 'carregador', 'cabo', 'tipo_fatura', 'valor_unitario', 
             'valor_total', 'forma_pagamento', 'tipo_customizacao', 'numero_de_equipamentos', 
-            'observacoes', 'status', 'TP', 'taxa_envio', 'status_faturamento',
+            'observacoes', 'status', 'TP', 'taxa_envio', 'status_faturamento','id_equipamentos',
         ]
         widgets = {
             'nome': forms.Select(attrs={'class': 'form-control'}),
@@ -36,9 +36,10 @@ class RequisicaoForm(forms.ModelForm):
             'forma_pagamento': forms.TextInput(attrs={'class': 'form-control'}),
             'aos_cuidados': forms.TextInput(attrs={'class': 'form-control'}),
             'observacoes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'status': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
             'TP': forms.Select(attrs={'class': 'form-control'}),
             'status_faturamento': forms.Select(attrs={'class': 'form-control'}),
+            'id_equipamentos': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -83,7 +84,7 @@ class requisicaoFormup(forms.ModelForm):
             'valor_total': forms.NumberInput(attrs={'class': 'form-control'}),
             'forma_pagamento': forms.TextInput(attrs={'class': 'form-control'}),
             'observacoes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'status': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
             'TP': forms.Select(attrs={'class': 'form-control'}),
             
             
@@ -140,7 +141,7 @@ class RequisicoesForm(forms.ModelForm):
             'valor_total': forms.NumberInput(attrs={'class': 'form-control'}),
             'forma_pagamento': forms.TextInput(attrs={'class': 'form-control'}),
             'observacoes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'status': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'status': forms.TextInput(attrs={'class': 'form-control'}),
             'TP': forms.Select(attrs={'class': 'form-control'}),
         }
 

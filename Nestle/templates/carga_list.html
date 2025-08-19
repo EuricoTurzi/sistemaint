@@ -1,0 +1,637 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .background-container {
+  background-color: #f5f5f5;
+  padding: 2rem;
+  border-radius: 15px;
+  width: 170%;             
+  max-width: none;         
+  margin: 2rem auto 2rem calc(-10%); 
+  box-sizing: border-box;
+  margin-left: -450px;
+}
+
+  .app-container {
+  width: 100%;
+  padding: 0 1rem;       
+  box-sizing: border-box;
+}
+
+  .custom-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1.25rem 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    position: relative;
+  }
+
+  .border-top-red {
+    border-top: 5px solid #f44336;
+  }
+
+  .border-top-teal {
+    border-top: 5px solid #ece81a;
+  }
+
+  .border-top-green {
+    border-top: 5px solid #4caf50;
+  }
+
+  .card-header-icon {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .icon-square {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #3652f4;
+    border-radius: 6px;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    font-size: 12px;
+  }
+
+  .label {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+  }
+
+  .value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.75rem;
+    color: black;
+  }
+
+  .status-label {
+    background-color: #e9f5ec;
+    color: #2e7d32;
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    border-radius: 1rem;
+    display: inline-block;
+  }
+
+p {
+  color: black;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.header-actions {
+  margin-bottom: 1rem; 
+}
+
+</style>
+
+<div class="background-container">
+  <div class="app-container">
+    <div class="d-flex justify-content-between align-items-center header-actions">        
+            <h1 class="h3 fw-bold text-dark mb-2">Sistema de Cotações</h1>    
+          <button class="btn btn-primary btn-lg" data-bs-toggle="collapse" data-bs-target="#formCotacao">
+            <i class="bi bi-plus-circle me-1"></i> Nova Cotacão
+          </button>  
+      </div>
+    <div class="card shadow-sm mb-4 rounded-3">
+      <div class="card-body">
+          <p class="text-center mb-0">Gerencie cotações como: FEDEX / DHL e AGENTE DE CARGAS</p>  
+        </div>
+      </div>
+    </div>
+
+    {% if resumo_total_pago is not None %}
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="custom-card border-top-red">
+          <div class="card-header-icon">
+            <span class="icon-square"></span>
+          </div>
+          <p class="label">Total Pago</p>
+          <h5 class="value">R$ {{ resumo_total_pago|floatformat:2 }}</h5>
+          <div class="status-label">Aprovadas</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="custom-card border-top-teal">
+          <div class="card-header-icon">
+            <span class="icon-square"></span>
+          </div>
+          <p class="label">Total de Equipamentos</p>
+          <h5 class="value">{{ resumo_total_equipamentos }}</h5>
+          <div class="status-label">Unidades</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="custom-card border-top-green">
+          <div class="card-header-icon">
+            <span class="icon-square"></span>
+          </div>
+          <p class="label">Média por Equipamento</p>
+          <h5 class="value">R$ {{ resumo_media_por_equipamento|floatformat:2 }}</h5>
+          <div class="status-label">Por unidade</div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div id="formCotacao" class="collapse mb-4">
+      <div class="card shadow-sm rounded-3">
+        <div class="card-body p-3">
+          <h5 class="card-title mb-3">Nova Cotacão</h5>
+          <form action="{% url 'cotacoes-criar' %}" method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Transportadora</label>
+                {{ form.tipo_transportadora }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Data</label>
+                {{ form.data }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Moeda</label>
+                {{ form.frete_all_in_moeda }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Frete ALL IN (EUR)</label>
+                {{ form.frete_all_in_valor }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Frete ALL IN (USD)</label>
+                {{ form.frete_all_in_usd }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Frete ALL IN (USD) Moeda</label>
+                {{ form.frete_all_in_usd_moeda }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Honorários</label>
+                {{ form.honorarios }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Frete Rodoviário</label>
+                {{ form.frete_rodoviario }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Licença Importação</label>
+                {{ form.licenca_importacao }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Taxa Siscomex</label>
+                {{ form.taxa_siscomex }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Taxa Armazenagem</label>
+                {{ form.taxa_armazenagem }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">RF Invoice</label>
+                {{ form.rf_invoice }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Data Invoice</label>
+                {{ form.data_invoice }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Origem</label>
+                {{ form.origem }}
+              </div>
+              <div class="col-md-4 mb-3">
+              <label class="form-label">Quantidade de Equipamento</label>
+              {{ form.qtd_equipamento }}
+            </div>
+            </div>
+            <div class="mt-4">
+              <button type="submit" class="btn btn-success btn-lg"><i class="bi bi-check-circle me-1"></i> Salvar Cotacão</button>
+              <button type="button" class="btn btn-secondary btn-lg" data-bs-toggle="collapse" data-bs-target="#formCotacao"><i class="bi bi-x-circle me-1"></i> Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% for cotacao in cotacoes %}
+    <div class="card mb-3 {% if cotacao.status == 'Aprovada' %}bg-success-subtle{% elif cotacao.status == 'Reprovada' %}bg-danger-subtle{% else %}bg-warning-subtle{% endif %} rounded-3 shadow-sm">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="card-title mb-1">Cotação #{{ forloop.counter }}</h5>
+          <p class="card-text text-muted mb-0">Data: {{ cotacao.data|date:"d/m/Y" }} - Moeda: {{ cotacao.frete_all_in_moeda }}</p>
+        </div>
+        <div>
+          <span class="badge {% if cotacao.status == 'Aprovada' %}bg-success{% elif cotacao.status == 'Reprovada' %}bg-danger{% else %}bg-warning{% endif %} me-2">{{ cotacao.get_status_display }}</span>
+          <a class="btn btn-sm btn-info" data-bs-toggle="collapse" href="#detalhes-{{ cotacao.id }}" role="button" aria-expanded="false" aria-controls="detalhes-{{ cotacao.id }}">
+            <i class="bi bi-info-circle me-1"></i> Ver Detalhes
+          </a>
+          <form action="{% url 'carga-aprovar-reprovar' pk=cotacao.id status='Aprovada' %}" method="post" class="d-inline ms-1">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-check-circle me-1"></i> Aprovar</button>
+          </form>
+          <form action="{% url 'carga-aprovar-reprovar' pk=cotacao.id status='Reprovada' %}" method="post" class="d-inline ms-1">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-x-circle me-1"></i> Reprovar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="detalhes-{{ cotacao.id }}" class="collapse mt-3">
+      <div class="card p-3 rounded-3 mt-3">
+        <h5 class="text-center mb-3 fw-bold">{{ cotacao.tipo_transportadora }}</h5>
+        <div class="d-flex justify-content-between mb-3">
+          <span class="fw-bold">MEMORIA DE CALCULO</span>
+          <span class="fw-bold">Data: {{ cotacao.data|date:"d/m/Y" }}</span>
+        </div>
+
+        <table class="table table-bordered table-sm mb-4 table-striped shadow-sm">
+          <thead class="table-light">
+            <tr>
+              <th>Item</th>
+              <th>Moeda</th>
+              <th>Valor</th>
+              <th>Cotação/Taxa</th>
+              <th>Valor em R$</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              data-cotacao-eur="{{ cotacao.cotacao_euro_na_data|floatformat:4|default:'0' }}"
+              data-cotacao-usd="{{ cotacao.cotacao_dolar_na_data|floatformat:4|default:'0' }}"
+              data-cotacao-id="{{ cotacao.id }}"
+              data-campo-valor-rs="frete_all_in_eur_brl"
+              data-campo-moeda="frete_all_in_moeda"
+            >
+              <td>FRETE ALL IN</td>
+              <td>
+                <select class="form-select" name="moeda_frete_all_in">
+                  <option value="EUR" {% if cotacao.frete_all_in_moeda == 'EUR' %}selected{% endif %}>EUR</option>
+                  <option value="USD" {% if cotacao.frete_all_in_moeda == 'USD' %}selected{% endif %}>USD</option>
+                  <option value="BRL" {% if cotacao.frete_all_in_moeda == 'BRL' %}selected{% endif %}>BRL</option>
+                </select>
+              </td>
+              <td data-original="{{ cotacao.frete_all_in_valor|floatformat:2 }}">€ {{ cotacao.frete_all_in_valor|floatformat:2 }}</td>
+              <td class="cotacao-td">{% if cotacao.frete_all_in_moeda == 'BRL' %}-{% elif cotacao.frete_all_in_moeda == 'EUR' %}{{ cotacao.cotacao_euro_na_data|floatformat:4 }}{% else %}{{ cotacao.cotacao_dolar_na_data|floatformat:4 }}{% endif %}</td>
+              <td>R$ {{ cotacao.frete_all_in_eur_brl|floatformat:2 }}</td>
+            </tr>
+            <tr
+              data-cotacao-eur="{{ cotacao.cotacao_euro_na_data|floatformat:4|default:'0' }}"
+              data-cotacao-usd="{{ cotacao.cotacao_dolar_na_data|floatformat:4|default:'0' }}"
+              data-cotacao-id="{{ cotacao.id }}"
+              data-campo-valor-rs="frete_all_in_usd_brl"
+              data-campo-moeda="frete_all_in_usd_moeda"
+            >
+              <td>FRETE ALL IN (dolar)</td>
+              <td>
+                <select class="form-select" name="moeda_frete_all_in_usd">
+                  <option value="EUR" {% if cotacao.frete_all_in_usd_moeda == 'EUR' %}selected{% endif %}>EUR</option>
+                  <option value="USD" {% if cotacao.frete_all_in_usd_moeda == 'USD' %}selected{% endif %}>USD</option>
+                  <option value="BRL" {% if cotacao.frete_all_in_usd_moeda == 'BRL' %}selected{% endif %}>BRL</option>
+                </select>
+              </td>
+              <td data-original="{{ cotacao.frete_all_in_usd|floatformat:2 }}">$ {{ cotacao.frete_all_in_usd|floatformat:2 }}</td>
+              <td class="cotacao-td">{% if cotacao.frete_all_in_usd_moeda == 'BRL' %}-{% elif cotacao.frete_all_in_usd_moeda == 'EUR' %}{{ cotacao.cotacao_euro_na_data|floatformat:4 }}{% else %}{{ cotacao.cotacao_dolar_na_data|floatformat:4 }}{% endif %}</td>
+              <td>R$ {{ cotacao.frete_all_in_usd_brl|floatformat:2 }}</td>
+            </tr>
+            <tr data-cotacao-eur="{{ cotacao.cotacao_euro_na_data|floatformat:4|default:'0' }}" data-cotacao-usd="{{ cotacao.cotacao_dolar_na_data|floatformat:4|default:'0' }}" data-cotacao-id="{{ cotacao.id }}" data-campo-valor-rs="honorarios_brl" data-campo-moeda="honorarios_moeda">
+              <td>HONORARIOS</td>
+              <td>
+                <select class="form-select" name="moeda_honorarios">
+                  <option value="EUR" {% if cotacao.honorarios_moeda == 'EUR' %}selected{% endif %}>EUR</option>
+                  <option value="USD" {% if cotacao.honorarios_moeda == 'USD' %}selected{% endif %}>USD</option>
+                  <option value="BRL" {% if cotacao.honorarios_moeda == 'BRL' %}selected{% endif %}>BRL</option>
+                </select>
+              </td>
+              <td data-original="{{ cotacao.honorarios|floatformat:2 }}">{{ cotacao.honorarios|floatformat:2 }}</td>
+              <td class="cotacao-td">{% if cotacao.honorarios_moeda == 'BRL' %}-{% elif cotacao.honorarios_moeda == 'EUR' %}{{ cotacao.cotacao_euro_na_data|floatformat:4 }}{% else %}{{ cotacao.cotacao_dolar_na_data|floatformat:4 }}{% endif %}</td>
+              <td>R$ {{ cotacao.honorarios_brl|floatformat:2 }}</td>
+            </tr>
+            <tr data-cotacao-eur="{{ cotacao.cotacao_euro_na_data|floatformat:4|default:'0' }}" data-cotacao-usd="{{ cotacao.cotacao_dolar_na_data|floatformat:4|default:'0' }}" data-cotacao-id="{{ cotacao.id }}" data-campo-valor-rs="frete_rodoviario_brl" data-campo-moeda="frete_rodoviario_moeda">
+              <td>FRETE RODOVIARIO</td>
+              <td>
+                <select class="form-select" name="moeda_frete_rodoviario">
+                  <option value="EUR" {% if cotacao.frete_rodoviario_moeda == 'EUR' %}selected{% endif %}>EUR</option>
+                  <option value="USD" {% if cotacao.frete_rodoviario_moeda == 'USD' %}selected{% endif %}>USD</option>
+                  <option value="BRL" {% if cotacao.frete_rodoviario_moeda == 'BRL' %}selected{% endif %}>BRL</option>
+                </select>
+              </td>
+              <td data-original="{{ cotacao.frete_rodoviario|floatformat:2 }}">{{ cotacao.frete_rodoviario|floatformat:2 }}</td>
+              <td class="cotacao-td">{% if cotacao.frete_rodoviario_moeda == 'BRL' %}-{% elif cotacao.frete_rodoviario_moeda == 'EUR' %}{{ cotacao.cotacao_euro_na_data|floatformat:4 }}{% else %}{{ cotacao.cotacao_dolar_na_data|floatformat:4 }}{% endif %}</td>
+              <td>R$ {{ cotacao.frete_rodoviario_brl|floatformat:2 }}</td>
+            </tr>
+            <tr data-cotacao-eur="{{ cotacao.cotacao_euro_na_data|floatformat:4|default:'0' }}" data-cotacao-usd="{{ cotacao.cotacao_dolar_na_data|floatformat:4|default:'0' }}" data-cotacao-id="{{ cotacao.id }}" data-campo-valor-rs="licenca_importacao_brl" data-campo-moeda="licenca_importacao_moeda">
+              <td>LICENCA IMPORTAÇÃO</td>
+              <td>
+                <select class="form-select" name="moeda_licenca_importacao">
+                  <option value="EUR" {% if cotacao.licenca_importacao_moeda == 'EUR' %}selected{% endif %}>EUR</option>
+                  <option value="USD" {% if cotacao.licenca_importacao_moeda == 'USD' %}selected{% endif %}>USD</option>
+                  <option value="BRL" {% if cotacao.licenca_importacao_moeda == 'BRL' %}selected{% endif %}>BRL</option>
+                </select>
+              </td>
+              <td data-original="{{ cotacao.licenca_importacao|floatformat:2 }}">{{ cotacao.licenca_importacao|floatformat:2 }}</td>
+              <td class="cotacao-td">{% if cotacao.licenca_importacao_moeda == 'BRL' %}-{% elif cotacao.licenca_importacao_moeda == 'EUR' %}{{ cotacao.cotacao_euro_na_data|floatformat:4 }}{% else %}{{ cotacao.cotacao_dolar_na_data|floatformat:4 }}{% endif %}</td>
+              <td>R$ {{ cotacao.licenca_importacao_brl|floatformat:2 }}</td>
+            </tr>
+            <tr data-cotacao-eur="{{ cotacao.cotacao_euro_na_data|floatformat:4|default:'0' }}" data-cotacao-usd="{{ cotacao.cotacao_dolar_na_data|floatformat:4|default:'0' }}" data-cotacao-id="{{ cotacao.id }}" data-campo-valor-rs="taxa_siscomex_brl" data-campo-moeda="taxa_siscomex_moeda">
+              <td>TAXA SISCOMEX</td>
+              <td>
+                <select class="form-select" name="moeda_taxa_siscomex">
+                  <option value="EUR" {% if cotacao.taxa_siscomex_moeda == 'EUR' %}selected{% endif %}>EUR</option>
+                  <option value="USD" {% if cotacao.taxa_siscomex_moeda == 'USD' %}selected{% endif %}>USD</option>
+                  <option value="BRL" {% if cotacao.taxa_siscomex_moeda == 'BRL' %}selected{% endif %}>BRL</option>
+                </select>
+              </td>
+              <td data-original="{{ cotacao.taxa_siscomex|floatformat:2 }}">{{ cotacao.taxa_siscomex|floatformat:2 }}</td>
+              <td class="cotacao-td">{% if cotacao.taxa_siscomex_moeda == 'BRL' %}-{% elif cotacao.taxa_siscomex_moeda == 'EUR' %}{{ cotacao.cotacao_euro_na_data|floatformat:4 }}{% else %}{{ cotacao.cotacao_dolar_na_data|floatformat:4 }}{% endif %}</td>
+              <td>R$ {{ cotacao.taxa_siscomex_brl|floatformat:2 }}</td>
+            </tr>
+            <tr data-cotacao-eur="{{ cotacao.cotacao_euro_na_data|floatformat:4|default:'0' }}" data-cotacao-usd="{{ cotacao.cotacao_dolar_na_data|floatformat:4|default:'0' }}" data-cotacao-id="{{ cotacao.id }}" data-campo-valor-rs="taxa_armazenagem_brl" data-campo-moeda="taxa_armazenagem_moeda">
+              <td>TAXA ARMAZENAGEM</td>
+              <td>
+                <select class="form-select" name="moeda_taxa_armazenagem">
+                  <option value="EUR" {% if cotacao.taxa_armazenagem_moeda == 'EUR' %}selected{% endif %}>EUR</option>
+                  <option value="USD" {% if cotacao.taxa_armazenagem_moeda == 'USD' %}selected{% endif %}>USD</option>
+                  <option value="BRL" {% if cotacao.taxa_armazenagem_moeda == 'BRL' %}selected{% endif %}>BRL</option>
+                </select>
+              </td>
+              <td data-original="{{ cotacao.taxa_armazenagem|floatformat:2 }}">{{ cotacao.taxa_armazenagem|floatformat:2 }}</td>
+              <td class="cotacao-td">{% if cotacao.taxa_armazenagem_moeda == 'BRL' %}-{% elif cotacao.taxa_armazenagem_moeda == 'EUR' %}{{ cotacao.cotacao_euro_na_data|floatformat:4 }}{% else %}{{ cotacao.cotacao_dolar_na_data|floatformat:4 }}{% endif %}</td>
+              <td>R$ {{ cotacao.taxa_armazenagem_brl|floatformat:2 }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="row text-center fw-bold mt-3">
+          <div class="col-md-6 mb-2">
+            <p class="mb-0">Total: <span class="badge bg-success fs-6">R$ {{ cotacao.total|floatformat:2 }}</span></p>
+          </div>
+          <div class="col-md-6 mb-2">
+            <p class="mb-0">Valor por Equipamento: <span class="badge bg-info fs-6">R$ {{ cotacao.valor_por_equip|floatformat:2 }}</span></p>
+          </div>
+          <div class="col-md-6 mb-2">
+            <p class="mb-0">Quantidade de Equipamentos: <span class="badge bg-primary fs-6">{{ cotacao.qtd_equipamento }}</span></p>
+          </div>
+          <div class="col-md-6 mb-2">
+            <p class="mb-0">RF Invoice: {{ cotacao.rf_invoice|default_if_none:"-" }}</p>
+          </div>
+          <div class="col-md-6 mb-2">
+            <p class="mb-0">Data Invoice: {{ cotacao.data_invoice|date:"d/m/Y"|default_if_none:"-" }}</p>
+          </div>
+          <div class="col-md-6 mb-2">
+            <p class="mb-0">Origem: {{ cotacao.origem|default_if_none:"-" }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% if cotacoes|length == 0 %}
+      <div class="text-center py-5">
+        <div class="text-muted">Nenhuma cotação encontrada</div>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function parseFloatSafe(val) {
+        if (!val) return 0;
+        return parseFloat(val.replace(',', '.').replace(/[^\d.-]/g, '')) || 0;
+    }
+
+    function salvarNoBanco(cotacaoId, campo, valor) {
+        fetch('{% url "atualizar-cotacao-ajax" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                cotacao_id: cotacaoId,
+                campo: campo,
+                valor: valor
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Salvo com sucesso:', campo, valor);
+                // Atualiza os totais na interface
+                atualizarTotaisInterface(data);
+        } else {
+                console.error('Erro ao salvar:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Erro na requisição:', error);
+        });
+    }
+
+    function atualizarTotaisInterface(data) {
+        // Atualiza os badges com os valores retornados do servidor
+        const badgeTotal = document.querySelector('.badge.bg-success.fs-6');
+        if (badgeTotal && data.total) {
+            badgeTotal.textContent = 'R$ ' + parseFloat(data.total).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2
+            });
+        }
+        
+        const badgeValorPorEquip = document.querySelector('.badge.bg-info.fs-6');
+        if (badgeValorPorEquip && data.valor_por_equip) {
+            badgeValorPorEquip.textContent = 'R$ ' + parseFloat(data.valor_por_equip).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Atualiza os valores em R$ na tabela - FRETE ALL IN
+        if (data.frete_all_in_eur_brl) {
+            const freteAllInEurTd = document.querySelector('tr[data-campo-valor-rs="frete_all_in_eur_brl"] td:last-child');
+            if (freteAllInEurTd) {
+                freteAllInEurTd.textContent = 'R$ ' + parseFloat(data.frete_all_in_eur_brl).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2
+                });
+            }
+        }
+
+        if (data.frete_all_in_usd_brl) {
+            const freteAllInUsdTd = document.querySelector('tr[data-campo-valor-rs="frete_all_in_usd_brl"] td:last-child');
+            if (freteAllInUsdTd) {
+                freteAllInUsdTd.textContent = 'R$ ' + parseFloat(data.frete_all_in_usd_brl).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2
+                });
+            }
+        }
+
+        // Atualiza os valores em R$ na tabela - DEMAIS CAMPOS
+        if (data.honorarios_brl) {
+            const honorariosTd = document.querySelector('tr[data-campo-valor-rs="honorarios_brl"] td:last-child');
+            if (honorariosTd) {
+                honorariosTd.textContent = 'R$ ' + parseFloat(data.honorarios_brl).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2
+                });
+            }
+        }
+
+        if (data.frete_rodoviario_brl) {
+            const freteRodoviarioTd = document.querySelector('tr[data-campo-valor-rs="frete_rodoviario_brl"] td:last-child');
+            if (freteRodoviarioTd) {
+                freteRodoviarioTd.textContent = 'R$ ' + parseFloat(data.frete_rodoviario_brl).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2
+                });
+            }
+        }
+
+        if (data.licenca_importacao_brl) {
+            const licencaTd = document.querySelector('tr[data-campo-valor-rs="licenca_importacao_brl"] td:last-child');
+            if (licencaTd) {
+                licencaTd.textContent = 'R$ ' + parseFloat(data.licenca_importacao_brl).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2
+                });
+            }
+        }
+
+        if (data.taxa_siscomex_brl) {
+            const siscomexTd = document.querySelector('tr[data-campo-valor-rs="taxa_siscomex_brl"] td:last-child');
+            if (siscomexTd) {
+                siscomexTd.textContent = 'R$ ' + parseFloat(data.taxa_siscomex_brl).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2
+                });
+        }
+        }
+
+        if (data.taxa_armazenagem_brl) {
+            const armazenagemTd = document.querySelector('tr[data-campo-valor-rs="taxa_armazenagem_brl"] td:last-child');
+            if (armazenagemTd) {
+                armazenagemTd.textContent = 'R$ ' + parseFloat(data.taxa_armazenagem_brl).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2
+                });
+    }
+        }
+    }
+
+    function atualizarCotacao(tr, moeda) {
+        const cotacaoTd = tr.querySelector('.cotacao-td');
+        
+        if (moeda === 'BRL') {
+            cotacaoTd.textContent = '-';
+        } else if (moeda === 'EUR') {
+            const cotacaoEur = parseFloatSafe(tr.getAttribute('data-cotacao-eur'));
+            cotacaoTd.textContent = cotacaoEur.toFixed(4);
+        } else if (moeda === 'USD') {
+            const cotacaoUsd = parseFloatSafe(tr.getAttribute('data-cotacao-usd'));
+            cotacaoTd.textContent = cotacaoUsd.toFixed(4);
+        }
+    }
+
+    // Event listener para mudanças nas moedas
+    document.querySelectorAll('table select.form-select').forEach(select => {
+        select.addEventListener('change', function() {
+            const tr = this.closest('tr');
+            const cotacaoId = tr.getAttribute('data-cotacao-id');
+            const campoMoeda = tr.getAttribute('data-campo-moeda');
+            const novaMoeda = this.value;
+            
+            // Atualiza a cotação exibida
+            atualizarCotacao(tr, novaMoeda);
+            
+            // Salva a nova moeda no banco
+            if (cotacaoId && campoMoeda) {
+                salvarNoBanco(cotacaoId, campoMoeda, novaMoeda);
+            }
+        });
+    });
+
+    // Adiciona botão de salvar alterações (agora visível)
+    function criarBotaoSalvar(table) {
+        const salvarBtn = document.createElement('button');
+        salvarBtn.textContent = 'Salvar Alterações';
+        salvarBtn.className = 'btn btn-success mt-3';
+        salvarBtn.type = 'button';
+        salvarBtn.addEventListener('click', function() {
+            // Força o salvamento de todas as moedas da tabela
+            const trs = table.querySelectorAll('tbody tr[data-cotacao-id]');
+            trs.forEach(tr => {
+                const select = tr.querySelector('select');
+                if (select) {
+                    const cotacaoId = tr.getAttribute('data-cotacao-id');
+                    const campoMoeda = tr.getAttribute('data-campo-moeda');
+                    const moeda = select.value;
+                    if (cotacaoId && campoMoeda) {
+                        salvarNoBanco(cotacaoId, campoMoeda, moeda);
+                    }
+                }
+            });
+            // Mostra toast de sucesso
+            mostrarToast('Alterações salvas com sucesso!', 'success');
+        });
+        table.parentNode.insertBefore(salvarBtn, table.nextSibling);
+    }
+
+    // Adiciona o botão após cada tabela
+    document.querySelectorAll('table').forEach(table => {
+        criarBotaoSalvar(table);
+    });
+
+    // Função para mostrar toast
+    function mostrarToast(mensagem, tipo = 'success') {
+        // Remove toast existente se houver
+        const toastExistente = document.getElementById('toast-notificacao');
+        if (toastExistente) {
+            toastExistente.remove();
+        }
+
+        // Cria o toast
+        const toastHTML = `
+            <div id="toast-notificacao" class="toast align-items-center text-white bg-${tipo} border-0 position-fixed" 
+                 style="top: 20px; right: 20px; z-index: 9999;" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-check-circle me-2"></i>${mensagem}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', toastHTML);
+        
+        const toastElement = document.getElementById('toast-notificacao');
+        const toast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: 3000
+        });
+        
+        toast.show();
+        
+        // Remove o elemento após ser escondido
+        toastElement.addEventListener('hidden.bs.toast', function() {
+            toastElement.remove();
+        });
+    }
+
+    console.log('Sistema de conversão de moeda carregado com sucesso!');
+});
+</script>
+{% endblock %}

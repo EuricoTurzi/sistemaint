@@ -49,6 +49,12 @@ class registrodemanutencao(models.Model):
         ('expedido', 'expedido'),
     ]
 
+    STATUS_TRATATIVA_CHOICES = [
+        ('Pendente de Tratativa', 'Pendente de Tratativa'),
+        ('Tratada', 'Tratada'),
+        ('Faturada', 'Faturada'),
+    ]
+
     ENTRADA = [
         ('Manutenção', 'Manutenção'),
         ('Devolução/Estoque', 'Devolução/Estoque'),
@@ -123,6 +129,7 @@ class registrodemanutencao(models.Model):
     imagem = models.ImageField(upload_to='imagens/', null=True, blank=True)
     imagem2 = models.ImageField(upload_to='imagens/', null=True, blank=True)
     status = models.CharField(default='Pendente', max_length=50, null=True, blank=True)
+    status_tratativa = models.CharField(choices=STATUS_TRATATIVA_CHOICES, default='Pendente de Tratativa', max_length=50, null=True, blank=True)
     data_criacao = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     data_devolucao = models.DateTimeField(null=True, blank=True)
 

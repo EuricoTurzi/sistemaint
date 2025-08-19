@@ -69,7 +69,7 @@
     <div class="row mb-4">
         <div class="col-md-6">
             <form method="get" action="{% url 'historicoListViews' %}">
-                <input type="text" class="form-control" name="nome" placeholder="Nome" value="{{ request.GET.nome }}">
+                <input type="text" class="form-control" name="nome" placeholder="Nome" value="{{ nome_filter }}">
                 <button type="submit" class="btn btn-primary">Buscar</button>
             </form>
         </div>
@@ -77,12 +77,12 @@
             <form method="get" action="{% url 'historicoListViews' %}">
                 <select class='form-select' name="status">
                     <option value="">Escolha um status</option>
-                    <option value="Aprovado" {% if request.GET.status == 'Aprovado' %}selected{% endif %}>Aprovado</option>
-                    <option value="Reprovado" {% if request.GET.status == 'Reprovado' %}selected{% endif %}>Reprovado</option>
-                    <option value="Pendente" {% if request.GET.status == 'Pendente' %}selected{% endif %}>Pendente</option>
-                    <option value="Configurado" {% if request.GET.status == 'Configurado' %}selected{% endif %}>Configurado</option>
-                    <option value="Expedido" {% if request.GET.status == 'Expedido' %}selected{% endif %}>Expedido</option>
-                    <option value="Enviado para o Cliente" {% if request.GET.status == 'Enviado para o Cliente' %}selected{% endif %}>Enviado para o Cliente</option>
+                    <option value="Aprovado" {% if status_filter == 'Aprovado' %}selected{% endif %}>Aprovado</option>
+                    <option value="Reprovado" {% if status_filter == 'Reprovado' %}selected{% endif %}>Reprovado</option>
+                    <option value="Pendente" {% if status_filter == 'Pendente' %}selected{% endif %}>Pendente</option>
+                    <option value="Configurado" {% if status_filter == 'Configurado' %}selected{% endif %}>Configurado</option>
+                    <option value="Expedido" {% if status_filter == 'Expedido' %}selected{% endif %}>Expedido</option>
+                    <option value="Enviado para o Cliente" {% if status_filter == 'Enviado para o Cliente' %}selected{% endif %}>Enviado para o Cliente</option>
                 </select>
                 <button type="submit" class="btn btn-primary">Filtrar</button>
             </form>
@@ -117,6 +117,10 @@
  <a class="btn btn-info" href="{% url 'gerar_pdf_saida' item.id %}">Download PDF</a>
 <a class="btn btn-info" href="{% url 'download_pdf_requisicao' item.id %}">saida PDF</a>
             {% endif %}
+            {% if perms.nestle.delete_gridinternacional %}
+            <a href="{% url 'requisicoesdeleteview' item.id %}" class="btn btn-danger">Excluir</a>
+	     <a class="btn btn-warning" href="{% url 'requisicao_update' item.id %}">Editar</a>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -126,6 +130,35 @@
         {% endfor %}
     </div>
 
-    {% include 'components/_pagination.html' %}
+    <!-- Paginação personalizada com preservação dos filtros -->
+    {% if is_paginated %}
+    <nav aria-label="Navegação de páginas">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Primeira</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Anterior</a>
+                </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link">
+                    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Próxima</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Última</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
 </div>
 {% endblock %}

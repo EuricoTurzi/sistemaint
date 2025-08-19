@@ -23,7 +23,8 @@ from .views import (
     ListaRetornosView,
     reprovar_manutencao2,
     download_protocolo_entrada,
-    editado_manutencao
+    editado_manutencao,
+    atualizar_status_tratativa
 )
 urlpatterns = [
     path('configlist/historico', historico_manutencaoListView.as_view(), name='historico_manutencaoListView'),
@@ -39,10 +40,11 @@ urlpatterns = [
     path('manutencaonova/<int:id>/', CreateView.as_view(), name='manutencaonova'),
     path('download-pdf/<int:pk>/', download_pdf, name='download_pdfmanutencao'),
     path('lista_retornos/', ListaRetornosView.as_view(), name='lista_retornos'),
-     path('criar_retorno/', CriarRetornoView.as_view(), name='criar_retorno'),
+    path('criar_retorno/', CriarRetornoView.as_view(), name='criar_retorno'),
     path('download_pdf/<int:pk>/', DownloadPDFView.as_view(), name='download_pdf'),
     path('expedicao/', expedicaoListView.as_view(), name='expedicao_list'),
     path('expedicao/<int:pk>/', expedicaoDetailView.as_view(), name='expedicao_detail'),
     path('configdetail/<int:pk>/', configDetailView.as_view(), name='config_detail'),
     path('registrodemanutencao/<int:pk>/update/', FormulariosUpdateView.as_view(), name='registrodemanutencao_update'),
+    path('atualizar-status-tratativa/<int:registro_id>/', atualizar_status_tratativa, name='atualizar_status_tratativa'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

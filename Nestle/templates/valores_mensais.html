@@ -1,0 +1,526 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load nestle_filters %}
+
+{% block content %}
+{% csrf_token %}
+
+<style>
+    /* ───── CARD E CABEÇALHO ────────────────────────────────────────────────── */
+    .card {
+        border: none;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background: linear-gradient(90deg, #0056b3 0%, #009BDE 100%);
+        border: none;
+        color: #FFFFFF;
+        padding: 1rem 1.5rem;
+    }
+
+    .card-header h4 {
+        margin: 0;
+        font-weight: 500;
+        font-size: 1.25rem;
+    }
+
+    .card-header .form-select {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        color: #FFFFFF;
+        min-width: 4.5rem;
+        text-align: center;
+    }
+    .card-header .form-select:focus {
+        box-shadow: none;
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.8);
+    }
+    .card-header .form-select option {
+        color: #000000;
+    }
+    .card-header .form-select option:checked {
+        background-color: #E0EFFF;
+        color: #000000;
+    }
+
+    /* ───── TABELA ─────────────────────────────────────────────────────────── */
+    .table-responsive {
+        margin-top: 1rem;
+    }
+    table.table {
+        border-collapse: separate; 
+        border-spacing: 0.5rem;
+        width: 100%;
+    }
+
+    table.table thead {
+        background-color: transparent;
+    }
+
+    table.table thead th {
+        background-color: #FFFFFF;
+        color: #6C757D;
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.80rem;
+        border: none;
+        text-align: center;
+        padding: 0.75rem 0.5rem;
+        white-space: nowrap;
+    }
+
+    table.table thead th:first-child {
+        color: #343A40;
+        text-align: left;
+        padding-left: 1rem;
+    }
+
+    table.table thead th.active-month {
+        background-color: #0062CC;
+        color: #FFFFFF;
+        border-radius: 0.25rem;
+    }
+
+    /* ─── CORPO DA TABELA ───────────────────────────────────────── */
+    table.table tbody td {
+        background-color: #F8F9FA;
+        color: #495057;
+        border: none;
+        border-radius: 0.25rem;
+        text-align: center;
+        vertical-align: middle;
+        padding: 0.75rem 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    table.table tbody td:hover {
+        background-color: #E9ECEF;
+    }
+
+    .equipamento-base {
+        background-color: #EDEDED !important;
+        position: relative;
+    }
+    .equipamento-base::after {
+        position: absolute;
+        top: 4px;
+        right: 6px;
+        font-size: 0.65em;
+        padding: 1px 3px;
+        background-color: #6C757D;
+        color: #FFFFFF;
+        border-radius: 0 0 0 4px;
+    }
+
+    .valor-cell.bg-success {
+        background-color: #D1E7DD !important;
+        color: #0F5132 !important;
+    }
+
+    /* ─── RODAPÉ DA TABELA ───────────────────────────────────────── */
+    table.table tfoot tr.total-row td {
+        background-color: #FFFFFF;
+        color: #343A40;
+        font-weight: 600;
+        border: none;
+        text-align: center;
+        padding: 0.75rem 0.5rem;
+    }
+    table.table tfoot tr.total-row td:first-child {
+        text-align: left;
+        padding-left: 1rem;
+    }
+
+    /* ─── INDICADORES ─────────────────────────────────────────── */
+    .indicadores {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #E9ECEF;
+    }
+    .indicador-box {
+        text-align: center;
+    }
+    .indicador-box h6 {
+        margin: 0;
+        font-size: 0.75rem;
+        color: #6C757D;
+        letter-spacing: 0.5px;
+    }
+    .indicador-box p {
+        margin: 0.25rem 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #343A40;
+    }
+
+    /* Modal styles para produção */
+    .modal {
+        z-index: 1050 !important;
+    }
+    
+    .modal-backdrop {
+        z-index: 1040 !important;
+    }
+    
+    .modal-content {
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    /* Botões de debug */
+    .debug-btn {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999;
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    
+    .debug-btn:nth-child(2) {
+        top: 50px;
+    }
+    
+    .debug-btn:nth-child(3) {
+        top: 90px;
+    }
+</style>
+
+<!-- Botões de debug removidos -->
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Quantidade Mensal por Cliente</h4>
+        <div>
+            <select id="ano-select" class="form-select" onchange="window.location.href='?ano=' + this.value">
+                {% for ano in "2025,2024,2023,2022"|split:"," %}
+                    <option value="{{ ano }}" {% if ano == ano_atual %}selected{% endif %}>{{ ano }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-center">Cliente</th>
+                        {% for mes_codigo, mes_nome in meses %}
+                            <th>{{ mes_nome }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes %}
+                        <tr>
+                            <td>{{ cliente.cliente }}</td>
+                            {% for mes_codigo, mes_nome in meses %}
+                                {% with chave=cliente.id|stringformat:"i"|add:","|add:mes_codigo %}
+                                    {% with valor=valores|filter_by_cliente_and_mes:chave %}
+                                        <td class="valor-cell {% if valor.enviado %}bg-success bg-opacity-25{% elif not valor.valor %}equipamento-base{% endif %} text-center"
+                                            data-cliente-id="{{ cliente.id }}"
+                                            data-mes="{{ mes_codigo }}"
+                                            data-ano="{{ ano_atual }}"
+                                            data-valor="{{ valor.valor|default:'' }}"
+                                            data-enviado="{{ valor.enviado|yesno:'true,false' }}"
+                                            data-codigo-rastreio="{{ valor.codigo_rastreio|default:'' }}"
+                                            style="cursor: pointer;"
+                                            onclick="console.log('CLIQUE - Cliente: {{ cliente.cliente }}, Mês: {{ mes_codigo }}, Código: {{ valor.codigo_rastreio|default:'' }}');">
+                                            {{ valor.valor|default:'-' }}
+                                            <!-- DEBUG: Mostrar código de rastreio no HTML -->
+                                            {% if valor.codigo_rastreio %}
+                                                <br><small style="font-size: 0.7em; color: #666;">{{ valor.codigo_rastreio }}</small>
+                                            {% endif %}
+                                        </td>
+                                    {% endwith %}
+                                {% endwith %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td>Total</td>
+                        {% for mes_codigo, mes_nome in meses %}
+                            <td class="text-center">
+                                {{ valores|total_por_mes:mes_codigo }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edição -->
+<div class="modal fade" id="valorModal" tabindex="-1" aria-labelledby="valorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="valorModalLabel">Editar Valor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="valorForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="valorInput" class="form-label">Valor</label>
+                        <input type="number" class="form-control" id="valorInput" step="1" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="codigoRastreioInput" class="form-label">Código de Rastreio</label>
+                        <input type="text" class="form-control" id="codigoRastreioInput" placeholder="Código de rastreio">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="enviadoCheck">
+                        <label class="form-check-label" for="enviadoCheck">Enviado</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarValor()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Variáveis globais
+let modalInstance = null;
+let celulaAtual = null;
+
+// Função para inicializar o modal
+function inicializarModal() {
+    console.log('Inicializando modal...');
+    
+    const modalElement = document.getElementById('valorModal');
+    if (!modalElement) {
+        console.error('Elemento do modal não encontrado!');
+        return;
+    }
+    
+    try {
+        modalInstance = new bootstrap.Modal(modalElement, {
+            keyboard: true,
+            focus: true,
+            backdrop: true
+        });
+        
+        console.log('Modal inicializado com sucesso:', modalInstance);
+        
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            console.log('Modal fechado');
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
+        });
+        
+    } catch (error) {
+        console.error('Erro ao inicializar modal:', error);
+    }
+}
+
+// Função para abrir o modal
+function abrirModal(celula) {
+    console.log('=== ABRIR MODAL ===');
+    
+    if (!celula || !celula.dataset) {
+        alert('Erro: Célula inválida');
+        return;
+    }
+    
+    if (!modalInstance) {
+        alert('Erro: Modal não foi inicializado.');
+        return;
+    }
+    
+    celulaAtual = celula;
+    
+    // Extrair dados da célula
+    const valor = celula.dataset.valor || '';
+    const enviado = celula.dataset.enviado === 'true';
+    const codigo_rastreio = celula.dataset.codigoRastreio || '';
+    
+    console.log('Dados extraídos:');
+    console.log('- valor:', valor);
+    console.log('- enviado:', enviado);
+    console.log('- codigo_rastreio:', codigo_rastreio);
+    console.log('- dataset completo:', celula.dataset);
+    
+    // Encontrar campos do modal
+    const valorInput = document.getElementById('valorInput');
+    const codigoRastreioInput = document.getElementById('codigoRastreioInput');
+    const enviadoCheck = document.getElementById('enviadoCheck');
+    
+    if (!valorInput || !codigoRastreioInput || !enviadoCheck) {
+        alert('Erro: Campos do modal não encontrados');
+        return;
+    }
+    
+    // Preencher campos do modal
+    valorInput.value = valor;
+    codigoRastreioInput.value = codigo_rastreio;
+    enviadoCheck.checked = enviado;
+    
+    console.log('Campos preenchidos:');
+    console.log('- valorInput.value:', valorInput.value);
+    console.log('- codigoRastreioInput.value:', codigoRastreioInput.value);
+    console.log('- enviadoCheck.checked:', enviadoCheck.checked);
+    
+    // Abrir modal
+    try {
+        modalInstance.show();
+        console.log('Modal aberto com sucesso!');
+    } catch (error) {
+        console.error('Erro ao abrir modal:', error);
+        alert('Erro ao abrir modal: ' + error.message);
+    }
+}
+
+// Função para salvar valor
+function salvarValor() {
+    console.log('=== INÍCIO DO DEBUG FRONTEND ===');
+    
+    const valorInput = document.getElementById('valorInput').value;
+    const valor = valorInput ? parseInt(valorInput) : '';
+    const codigoRastreio = document.getElementById('codigoRastreioInput').value.trim();
+    const enviado = document.getElementById('enviadoCheck').checked;
+    const ano = document.getElementById('ano-select').value;
+    
+    console.log('Dados a serem enviados:');
+    console.log('cliente_id:', celulaAtual.dataset.clienteId);
+    console.log('mes:', celulaAtual.dataset.mes);
+    console.log('ano:', ano);
+    console.log('valor:', valor);
+    console.log('codigo_rastreio:', codigoRastreio);
+    console.log('enviado:', enviado);
+    
+    const formData = new FormData();
+    formData.append('cliente_id', celulaAtual.dataset.clienteId);
+    formData.append('mes', celulaAtual.dataset.mes);
+    formData.append('ano', ano);
+    formData.append('valor', valor);
+    formData.append('codigo_rastreio', codigoRastreio);
+    formData.append('enviado', enviado);
+    formData.append('aplicar_para_todos', false);
+    
+    const csrfToken = document.querySelector('#valorForm [name=csrfmiddlewaretoken]').value;
+    console.log('CSRF Token:', csrfToken);
+    
+    const salvarBtn = document.querySelector('#valorModal .btn-primary');
+    const originalText = salvarBtn.textContent;
+    salvarBtn.disabled = true;
+    salvarBtn.textContent = 'Salvando...';
+    
+    console.log('Enviando requisição para o servidor...');
+    
+    fetch('/nestle/atualizar-valor-mensal/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken
+        },
+        body: formData
+    })
+    .then(response => {
+        console.log('Resposta recebida:', response);
+        if (!response.ok) {
+            throw new Error('Erro na resposta do servidor');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Dados recebidos:', data);
+        if (data.success) {
+            console.log('Atualizando interface...');
+            
+            celulaAtual.dataset.valor = data.valor;
+            celulaAtual.dataset.enviado = data.enviado;
+            celulaAtual.dataset.codigoRastreio = data.codigo_rastreio || '';
+            let html = data.valor ? parseInt(data.valor) : '';
+            if (data.codigo_rastreio) {
+                html += `<br><small style="font-size: 0.7em; color: #666;">${data.codigo_rastreio}</small>`;
+            }
+            celulaAtual.innerHTML = html;
+            
+            console.log('🔍 DEBUG - Código de rastreio após atualização:');
+            console.log('data.codigo_rastreio recebido:', data.codigo_rastreio);
+            console.log('dataset.codigoRastreio atualizado:', celulaAtual.dataset.codigoRastreio);
+            console.log('Dataset completo da célula:', celulaAtual.dataset);
+            
+            celulaAtual.classList.remove('bg-success', 'bg-opacity-25', 'equipamento-base');
+            if (data.enviado) {
+                celulaAtual.classList.add('bg-success', 'bg-opacity-25');
+            } else if (!data.valor) {
+                celulaAtual.classList.add('equipamento-base');
+            }
+            
+            console.log('Interface atualizada com sucesso');
+            modalInstance.hide();
+        } else {
+            throw new Error(data.error || 'Erro ao salvar os dados');
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao salvar: ' + error.message);
+    })
+    .finally(() => {
+        salvarBtn.disabled = false;
+        salvarBtn.textContent = originalText;
+        console.log('=== FIM DO DEBUG FRONTEND ===');
+    });
+}
+
+// Inicialização quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM carregado!');
+    
+    setTimeout(function() {
+        if (typeof bootstrap === 'undefined') {
+            console.error('Bootstrap não está carregado!');
+            alert('Erro: Bootstrap não está carregado. O modal não funcionará.');
+            return;
+        }
+        
+        console.log('Bootstrap disponível:', bootstrap);
+        inicializarModal();
+        
+        const valorCells = document.querySelectorAll('.valor-cell');
+        console.log(`Encontradas ${valorCells.length} células para adicionar event listeners`);
+        
+        valorCells.forEach(function(cell, index) {
+            cell.addEventListener('click', function() {
+                console.log(`Célula ${index + 1} clicada:`, cell);
+                abrirModal(cell);
+            });
+        });
+        
+        console.log('Event listeners das células da tabela adicionados');
+        
+    }, 100);
+});
+
+// Fallback para DOM já carregado
+if (document.readyState === 'loading') {
+    // DOM ainda carregando, aguardar
+} else {
+    console.log('DOM já carregado, inicializando...');
+    setTimeout(function() {
+        if (typeof bootstrap !== 'undefined') {
+            inicializarModal();
+        }
+    }, 100);
+}
+</script>
+{% endblock %} 

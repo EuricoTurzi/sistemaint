@@ -8,6 +8,10 @@ from .models import Reativacao, IdIccid, Clientes
 from django.views.generic import ListView
 from requisicao.models import Requisicoes
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic.edit import UpdateView
+from .models import Reativacao
+from .forms import ReativacaoForm
+from django.urls import reverse_lazy
 
 
 class ReativacaoIdIccidCreateView(PermissionRequiredMixin, LoginRequiredMixin, View):
@@ -211,4 +215,39 @@ class DownloadPdfView(View):
         else:
             # Handle the case where the PDF was not generated successfully
             return HttpResponse("Erro ao gerar o PDF", status=500)
+
+class ReativacaoUpdateView(UpdateView):
+    model = Reativacao
+    form_class = ReativacaoForm
+    template_name = 'reativacao_update.html'
+    success_url = reverse_lazy('reativacao_list')
+
+class ReativacaoCompleteUpdateView(PermissionRequiredMixin, LoginRequiredMixin, View):
+    permission_required = 'reativacao.change_reativacao'
+    
+    def get(self, request, pk):
+        reativacao = get_object_or_404(Reativacao, pk=pk)
+        form = ReativacaoForm(instance=reativacao)
+        formset = IdIccidFormSet(instance=reativacao)
+        return render(request, 'reativacao_complete_update.html', {
+            'form': form,
+            'formset': formset,
+            'reativacao': reativacao,
+        })
+
+    def post(self, request, pk):
+        reativacao = get_object_or_404(Reativacao, pk=pk)
+        form = ReativacaoForm(request.POST, instance=reativacao)
+        formset = IdIccidFormSet(request.POST, instance=reativacao)
+        
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            return redirect('reativacao_list')
+        
+        return render(request, 'reativacao_complete_update.html', {
+            'form': form,
+            'formset': formset,
+            'reativacao': reativacao,
+        })
         

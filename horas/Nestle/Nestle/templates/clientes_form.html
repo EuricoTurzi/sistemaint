@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Cadastro de Cliente</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" novalidate class="needs-validation">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form.cliente }}
+                            <label for="{{ form.cliente.id_for_label }}">{{ form.cliente.label }}</label>
+                            {{ form.cliente.errors }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form.cnpj }}
+                            <label for="{{ form.cnpj.id_for_label }}">{{ form.cnpj.label }}</label>
+                            {{ form.cnpj.errors }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            {{ form.endereco }}
+                            <label for="{{ form.endereco.id_for_label }}">{{ form.endereco.label }}</label>
+                            {{ form.endereco.errors }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            {{ form.quantidade }}
+                            <label for="{{ form.quantidade.id_for_label }}">{{ form.quantidade.label }}</label>
+                            {{ form.quantidade.errors }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            {{ form.valor }}
+                            <label for="{{ form.valor.id_for_label }}">{{ form.valor.label }}</label>
+                            {{ form.valor.errors }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            {{ form.local }}
+                            <label for="{{ form.local.id_for_label }}">{{ form.local.label }}</label>
+                            {{ form.local.errors }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões -->
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Salvar
+                    </button>
+                    <a href="{% url 'clientes_nestle_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script para validação do formulário -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Adiciona classes do Bootstrap aos campos do formulário
+    document.querySelectorAll('input, select, textarea').forEach(function(element) {
+        element.classList.add('form-control');
+    });
+
+    // Adiciona validação do Bootstrap
+    var forms = document.querySelectorAll('.needs-validation');
+    Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+});
+</script>
+{% endblock %} 

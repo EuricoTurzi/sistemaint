@@ -1,139 +1,241 @@
 {% extends 'base.html' %}
-{% block title %}
-| Grupo Golden Sat |
-{% endblock %}
+{% block title %}| Grupo Golden Sat |{% endblock %}
 
 {% include 'components/_header.html' %}
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-    body {
-        background-color: #45494E; /* Cor de fundo mais escura */
-        display: flex;
-        flex-direction: column;
-        height: 90vh;
-        margin: 0;
-    }
-    .container-fluid {
-        padding: 0;
-    }
-    .row {
-        margin: 0;
-    }
-    .table-responsive {
-        padding: 0 15px;
-        margin-left: -40vh;
-        width: 115rem;
-    }
-    .form-control {
-        width: 100%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .dropdown-status {
-        width: 10rem; /* Ajuste a largura conforme necessário */
-    }
-    .filter-container {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 0rem; /* Aumente o espaçamento entre os campos */
-    }
-    .thead-dark {
-        background-color: #344038; /* Substitua pelo valor exato da cor da sua barra de navegação */
-        color: white;
+    html, body {
+        background-color: #45494E; /* Cor de fundo cinza mais escuro */
+        color: #f2f4f7;
+        background-repeat: no-repeat;
+        background-size: contain; /* Ajusta a imagem para caber na tela */
+        background-position: center; /* Centraliza a imagem */
+        background-attachment: fixed; /* Fixa a imagem no fundo */
+        overflow-y: hidden; /* Remove scroll vertical */
+        overflow-x: hidden; /* Remove scroll horizontal */
     }
 
-    .status-aprovado-inteligencia {
-        background: linear-gradient(to bottom, #39ff14 0%, #ffffff 100%); /* Verde fluorescente */
+    /* Sobrescreve o container centralizador do base.html */
+    .container.mt-4, .container {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+        .container-page {
+                width: 100vw;
+                max-width: 100vw;
+                margin: 0;
+                padding: 0;
+                position: relative;
+                overflow-x: hidden;
+        }
+
+    .content-card{
+        background:#fff;
+        border-radius:12px;
+        box-shadow:0 2px 12px rgba(0,0,0,.06);
+        padding:1.2rem 1rem;
+        margin-bottom:1.5rem;
+        overflow-x: hidden;
     }
 
-    .status-reprovado-inteligencia {
-        background: linear-gradient(to bottom, #ff0000 0%, #ffffff 100%); /* Vermelho */
+  .content-card .form-label{font-size:.95rem;color:#888;margin-bottom:.25rem;}
+  .content-card .form-select,.content-card .form-control{
+    border-radius:8px;border:1px solid #e3e3e3;font-size:1rem;
+  }
+
+  .content-card .btn{font-size:1rem;font-weight:500;}
+
+    .modern-filters {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 1.2rem 1rem;
+    margin-bottom: 1.5rem;
     }
 
-    .table thead th {
-        background-color: #344038; /* Cor de fundo do cabeçalho */
-        color: white; /* Cor do texto do cabeçalho */
+    .modern-filters .form-label {
+    font-size: 0.95rem;
+    color: #888;
+    margin-bottom: 0.25rem;
     }
 
-    .table tbody tr {
-        transition: background-color 0.3s; /* Transição suave para a cor de fundo */
+    .modern-filters .form-select, .modern-filters .form-control {
+    border-radius: 8px;
+    border: 1px solid #e3e3e3;
+    font-size: 1rem;
     }
 
-    .table tbody tr:hover {
-        background-color: #f1f1f1; /* Cor de fundo ao passar o mouse */
+    .modern-filters .btn {
+    font-size: 1rem;
+    font-weight: 500;
     }
 
-    .table td, .table th {
-        vertical-align: middle;
-         /* Alinhamento vertical centralizado */
-    }
 </style>
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col-md-6">
+
+<div class="container-page mt-4 mb-5">
+    <div class="panel mb-3">
+
+
+<div class="container-page mt-4 mb-5" style="margin-left:1vw; padding-left:0; width:98vw; max-width:97vw;">
+    <div class="panel mb-3">
+        <div class="content-card">
+            <div class="text-center mb-4">
+                <h4 class="panel-title mb-0" style="color: #111;">Histórico de Manutenção</h4>
+            </div>
+
             <form method="get" action="{% url 'historico_manutencaoListView' %}">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="nome" placeholder="Nome" value="{{ request.GET.nome }}">
-                   
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+                {% csrf_token %}
+
+                <div class="filters-card modern-filters">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-4 col-12">
+                            <label for="nome" class="form-label small mb-1" style="color:#111;">Nome</label>
+                            <input type="text"
+                                   class="form-control rounded"
+                                   id="nome"
+                                   name="nome"
+                                   placeholder="Pesquisar por nome"
+                                   value="{{ request.GET.nome }}">
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <label for="status_tratativa" class="form-label small mb-1" style="color:#111;">Status de tratativa</label>
+                            <select name="status_tratativa" id="status_tratativa" class="form-select rounded">
+                                <option value="">Status de tratativa</option>
+                                {% for choice in status_tratativa_choices %}
+                                    <option value="{{ choice.0 }}" {% if request.GET.status_tratativa == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-12 d-flex gap-2 align-items-end justify-content-end">
+                            <button class="btn btn-success px-4 rounded-pill" type="submit"><i class="bi bi-search"></i> Buscar</button>
+                            <a href="{% url 'historico_manutencaoListView' %}" class="btn btn-outline-secondary px-4 rounded-pill"><i class="bi bi-x-circle"></i> Limpar</a>
+                        </div>
                     </div>
                 </div>
             </form>
+
+        <!-- Tabela -->
+        <div class="table-wrap">
+            <div class="table-responsive" style="overflow-x:hidden;">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Data de Entrada</th>
+                            <th>Tipo de Entrada</th>
+                            <th>Tipo de Produto</th>
+                            <th>Quantidade</th>
+                            <th>ID Equipamento</th>
+                            <th>Entregue / Retirado</th>
+                            <th>Status</th>
+                            <th>Status Tratativa</th>
+                            <th>Customização Setor</th>
+                            <th>Observações</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for manutencao in dasentradas %}
+                            <tr class="status-{{ manutencao.status|default_if_none:'indefinido'|slugify }}">
+                                <td>{{ manutencao.id }}</td>
+                                <td>{{ manutencao.nome }}</td>
+                                <td>{{ manutencao.data_criacao|date:"d/m/Y" }}</td>
+                                <td>{{ manutencao.tipo_entrada }}</td>
+                                <td>{{ manutencao.tipo_produto }}</td>
+                                <td>{{ manutencao.quantidade }}</td>
+                                <td>{{ manutencao.id_equipamentos }}</td>
+                                <td>{{ manutencao.entregue_por_retirado_por }}</td>
+
+                                <!-- Badge amigável para Status -->
+                                <td>
+                                    {% if manutencao.status %}
+                                        {% with s=manutencao.status|stringformat:"s" %}
+                                            {% if "aprov" in s|lower %}
+                                                <span class="badge bg-success text-light">{{ manutencao.status }}</span>
+                                            {% elif "reprov" in s|lower or "neg" in s|lower %}
+                                                <span class="badge bg-danger text-light">{{ manutencao.status }}</span>
+                                            {% elif "pend" in s|lower or "anal" in s|lower %}
+                                                <span class="badge bg-warning text-dark">{{ manutencao.status }}</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary text-light">{{ manutencao.status }}</span>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% else %}
+                                        <span class="badge bg-secondary text-light">—</span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Select de Status Tratativa -->
+                                <td style="min-width: 220px;">
+                                    <select class="form-control form-control-sm status-tratativa-select" data-id="{{ manutencao.id }}">
+                                        {% for choice in status_tratativa_choices %}
+                                            <option value="{{ choice.0 }}" {% if manutencao.status_tratativa == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+
+                                <td>{{ manutencao.customizacaoo }}</td>
+                                <td class="text-truncate" style="max-width: 320px;" title="{{ manutencao.observacoes }}">{{ manutencao.observacoes }}</td>
+                                <td class="text-center" style="min-width: 260px;">
+                                    <a class="btn btn-info btn-action mb-1" href="{% url 'download_pdfmanutencao' manutencao.id %}">Download PDF</a>
+                                    <a class="btn btn-success btn-action mb-1" href="{% url 'download_protocolo_entrada' manutencao.id %}">Protocolo</a>
+                                    <a class="btn btn-primary btn-action mb-1" href="{% url 'FormulariosUpdateView' manutencao.id %}">Editar</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginação -->
+            <div class="p-3">
+                {% include 'components/_pagination.html' %}
+            </div>
         </div>
     </div>
-
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Data de Entrada</th>
-                    <th>Tipo de Entrada</th>
-                    <th>Tipo de Produto</th>
-                    <th>Quantidade</th>
-                    <th>Customização</th>
-                    <th>ID Equipamento</th>
-                    <th>Entregue / Retirado</th>
-                    <th>Faturamento</th>
-                    
-                    <th>Status</th>
-                    <th>Customização Setor</th>
-                    
-                    <th>Observações</th>
-                    <th>Download</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for manutencao in dasentradas %}
-                    <tr class="status-{{ manutencao.status }}">
-                        <td>{{ manutencao.id }}</td>
-                        <td>{{ manutencao.data_criacao|date:"d/m/Y" }}</td>
-                        <td>{{ manutencao.nome }}</td>
-                        <td>{{ manutencao.tipo_entrada }}</td>
-                        <td>{{ manutencao.tipo_produto }}</td>
-                        <td>{{ manutencao.quantidade }} </td>
-                        <td>{{ manutencao.tipo_customizacao }}</td>
-                        <td>{{ manutencao.id_equipamentos }}</td>
-                        <td>{{ manutencao.entregue_por_retirado_por }}</td>
-                        <td>{{ manutencao.faturamento }}</td>
-                       
-                        <td>{{ manutencao.status }}</td>
-                        <td>{{ manutencao.customizacaoo }}</td>
-                        
-                        <td>{{ manutencao.observacoes }}</td>
-                        <td><a class="btn btn-info" href="{% url 'download_pdfmanutencao' manutencao.id %}">Download PDF</a>
-                        <a class="btn btn-success" href="{% url 'download_protocolo_entrada' manutencao.id %}">Protocolo</a></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    {% include 'components/_pagination.html' %}
 </div>
+
+<script>
+/* ===== Atualização de Status de Tratativa (mantido) ===== */
+document.addEventListener('DOMContentLoaded', function() {
+    const selects = document.querySelectorAll('.status-tratativa-select');
+    selects.forEach(select => {
+        select.addEventListener('change', function() {
+            const registroId = this.getAttribute('data-id');
+            const novoStatus = this.value;
+
+            fetch(`/registrodemanutencao/atualizar-status-tratativa/${registroId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ status_tratativa: novoStatus })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Feedback rápido sem bloquear
+                    const toast = document.createElement('div');
+                    toast.textContent = 'Status de tratativa atualizado!';
+                    toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#2f955f;color:#fff;padding:.6rem .9rem;border-radius:.5rem;box-shadow:0 10px 20px rgba(0,0,0,.2);z-index:9999;font-weight:600;';
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 2000);
+                } else {
+                    alert('Erro ao atualizar: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao atualizar status de tratativa');
+            });
+        });
+    });
+});
+</script>
 {% endblock %}

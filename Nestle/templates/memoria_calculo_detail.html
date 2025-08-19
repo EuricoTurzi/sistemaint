@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Memória de Cálculo - {{ memoria.numero_rf }}</h3>
+            <div>
+                <a href="{% url 'memoria_edit' memoria.id %}" class="btn btn-info">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+                <a href="{% url 'memoria_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Dados Básicos -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <h5>Data</h5>
+                    <p>{{ memoria.data|date:"d/m/Y" }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quantidade de Equipamentos</h5>
+                    <p>{{ memoria.quantidade_equipamentos }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Valor por Equipamento</h5>
+                    <p>R$ {{ memoria.valor_por_equipamento|floatformat:2 }}</p>
+                </div>
+            </div>
+
+            <!-- Itens da Carga -->
+            <h4 class="mb-3">Itens da Carga</h4>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Moeda</th>
+                            <th>Quantidade</th>
+                            <th>Valor Unitário</th>
+                            <th>Taxa de Câmbio</th>
+                            <th>Total (BRL)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in memoria.itens.all %}
+                        <tr>
+                            <td>{{ item.descricao }}</td>
+                            <td>{{ item.moeda }}</td>
+                            <td>{{ item.quantidade }}</td>
+                            <td>{{ item.valor_unitario|floatformat:2 }}</td>
+                            <td>{{ item.taxa_cambio|floatformat:4 }}</td>
+                            <td>R$ {{ item.valor_total_brl|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-primary">
+                            <td colspan="5" class="text-end"><strong>Total Geral:</strong></td>
+                            <td><strong>R$ {{ memoria.total_geral|floatformat:2 }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Observações -->
+            {% if memoria.observacoes %}
+            <div class="mt-4">
+                <h4>Observações</h4>
+                <p>{{ memoria.observacoes }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

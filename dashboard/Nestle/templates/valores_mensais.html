@@ -1,0 +1,383 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load nestle_filters %}
+
+{% block content %}
+{% csrf_token %}
+
+<style>
+    /* ───── CARD E CABEÇALHO ────────────────────────────────────────────────── */
+    .card {
+        border: none;
+        border-radius: 0.75rem;
+        overflow: hidden; /* para que o fundo do header “vaze” até as bordas arredondadas */
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        /* Gradiente horizontal do azul mais claro para um tom mais escuro */
+        background: linear-gradient(90deg, #0056b3 0%, #009BDE 100%);
+        border: none;
+        color: #FFFFFF;
+        padding: 1rem 1.5rem;
+    }
+
+    .card-header h4 {
+        margin: 0;
+        font-weight: 500;
+        font-size: 1.25rem;
+    }
+
+    .card-header .form-select {
+        /* Estilização para o dropdown de ano ficar “clean” sobre o fundo azul */
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        color: #FFFFFF;
+        min-width: 4.5rem;
+        text-align: center;
+    }
+    .card-header .form-select:focus {
+        box-shadow: none;
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.8);
+    }
+    .card-header .form-select option {
+        /* quando abrir, as opções têm texto escuro */
+        color: #000000;
+    }
+    .card-header .form-select option:checked {
+        background-color: #E0EFFF;
+        color: #000000;
+    }
+
+    /* ───── TABELA ─────────────────────────────────────────────────────────── */
+    .table-responsive {
+        margin-top: 1rem;
+    }
+    table.table {
+        border-collapse: separate; 
+        border-spacing: 0.5rem; /* espaçamento entre células horizontal e vertical */
+        width: 100%;
+    }
+
+    /* ─── CABEÇALHO DA TABELA (thead) ──────────────────────────────────────── */
+    table.table thead {
+        background-color: transparent; /* o fundo branco vem nos próprios th */
+    }
+
+    table.table thead th {
+        background-color: #FFFFFF;
+        color: #6C757D;       /* cinza-escuro para meses inativos */
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.80rem;
+        border: none;
+        text-align: center;
+        padding: 0.75rem 0.5rem;
+        white-space: nowrap;
+    }
+
+    table.table thead th:first-child {
+        /* “Cliente” em tom mais escuro e alinhado à esquerda */
+        color: #343A40;
+        text-align: left;
+        padding-left: 1rem;
+    }
+
+    /* Destacar o mês selecionado (por ex. Junho) */
+    table.table thead th.active-month {
+        background-color: #0062CC; /* azul escuro */
+        color: #FFFFFF;           /* texto branco */
+        border-radius: 0.25rem;
+    }
+
+    /* ─── CORPO DA TABELA (tbody) ───────────────────────────────────────── */
+    table.table tbody td {
+        background-color: #F8F9FA; /* cinza muito claro para todas as células */
+        color: #495057; /* texto cinza-azulado */
+        border: none;
+        border-radius: 0.25rem;
+        text-align: center;
+        vertical-align: middle;
+        padding: 0.75rem 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    table.table tbody td:hover {
+        background-color: #E9ECEF; /* ligeira mudança ao passar o mouse */
+    }
+
+    /* Quando não há valor (equipamento-base) */
+    .equipamento-base {
+        background-color: #EDEDED !important;
+        position: relative;
+    }
+    .equipamento-base::after {
+        position: absolute;
+        top: 4px;
+        right: 6px;
+        font-size: 0.65em;
+        padding: 1px 3px;
+        background-color: #6C757D;
+        color: #FFFFFF;
+        border-radius: 0 0 0 4px;
+    }
+
+    /* Células “enviado” em verde claro */
+    .valor-cell.bg-success {
+        background-color: #D1E7DD !important; /* verde claro */
+        color: #0F5132 !important;             /* verde escuro para o texto */
+    }
+
+    /* ─── RODAPÉ DA TABELA (tfoot) ───────────────────────────────────────── */
+    table.table tfoot tr.total-row td {
+        background-color: #FFFFFF;
+        color: #343A40;
+        font-weight: 600;
+        border: none;
+        text-align: center;
+        padding: 0.75rem 0.5rem;
+    }
+    table.table tfoot tr.total-row td:first-child {
+        text-align: left;
+        padding-left: 1rem;
+    }
+
+    /* ─── “PEQUENOS INDICADORES” ABAIXO DA TABELA ─────────────────────────── */
+    .indicadores {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #E9ECEF;
+    }
+    .indicador-box {
+        text-align: center;
+    }
+    .indicador-box h6 {
+        margin: 0;
+        font-size: 0.75rem;
+        color: #6C757D;
+        letter-spacing: 0.5px;
+    }
+    .indicador-box p {
+        margin: 0.25rem 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #343A40;
+    }
+
+    .modal-dialog {
+        color: #000000;
+    }
+</style>
+
+
+<div class="container-fluid py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Valores Mensais por Cliente</h4>
+            <div>
+                <select id="ano-select" class="form-select" onchange="window.location.href='?ano=' + this.value">
+                    {% for ano in "2025,2024,2023,2022"|split:"," %}
+                        <option value="{{ ano }}" {% if ano == ano_atual %}selected{% endif %}>{{ ano }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center">Cliente</th>
+                            {% for mes_codigo, mes_nome in meses %}
+                                <th>{{ mes_nome }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cliente in clientes %}
+                            <tr>
+                                <td>{{ cliente.cliente }}</td>
+                                {% for mes_codigo, mes_nome in meses %}
+                                    {% with chave=cliente.id|stringformat:"i"|add:","|add:mes_codigo %}
+                                        {% with valor=valores|filter_by_cliente_and_mes:chave %}
+                                            <td class="valor-cell {% if valor.enviado %}bg-success bg-opacity-25{% elif not valor.valor %}equipamento-base{% endif %} text-center"
+                                                data-cliente-id="{{ cliente.id }}"
+                                                data-mes="{{ mes_codigo }}"
+                                                data-ano="{{ ano_atual }}"
+                                                data-valor="{{ valor.valor|default:'' }}"
+                                                data-enviado="{{ valor.enviado|yesno:'true,false' }}"
+                                                style="cursor: pointer;"
+                                                onclick="abrirModal(this)">
+                                                {{ valor.valor|default:'-' }}
+                                            </td>
+                                        {% endwith %}
+                                    {% endwith %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td>Total</td>
+                            {% for mes_codigo, mes_nome in meses %}
+                                <td class="text-center">
+                                    {{ valores|total_por_mes:mes_codigo }}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edição -->
+<div class="modal fade" id="valorModal" tabindex="-1" aria-labelledby="valorModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="valorModalLabel">Editar Valor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="valorForm">
+                    <div class="mb-3">
+                        <label class="form-label">Valor</label>
+                        <input type="number" class="form-control" id="valorInput" step="1" min="0">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="enviadoCheck">
+                        <label class="form-check-label">Enviado</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarValor()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar o modal
+    window.modal = new bootstrap.Modal(document.getElementById('valorModal'), {
+        keyboard: true,
+        focus: true
+    });
+
+    // Adicionar evento para quando o modal for fechado
+    document.getElementById('valorModal').addEventListener('hidden.bs.modal', function () {
+        // Remover foco do botão quando o modal for fechado
+        document.activeElement.blur();
+    });
+});
+
+function abrirModal(celula) {
+    window.celulaAtual = celula;
+    const valor = celula.dataset.valor || '';
+    const enviado = celula.dataset.enviado === 'true';
+    
+    document.getElementById('valorInput').value = valor;
+    document.getElementById('enviadoCheck').checked = enviado;
+    
+    window.modal.show();
+}
+
+function salvarValor() {
+    console.log('=== INÍCIO DO DEBUG FRONTEND ===');
+    
+    const valorInput = document.getElementById('valorInput').value;
+    const valor = valorInput ? parseInt(valorInput) : '';
+    const enviado = document.getElementById('enviadoCheck').checked;
+    const ano = document.getElementById('ano-select').value;
+    
+    console.log('Dados a serem enviados:');
+    console.log('cliente_id:', window.celulaAtual.dataset.clienteId);
+    console.log('mes:', window.celulaAtual.dataset.mes);
+    console.log('ano:', ano);
+    console.log('valor:', valor);
+    console.log('enviado:', enviado);
+    
+    // Criar FormData para enviar os dados
+    const formData = new FormData();
+    formData.append('cliente_id', window.celulaAtual.dataset.clienteId);
+    formData.append('mes', window.celulaAtual.dataset.mes);
+    formData.append('ano', ano);
+    formData.append('valor', valor);
+    formData.append('enviado', enviado);
+    
+    // Adicionar CSRF token
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    console.log('CSRF Token:', csrfToken);
+    
+    // Mostrar feedback visual de carregamento
+    const salvarBtn = document.querySelector('#valorModal .btn-primary');
+    const originalText = salvarBtn.textContent;
+    salvarBtn.disabled = true;
+    salvarBtn.textContent = 'Salvando...';
+    
+    console.log('Enviando requisição para o servidor...');
+    
+    fetch('/nestle/atualizar-valor-mensal/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken
+        },
+        body: formData
+    })
+    .then(response => {
+        console.log('Resposta recebida:', response);
+        if (!response.ok) {
+            throw new Error('Erro na resposta do servidor');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Dados recebidos:', data);
+        if (data.success) {
+            console.log('Atualizando interface...');
+            // Atualizar a célula com os novos dados
+            window.celulaAtual.dataset.valor = data.valor;
+            window.celulaAtual.dataset.enviado = data.enviado;
+            window.celulaAtual.textContent = data.valor ? parseInt(data.valor) : '';
+            
+            // Atualizar as classes de fundo
+            window.celulaAtual.classList.remove('bg-success', 'bg-opacity-25', 'equipamento-base');
+            if (data.enviado) {
+                window.celulaAtual.classList.add('bg-success', 'bg-opacity-25');
+            } else if (!data.valor) {
+                window.celulaAtual.classList.add('equipamento-base');
+            }
+            
+            console.log('Interface atualizada com sucesso');
+            // Fechar o modal
+            window.modal.hide();
+        } else {
+            throw new Error(data.error || 'Erro ao salvar os dados');
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao salvar: ' + error.message);
+    })
+    .finally(() => {
+        // Restaurar o botão
+        salvarBtn.disabled = false;
+        salvarBtn.textContent = originalText;
+        console.log('=== FIM DO DEBUG FRONTEND ===');
+    });
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %} 

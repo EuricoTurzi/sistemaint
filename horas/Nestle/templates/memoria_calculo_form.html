@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="mb-0">Memória de Cálculo</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" id="memoriaForm">
+                {% csrf_token %}
+                
+                <!-- Dados Básicos -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="numero_rf">Número RF</label>
+                            <input type="text" class="form-control" id="numero_rf" name="numero_rf" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="data">Data</label>
+                            <input type="date" class="form-control" id="data" name="data" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="quantidade_equipamentos">Quantidade de Equipamentos</label>
+                            <input type="number" class="form-control" id="quantidade_equipamentos" name="quantidade_equipamentos" min="1" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Itens da Carga -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="mb-0">Itens da Carga</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="itensContainer">
+                            <div class="item-carga mb-3 p-3 border rounded">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Descrição</label>
+                                            <input type="text" class="form-control" name="descricao[]" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Moeda</label>
+                                            <select class="form-control" name="moeda[]" required>
+                                                <option value="BRL">BRL</option>
+                                                <option value="USD">USD</option>
+                                                <option value="EUR">EUR</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Quantidade</label>
+                                            <input type="number" class="form-control" name="quantidade[]" min="1" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Valor Unitário</label>
+                                            <input type="number" class="form-control" name="valor_unitario[]" step="0.01" min="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>Taxa de Câmbio</label>
+                                            <input type="number" class="form-control" name="taxa_cambio[]" step="0.0001" min="0.0001" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <label>&nbsp;</label>
+                                            <button type="button" class="btn btn-danger btn-block" onclick="removerItem(this)">X</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="adicionarItem()">+ Adicionar Item</button>
+                    </div>
+                </div>
+
+                <!-- Observações -->
+                <div class="form-group mb-4">
+                    <label for="observacoes">Observações</label>
+                    <textarea class="form-control" id="observacoes" name="observacoes" rows="3"></textarea>
+                </div>
+
+                <!-- Botões -->
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <a href="{% url 'memoria_list' %}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+function adicionarItem() {
+    const container = document.getElementById('itensContainer');
+    const novoItem = container.children[0].cloneNode(true);
+    
+    // Limpar valores dos campos
+    novoItem.querySelectorAll('input').forEach(input => input.value = '');
+    novoItem.querySelector('select').selectedIndex = 0;
+    
+    container.appendChild(novoItem);
+}
+
+function removerItem(button) {
+    const container = document.getElementById('itensContainer');
+    if (container.children.length > 1) {
+        button.closest('.item-carga').remove();
+    }
+}
+
+// Atualizar taxa de câmbio automaticamente
+document.querySelectorAll('select[name="moeda[]"]').forEach(select => {
+    select.addEventListener('change', function() {
+        const moeda = this.value;
+        const data = document.getElementById('data').value;
+        
+        if (moeda !== 'BRL' && data) {
+            fetch(`/nestle/ajax/buscar-taxa/?moeda=${moeda}&data=${data}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.closest('.item-carga').querySelector('input[name="taxa_cambio[]"]').value = data.taxa;
+                    }
+                });
+        }
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

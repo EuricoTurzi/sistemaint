@@ -1,4 +1,3 @@
-
 from django.core.mail import EmailMessage
 
 from reportlab.lib.pagesizes import letter
@@ -19,7 +18,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.contrib.auth.mixins import  PermissionRequiredMixin,LoginRequiredMixin 
+from django.contrib.auth.mixins import  PermissionRequiredMixin,LoginRequiredMixin
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+import json 
 # Importações dos modelos e formulários
 from .models import registrodemanutencao, ImagemRegistro,retorno
 from requisicao.models import Requisicoes
@@ -38,22 +41,29 @@ class entradasListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
     permission_required = 'registrodemanutencao.view_registrodemanutencao'
 
     def get_queryset(self):
-        queryset = registrodemanutencao.objects.filter(
-            status__in=['Pendente', 'Manutenção','Aguardando Aprovação', 'Aprovado pela Diretoria']
-        )
+        # Primeiro, busca todos os registros que correspondem ao filtro de equipamento
+        equipamentos_param = self.request.GET.get('numero_equipamento')
+        if equipamentos_param:
+            queryset = registrodemanutencao.objects.filter(numero_equipamento__icontains=equipamentos_param)
+        else:
+            # Se não houver filtro de equipamento, aplica o filtro de status normal
+            queryset = registrodemanutencao.objects.filter(
+                status__in=['Pendente', 'Manutenção', 'Aguardando Aprovação', 'Aprovado pela Diretoria']
+            )
 
+        # Aplica os outros filtros
         id_param = self.request.GET.get('id')
         nome_param = self.request.GET.get('nome')
         status_param = self.request.GET.get('status')
 
         if id_param:
-            queryset = queryset.filter(id=id_param)  # Filtra pelo ID
+            queryset = queryset.filter(id=id_param)
         if nome_param:
             queryset = queryset.filter(nome__nome__icontains=nome_param)
         if status_param:
             queryset = queryset.filter(status=status_param)
-        queryset =queryset.order_by('-id')
-
+        
+        queryset = queryset.order_by('-id')
         return queryset
 #----------------------------------------------------------------------------
 
@@ -140,6 +150,16 @@ class FormulariosUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
         self.object = form.save()
         imagens_formset.instance = self.object
         imagens_formset.save()
+        
+        # Verificar se veio da página de histórico e manter os filtros
+        referer = self.request.META.get('HTTP_REFERER', '')
+        if 'historico' in referer:
+            # Manter os filtros aplicados no redirecionamento
+            params = self.request.GET.copy()
+            if params:
+                return redirect(f"{reverse('historico_manutencaoListView')}?{params.urlencode()}")
+            return redirect('historico_manutencaoListView')
+        
         return redirect(self.success_url)
 
     def form_invalid(self, form, imagens_formset):
@@ -545,10 +565,7 @@ Destacamos que, para evitar danos semelhantes no futuro, é essencial que sejam 
 Informamos também que, em função do dano causado, será necessário realizar reparos com custo adicional. O valor será informado antes da execução do serviço, conforme nossa política de manutenção.
 Estamos à disposição para fornecer qualquer esclarecimento adicional e garantir que o equipamento funcione adequadamente. Recomendamos que, seja seguido rigorosamente o manual de cuidados e utilização para evitar problemas semelhantes.
 """,
-        "Botão de acionamento Danificado SEM CUSTO": """Gostaríamos de informá-lo(a) que, após a análise técnica do equipamento que nos foi encaminhado para manutenção, foi constatado que o botão de acionamento apresenta danos, comprometendo o funcionamento normal do equipamento.
-Após uma inspeção detalhada, não foi possível identificar nenhum problema aparente que justifique o dano. Sendo assim, o equipamento será substituído sem custo adicional.
-Reforçamos que o botão é um componente sensível e, para evitar problemas futuros, recomendamos seguir as orientações de uso descritas no manual do usuário, manuseando o equipamento com cuidado e evitando o uso de força excessiva durante o acionamento.
-""",
+        "Botão de acionamento Danificado SEM CUSTO": "O botão será reparado sem custo adicional.",
         "Antena LoRa Danificada": """Gostaríamos de informá-lo(a) que, após a análise técnica do equipamento que nos foi encaminhado para manutenção, foi identificado um dano na antena LoRa. Após uma inspeção detalhada, concluímos que o dano compromete a comunicação sem fio e a performance geral do sistema.
 A análise indica que a causa principal do dano pode estar relacionada a manuseio inadequado, como impactos acidentais e aplicação de força excessiva.
 O dano identificado pode ocasionar interrupções na comunicação do equipamento, resultando em falhas na transmissão ou recepção de dados. Essas falhas impactam diretamente a funcionalidade do sistema e podem comprometer sua eficiência em operações críticas.
@@ -556,17 +573,7 @@ Destacamos que, para evitar problemas semelhantes no futuro, é essencial que o 
 Informamos também que, em função do dano identificado, será necessário realizar a troca do equipamento com custo adicional. O valor será informado antes da execução do serviço, em conformidade com nossa política de manutenção.
 Estamos à disposição para fornecer qualquer esclarecimento adicional. Recomendamos que, após a conclusão da tratativa, sejam seguidas rigorosamente as orientações de cuidados e utilização para evitar problemas semelhantes.
 """,
-        "Antena 4G danificada":"""Gostaríamos de informá-lo(a) que, após a análise técnica do equipamento que nos foi encaminhado para manutenção, foi constatado que a antena 4G apresenta danos físicos e funcionais. Essa situação impossibilita a transmissão e recepção de dados de forma adequada, comprometendo o desempenho do sistema.
-Após uma inspeção detalhada, concluímos que o dano à antena pode ter sido causado por manuseio inadequado, como quedas ou impactos. Esses fatores contribuíram para a degradação da funcionalidade da antena e, consequentemente, do equipamento.
-Uma antena 4G danificada pode resultar em perda total ou parcial de conectividade, comprometendo o acesso à rede móvel, além de causar interrupções na comunicação de dados. Isso impacta diretamente o desempenho de sistemas dependentes de conectividade e limita as funcionalidades do equipamento.
-Destacamos que, para evitar problemas semelhantes no futuro, é fundamental manusear o equipamento com cuidado, evitando quedas ou impactos. Seguir as orientações de uso descritas no manual do usuário é essencial para preservar a funcionalidade e prolongar a vida útil do equipamento.
-Informamos também que, em função do dano identificado, será necessário a troca do equipamento com custo adicional. O valor será informado antes da execução do serviço, em conformidade com nossa política de manutenção.
-Estamos à disposição para fornecer qualquer esclarecimento adicional. Recomendamos que, após a conclusão da tratativa , sejam seguidas rigorosamente as orientações de cuidados e utilização para prevenir problemas semelhantes
- """,
-        "Sem problemas Identificados": """Gostaríamos de informá-lo(a) que, após a análise técnica detalhada do equipamento que nos foi encaminhado para manutenção, não foi identificado nenhum problema aparente em sua inspeção visual. Contudo, considerando critérios técnicos e de segurança, concluímos que o equipamento deve ser substituído. 
-Embora não haja danos visíveis ou problemas imediatamente perceptíveis, a substituição preventiva é recomendada para garantir o pleno funcionamento e evitar falhas futuras que possam comprometer o desempenho do sistema.
-
-Informamos que a substituição será realizada sem custo adicional""",
+        "Sem problemas Identificados": "Nenhum problema identificado no equipamento após a análise.",
 "Avarias Fisicas Graves" : """
         Durante a inspeção técnica constatou-se que os equipamentos apresentam avarias físicas de caráter grave, evidenciadas por fraturas estruturais, deformações mecânicas e desprendimento de componentes internos e externos. Tais danos comprometem integralmente a integridade funcional dos dispositivos,
         impedindo sua correta operação e colocando em risco a segurança de usuários e processos. Diante do estado atual de deterioração, os equipamentos são considerados irrecuperáveis para fins de uso operacional, sendo recomendada sua imediata condenação e retirada de serviço, bem como o descarte ou substituição conforme as normas vigentes de gestão de ativos e resíduos eletrônicos.
@@ -718,22 +725,61 @@ class historico_manutencaoListView(PermissionRequiredMixin, LoginRequiredMixin, 
     model = registrodemanutencao
     template_name = 'historico_manutencao.html'  # Nome do seu template para status "configuração"
     context_object_name = 'dasentradas'
+    paginate_by = 13  # Adicionar paginação
     
     permission_required = 'registrodemanutencao.view_registrodemanutencao'  # Substitua 'registrodemanutencao' pelo nome do seu aplicativo
     
     def get_queryset(self):
-        queryset = registrodemanutencao.objects.all()
+        queryset = registrodemanutencao.objects.all().order_by('-id')  # Ordenar por ID decrescente
         nome = self.request.GET.get('nome')
         retornoequipamentos = self.request.GET.get('retornoequipamentos')
+        status_tratativa = self.request.GET.get('status_tratativa')
         
         if nome:
             queryset = queryset.filter(nome__nome__icontains=nome)
         
         if retornoequipamentos:
             queryset = queryset.filter(retornoequipamentos=retornoequipamentos)
-
+        
+        if status_tratativa:
+            queryset = queryset.filter(status_tratativa=status_tratativa)
         
         return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Manter os filtros aplicados no contexto para a paginação
+        context['filtros_aplicados'] = {
+            'nome': self.request.GET.get('nome', ''),
+            'retornoequipamentos': self.request.GET.get('retornoequipamentos', ''),
+            'status_tratativa': self.request.GET.get('status_tratativa', ''),
+        }
+        
+        # Adicionar as escolhas do status de tratativa
+        context['status_tratativa_choices'] = registrodemanutencao.STATUS_TRATATIVA_CHOICES
+        
+        return context
+
+
+@csrf_exempt
+def atualizar_status_tratativa(request, registro_id):
+    if request.method == 'POST':
+        try:
+            registro = get_object_or_404(registrodemanutencao, id=registro_id)
+            data = json.loads(request.body)
+            novo_status = data.get('status_tratativa')
+            
+            if novo_status:
+                registro.status_tratativa = novo_status
+                registro.save()
+                return JsonResponse({'success': True, 'message': 'Status atualizado com sucesso'})
+            else:
+                return JsonResponse({'success': False, 'error': 'Status não fornecido'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Método não permitido'})
 
 
 def clean_id_equipamentos(self):

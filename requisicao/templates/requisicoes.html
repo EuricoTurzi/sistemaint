@@ -107,6 +107,9 @@
                     <p class="card-text"><b>TP:</b> {{ requisicao.TP }}</p>
                    
                     <a class="btn btn-info" href="{% url 'download_pdf_requisicao' requisicao.id %}">Download PDF</a>
+                    {% if perms.nestle.delete_gridinternacional %}
+                    <a href="{% url 'requisicoesdeleteview' requisicao.id %}" class="btn btn-danger">Excluir</a>
+                {% endif %}
                 </div>
             </div>
         </div>

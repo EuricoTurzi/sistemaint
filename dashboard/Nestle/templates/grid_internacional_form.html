@@ -1,0 +1,447 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  .card-header.bg-primary {
+    background: linear-gradient(90deg, #0056b3 0%, #009BDE 100%) !important;
+    border-color: #004494 !important;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #f8f9fa;
+    padding: 0.75rem 1rem;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    margin-bottom: 1rem;
+  }
+
+  .section-header .icon {
+    font-size: 1.3rem;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .dados-gerais-container {
+    background-color: #fff;
+    border: 1px solid #e0e0e8;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-left: 4px solid #b31500;
+  }
+  .dados-gerais-container .form-floating input,
+  .dados-gerais-container .form-floating select,
+  .dados-gerais-container .form-floating textarea {
+    height: calc(3rem + 2px);
+    font-size: 0.9rem;
+  }
+  @media (max-width: 767px) {
+    .dados-gerais-container .col-md-4 {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  }
+
+  .datas-container {
+    background-color: #fff;
+    border: 1px solid #e0e0e8;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-left: 4px solid #7915eb;
+  }
+  @media (max-width: 767px) {
+    .datas-container .col-md-3 {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  }
+
+  .sla-container {
+    background-color: #fff;
+    border: 1px solid #e0e0e8;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-left: 4px solid #28a745;
+  }
+  @media (max-width: 767px) {
+    .sla-container .col-md-3 {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  }
+
+  .fullvw-wrapper {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    margin-left: -50vw;
+    padding-bottom: 1rem;
+  }
+  .fullvw-wrapper .card-central {
+    width: 90vw;
+    max-width: 1800px;
+    margin: 0 auto;
+  }
+</style>
+
+<div class="fullvw-wrapper">
+  <div class="card shadow-sm card-central">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">Grid Internacional</h4>
+    </div>
+
+    <div class="card-body">
+      <form method="post" novalidate class="needs-validation">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="section-header">
+          <i class="fas fa-stopwatch icon"></i>
+          <h5 class="mb-0">Dados Gerais</h5>
+        </div>
+        <div class="dados-gerais-container">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="form-floating">
+                {{ form.cliente }}
+                <label for="{{ form.cliente.id_for_label }}">
+                  {{ form.cliente.label }} <span class="text-danger">*</span>
+                </label>
+                {{ form.cliente.errors }}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-floating">
+                {{ form.ccid }}
+                <label for="{{ form.ccid.id_for_label }}">
+                  {{ form.ccid.label }} <span class="text-danger">*</span>
+                </label>
+                {{ form.ccid.errors }}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-floating">
+                {{ form.local_de_entrega }}
+                <label for="{{ form.local_de_entrega.id_for_label }}">
+                  {{ form.local_de_entrega.label }}
+                </label>
+                {{ form.local_de_entrega.errors }}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-floating">
+                {{ form.modelo }}
+                <label for="{{ form.modelo.id_for_label }}">{{ form.modelo.label }}</label>
+                {{ form.modelo.errors }}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-floating">
+                {{ form.destino }}
+                <label for="{{ form.destino.id_for_label }}">{{ form.destino.label }}</label>
+                {{ form.destino.errors }}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-floating">
+                {{ form.bl }}
+                <label for="{{ form.bl.id_for_label }}">{{ form.bl.label }}</label>
+                {{ form.bl.errors }}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-floating">
+                {{ form.id_planilha }}
+                <label for="{{ form.id_planilha.id_for_label }}">{{ form.id_planilha.label }}</label>
+                {{ form.id_planilha.errors }}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-floating">
+                {{ form.container }}
+                <label for="{{ form.container.id_for_label }}">{{ form.container.label }}</label>
+                {{ form.container.errors }}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-floating">
+                {{ form.status_operacao }}
+                <label for="{{ form.status_operacao.id_for_label }}">{{ form.status_operacao.label }}</label>
+                {{ form.status_operacao.errors }}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-floating">
+                {{ form.reposicao }}
+                <label for="{{ form.reposicao.id_for_label }}">{{ form.reposicao.label }}</label>
+                {{ form.reposicao.errors }}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-floating">
+                {{ form.local }}
+                <label for="{{ form.local.id_for_label }}">{{ form.local.label }}</label>
+                {{ form.local.errors }}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-floating">
+                {{ form.status_container }}
+                <label for="{{ form.status_container.id_for_label }}">{{ form.status_container.label }}</label>
+                {{ form.status_container.errors }}
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-floating">
+                {{ form.observacao }}
+                <label for="{{ form.observacao.id_for_label }}">{{ form.observacao.label }}</label>
+                {{ form.observacao.errors }}
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-floating">
+                {{ form.requisicao }}
+                <label for="{{ form.requisicao.id_for_label }}">{{ form.requisicao.label }}</label>
+                {{ form.requisicao.errors }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <i class="fas fa-stopwatch icon"></i>
+          <h5 class="mb-0">Datas Importantes</h5>
+        </div>
+        <div class="datas-container">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.data_insercao }}
+                <label for="{{ form.data_insercao.id_for_label }}">{{ form.data_insercao.label }}</label>
+                {{ form.data_insercao.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.data_chegada_destino }}
+                <label for="{{ form.data_chegada_destino.id_for_label }}">{{ form.data_chegada_destino.label }}</label>
+                {{ form.data_chegada_destino.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.data_retirada }}
+                <label for="{{ form.data_retirada.id_for_label }}">{{ form.data_retirada.label }}</label>
+                {{ form.data_retirada.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.data_envio_brasil }}
+                <label for="{{ form.data_envio_brasil.id_for_label }}">{{ form.data_envio_brasil.label }}</label>
+                {{ form.data_envio_brasil.errors }}
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.data_brasil }}
+                <label for="{{ form.data_brasil.id_for_label }}">{{ form.data_brasil.label }}</label>
+                {{ form.data_brasil.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.data_chegada_porto }}
+                <label for="{{ form.data_chegada_porto.id_for_label }}">{{ form.data_chegada_porto.label }}</label>
+                {{ form.data_chegada_porto.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.data_embarque_maritimo }}
+                <label for="{{ form.data_embarque_maritimo.id_for_label }}">{{ form.data_embarque_maritimo.label }}</label>
+                {{ form.data_embarque_maritimo.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.data_desembarque_maritimo }}
+                <label for="{{ form.data_desembarque_maritimo.id_for_label }}">{{ form.data_desembarque_maritimo.label }}</label>
+                {{ form.data_desembarque_maritimo.errors }}
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.data_chegada_terminal }}
+                <label for="{{ form.data_chegada_terminal.id_for_label }}">{{ form.data_chegada_terminal.label }}</label>
+                {{ form.data_chegada_terminal.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.data_saida_terminal }}
+                <label for="{{ form.data_saida_terminal.id_for_label }}">{{ form.data_saida_terminal.label }}</label>
+                {{ form.data_saida_terminal.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.data_desembarque }}
+                <label for="{{ form.data_desembarque.id_for_label }}">{{ form.data_desembarque.label }}</label>
+                {{ form.data_desembarque.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.data_envio }}
+                <label for="{{ form.data_envio.id_for_label }}">{{ form.data_envio.label }}</label>
+                {{ form.data_envio.errors }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <i class="fas fa-stopwatch icon"></i>
+          <h5 class="mb-0">SLAs de Performance</h5>
+        </div>
+        <div class="sla-container">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.sla_insercao }}
+                <label for="{{ form.sla_insercao.id_for_label }}">{{ form.sla_insercao.label }}</label>
+                {{ form.sla_insercao.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.sla_viagem }}
+                <label for="{{ form.sla_viagem.id_for_label }}">{{ form.sla_viagem.label }}</label>
+                {{ form.sla_viagem.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.sla_retirada }}
+                <label for="{{ form.sla_retirada.id_for_label }}">{{ form.sla_retirada.label }}</label>
+                {{ form.sla_retirada.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.sla_envio_brasil }}
+                <label for="{{ form.sla_envio_brasil.id_for_label }}">{{ form.sla_envio_brasil.label }}</label>
+                {{ form.sla_envio_brasil.errors }}
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.sla_chegada_brasil }}
+                <label for="{{ form.sla_chegada_brasil.id_for_label }}">{{ form.sla_chegada_brasil.label }}</label>
+                {{ form.sla_chegada_brasil.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.sla_operacao }}
+                <label for="{{ form.sla_operacao.id_for_label }}">{{ form.sla_operacao.label }}</label>
+                {{ form.sla_operacao.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.sla_porto_nacional }}
+                <label for="{{ form.sla_porto_nacional.id_for_label }}">{{ form.sla_porto_nacional.label }}</label>
+                {{ form.sla_porto_nacional.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.sla_terrestre }}
+                <label for="{{ form.sla_terrestre.id_for_label }}">{{ form.sla_terrestre.label }}</label>
+                {{ form.sla_terrestre.errors }}
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.sla_maritimo }}
+                <label for="{{ form.sla_maritimo.id_for_label }}">{{ form.sla_maritimo.label }}</label>
+                {{ form.sla_maritimo.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.sla_terminal_internacional }}
+                <label for="{{ form.sla_terminal_internacional.id_for_label }}">{{ form.sla_terminal_internacional.label }}</label>
+                {{ form.sla_terminal_internacional.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.sla_terrestre_internacional }}
+                <label for="{{ form.sla_terrestre_internacional.id_for_label }}">{{ form.sla_terrestre_internacional.label }}</label>
+                {{ form.sla_terrestre_internacional.errors }}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-floating">
+                {{ form.sla_internacional }}
+                <label for="{{ form.sla_internacional.id_for_label }}">{{ form.sla_internacional.label }}</label>
+                {{ form.sla_internacional.errors }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-2"></i> Salvar
+          </button>
+          <a href="#" class="btn btn-secondary">
+            <i class="fas fa-times me-2"></i> Cancelar
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Script de validação do Bootstrap -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('input, select, textarea').forEach(function (el) {
+      el.classList.add('form-control');
+    });
+    var forms = document.querySelectorAll('.needs-validation');
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener(
+        'submit',
+        function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        },
+        false
+      );
+    });
+  });
+</script>
+{% endblock %}

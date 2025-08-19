@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
+
 
 <style>
     .card-status {
@@ -63,6 +65,17 @@
 </style>
 <div class="container mt-4">
     <h3 class="display-6">Expedição</h3>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get" action="{% url 'expedicaoListViews' %}" class="d-flex">
+                <input type="text" class="form-control me-2" name="nome" placeholder="Buscar por nome" value="{{ request.GET.nome|default:'' }}">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+                {% if request.GET.nome %}
+                    <a href="{% url 'expedicaoListViews' %}" class="btn btn-secondary ms-2">Limpar</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
     <div class="row">
         {% for registro in expedicao_list %}
         <div class="col-md-3 mb-4">
@@ -102,8 +115,12 @@
                     {% endif %}
                     <a class="btn btn-info" href="{% url 'gerar_pdf_saida' registro.id %}">Download PDF</a>
                     {% if perms.reativacao.views_reativacao %}
-                    <a href="{% url 'ConfiguracaoUpdateView' registro.id %}" class="btn btn-secondary">Editar</a>
-
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'RequisicaoUpdateView' registro.id %}" class="btn btn-primary">Editar</a>
+                        {% if perms.nestle.delete_gridinternacional %}
+                        <a href="{% url 'requisicoesdeleteview' registro.id %}" class="btn btn-danger">Excluir</a>
+                    {% endif %}
+                    </div>
                     {% endif %}
                     {% else %}
 
@@ -153,4 +170,23 @@ document.querySelectorAll('.add-equipamento').forEach(function(button) {
 });
 </script>
 
+<!-- Modal de Confirmação para cada item -->
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Adiciona evento de clique para os botões de exclusão
+    const deleteButtons = document.querySelectorAll('[data-bs-toggle="modal"]');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modalId = this.getAttribute('data-bs-target');
+            const modal = new bootstrap.Modal(document.querySelector(modalId));
+            modal.show();
+        });
+    });
+});
+</script>
 {% endblock %}

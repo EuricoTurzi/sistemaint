@@ -54,11 +54,13 @@
                 <th>VIGENCIA</th>
                 <th>STATUS</th>
                 <th>TERMINO</th>
+		<th>DATA TREINAMENTO</th>
                 <th>EQUIPAMENTO</th>
                 <th>QUANTIDADE</th>
                 <th>GR</th>
                 <th>CORRETORA</th>
-                <th>TRANSPORTADORA</th>
+                <th>SEGURADORA</th>	
+		<th>TREINAMENTO</th>
 
                 <th>Açôes</th>
               
@@ -80,16 +82,19 @@
                 <td>{{ cliente.vigencia }}<!-- Use o nome do campo correto -->
                 <td>{{ cliente.status }}<!-- Use o nome do campo correto -->
                 <td>{{ cliente.termino }}<!-- Use o nome do campo correto -->
+		<td>{{ cliente.data_treinamento}}
                 <td>{{ cliente.equipamento }}<!-- Use o nome do campo correto -->
                 <td>{{ cliente.quantidade_em_contrato }}<!-- Use o nome do campo correto -->
                 <td>{{ cliente.gr }}<!-- Use o nome do campo correto -->
                 <td>{{ cliente.corretora }}<!-- Use o nome do campo correto -->
-                <td>{{ cliente.transportadora }}</td><!-- Use o nome do campo correto -->
+                <td>{{ cliente.seguradora }}</td><!-- Use o nome do campo correto -->
+		<td>{{ cliente.data_treinamento }}</td>
                 <td><a href="{% url 'cliente_update' cliente.id%}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
                     {% if perm.cliente.change_clientes %}<!-- Use o nome do campo correto -->
                     <td><a href="{% url 'cliente_detail' cliente.id%}" class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a>
                     <a href="{% url 'cliente_delete' cliente.id%}" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
                 </td>    
+		
                 </tr>
                 {% endif%}
 

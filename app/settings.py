@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
     'adm',
     'cliente',
     'produto',
@@ -88,12 +91,23 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     # Adicione este middleware
 ]
 
 ROOT_URLCONF = 'app.urls'
 
 ALLOWED_HOSTS = ['intgoldensat.com.br', 'www.intgoldensat.com.br']
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
+
 
 
 TEMPLATES = [
@@ -111,6 +125,26 @@ TEMPLATES = [
         },
     },
 ]
+
+
+
+# Permitir o domínio da plataforma T42
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:8000",  # ou domínio real da plataforma T42
+    
+]
+
+# Se usar autenticação via token (DRF)
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type",
+]
+
+
+
+
+
+
 
 WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {

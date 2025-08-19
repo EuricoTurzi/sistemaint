@@ -45,6 +45,7 @@ class FormulariosForm(forms.ModelForm):
         }
 # registrodemanutencao/forms.py
 
+
 class FormulariosUpdateForm(forms.ModelForm):
     class Meta:
         model = registrodemanutencao
@@ -72,7 +73,7 @@ class FormulariosUpdateForm(forms.ModelForm):
             'numero_equipamento': forms.Textarea(attrs={'class': 'form-control'}),
             'quantidade': forms.TextInput(attrs={'class': 'form-control'}),
             'tratativa': forms.Select(attrs={'class': 'form-control'}),
-            'status': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'status': forms.TextInput(attrs={'class': 'form-control'}),
             'tipo_customizacao': forms.Select(attrs={'class': 'form-control'}),
             'recebimento': forms.Select(attrs={'class': 'form-control'}),
             'entregue_por_retirado_por': forms.Select(attrs={'class': 'form-control'}),
@@ -84,6 +85,8 @@ class FormulariosUpdateForm(forms.ModelForm):
             }),
             'observacoes': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
 
         
 

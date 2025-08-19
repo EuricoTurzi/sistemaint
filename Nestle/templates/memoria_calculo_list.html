@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Memórias de Cálculo</h2>
+        <a href="{% url 'memoria_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Nova Memória
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Número RF</th>
+                            <th>Data</th>
+                            <th>Qtd. Equipamentos</th>
+                            <th>Total Geral</th>
+                            <th>Valor por Equipamento</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for memoria in memorias %}
+                        <tr>
+                            <td>{{ memoria.numero_rf }}</td>
+                            <td>{{ memoria.data|date:"d/m/Y" }}</td>
+                            <td>{{ memoria.quantidade_equipamentos }}</td>
+                            <td>R$ {{ memoria.total_geral|floatformat:2 }}</td>
+                            <td>R$ {{ memoria.valor_por_equipamento|floatformat:2 }}</td>
+                            <td>
+                                <a href="{% url 'memoria_edit' memoria.id %}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'memoria_detail' memoria.id %}" class="btn btn-sm btn-secondary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger" 
+                                        onclick="confirmarExclusao('{% url 'memoria_delete' memoria.id %}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">Nenhuma memória de cálculo encontrada.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+function confirmarExclusao(url) {
+    if (confirm('Tem certeza que deseja excluir esta memória de cálculo?')) {
+        window.location.href = url;
+    }
+}
+</script>
+{% endblock %}
+{% endblock %} 

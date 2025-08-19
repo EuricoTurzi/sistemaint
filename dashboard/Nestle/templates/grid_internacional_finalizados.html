@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+
+.main-content {
+    width: 210%;
+    margin-left: -750px;
+    min-height: 92vh;
+    padding: 1.5rem 2rem;
+    background-color: #f0f2f5;
+}
+
+ .card-header.bg-success {
+    background: linear-gradient(90deg, #0056b3 0%, #009BDE 100%) !important;
+    border-color: #004494;
+}
+
+</style>
+
+<main class="main-content">
+    <div class="container-fluid">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Grid Internacional - Finalizados</h4>
+                <a href="{% url 'grid_internacional_list' %}" class="btn btn-light">
+                    <i class="fas fa-arrow-left me-2"></i>Voltar para Grid
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-section">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Requisição</th>
+                                    <th>Cliente</th>
+                                    <th>Local Entrega</th>
+                                    <th>Modelo</th>
+                                    <th>Destino</th>
+                                    <th>BL</th>
+                                    <th>Container</th>
+                                    <th>Local</th>
+                                    <th>Status Operação</th>
+                                    <th>Entrega</th>
+                                    <th>Inserção</th>
+                                    <th>Porto Brasil</th>
+                                    <th>Embarque Marítimo</th>
+                                    <th>Desembarque Marítimo</th>
+                                    <th>Chegada Destino</th>
+                                    <th>Retirada</th>
+                                    <th>Invoice</th>
+                                    <th>RF Invoice</th>
+                                    <th>Coleta</th>
+                                    <th>Envio Brasil</th>
+                                    <th>Chegada Brasil</th>
+                                    <th>Liberacao</th>
+                                    <th>GoldenSat</th>
+                                    <th>Observação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for grid in object_list %}
+                                <tr>
+                                    <td>{{ grid.id_planilha }}</td>
+                                    <td>{{ grid.requisicao }}</td>
+                                    <td>{{ grid.cliente }}</td>
+                                    <td>{{ grid.local_de_entrega }}</td>
+                                    <td>{{ grid.modelo }}</td>
+                                    <td>{{ grid.destino }}</td>
+                                    <td>{{ grid.bl }}</td>
+                                    <td>{{ grid.container }}</td>
+                                    <td>{{ grid.local }}</td>
+                                    <td><span class="badge bg-success">{{ grid.status_operacao }}</span></td>
+                                    <td>{{ grid.data_envio|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.data_insercao|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.data_chegada_porto|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.data_embarque_maritimo|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.data_desembarque_maritimo|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.data_chegada_destino|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.data_retirada|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.data_envoice|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.rf_invoice }}</td>
+                                    <td>{{ grid.coleta|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.data_envio_brasil|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.data_brasil|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.liberacao|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.golden_sat|date:"d/m/Y" }}</td>
+                                    <td>{{ grid.observacao|truncatechars:50 }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="26" class="text-center py-4">
+                                        <div class="text-muted">
+                                            <i class="fas fa-inbox fa-2x mb-3"></i>
+                                            <p>Nenhum registro finalizado encontrado.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %} 

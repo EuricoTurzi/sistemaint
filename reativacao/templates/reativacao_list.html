@@ -141,6 +141,9 @@
                                 {% endfor %}
                             </select>
                         </form>
+                        {% if perms.t42.view_t42model %}
+                        <a href="{% url 'reativacao_complete_update' registro.id %}" class="btn btn-sm btn-info mt-2">Editar Completo</a>
+                        {% endif %}
                         <script>
                             function updateStatus(registroId) {
                                 var form = document.getElementById('status-form-' + registroId);

@@ -136,11 +136,17 @@ class Requisicao2UpdateView(PermissionRequiredMixin,LoginRequiredMixin,UpdateVie
 
   
 
-class requisicoesdeleteview(PermissionRequiredMixin,LoginRequiredMixin,DeleteView):
-    model = models.Requisicoes
-    template_name = 'requisicao_delete.html'
-    success_url = reverse_lazy('acompanhamento_requisicao')
-    permission_required="requisicao.delete_requisicoes"
+class requisicoesDeleteView(PermissionRequiredMixin,LoginRequiredMixin,DeleteView):
+    model = Requisicoes
+    template_name = "requisicao_delete.html"
+    success_url = reverse_lazy('expedicaoListViews')
+    permission_required = "requisicao.delete_requisicoes"
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 #------------------------------------------------------
 
 #------------------------------------------------------
@@ -378,12 +384,20 @@ class expedicaoListViews(PermissionRequiredMixin,LoginRequiredMixin,ListView):
     context_object_name = 'expedicao_list'
     permission_required="requisicao.view_requisicoes"
     
-       
     def get_queryset(self):
-        requisicoes_queryset = Requisicoes.objects.filter(status__in=['Configurado'])
-        manutencao_queryset = registrodemanutencao.objects.filter(status__in=['Configurado'])
+        nome = self.request.GET.get('nome')
         
-        # Combine os querysets
+        # Primeiro, busca as requisições
+        requisicoes_queryset = Requisicoes.objects.filter(status__in=['Configurado'])
+        if nome:
+            requisicoes_queryset = requisicoes_queryset.filter(nome__nome__icontains=nome)
+        
+        # Depois, busca as manutenções
+        manutencao_queryset = registrodemanutencao.objects.filter(status__in=['Configurado'])
+        if nome:
+            manutencao_queryset = manutencao_queryset.filter(nome__nome__icontains=nome)
+        
+        # Combina os querysets
         combined_queryset = list(requisicoes_queryset) + list(manutencao_queryset)
         
         return combined_queryset
@@ -409,6 +423,14 @@ class historicoListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
         
         return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Preserva os parâmetros GET para a paginação
+        context['nome_filter'] = self.request.GET.get('nome', '')
+        context['status_filter'] = self.request.GET.get('status', '')
+        return context
+
+#------------------------------------------------------
 #------------------------------------------------------
 
 
