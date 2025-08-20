@@ -3,7 +3,7 @@ from requisicao.models import Requisicoes, Produto, Clientes
 from django.shortcuts import get_object_or_404, redirect
 from . import models, forms
 from .models import Formulario
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from itertools import chain
 from django.views.generic import ListView
@@ -114,6 +114,9 @@ class FaturamentoListView(PermissionRequiredMixin, LoginRequiredMixin, ListView)
             'busca': self.request.GET.get('busca', ''),
             'ordenacao': self.request.GET.get('ordenacao', ''),
         }
+        
+        # Adicionar os valores atuais dos filtros para preservar no formulário
+        context['current_filters'] = self.request.GET
         
         return context
 
