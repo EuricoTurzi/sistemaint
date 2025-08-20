@@ -1,17 +1,65 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-4">
-    <h3 class="display-4">Cadastrar Produto</h3>
-
-    <div class="card">
-        <div class="card-body">
-            <form method="post" class="form">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Salvar Produto</button>
-            </form>
-        </div>
-    </div>
-    <a href="{% url 'produto_list' %}" class="btn btn-secondary mt-3">Cancelar e Voltar</a>
+<style>
+    .create-container {
+        max-width: 500px;
+        margin: 48px auto 0 auto;
+        background: #f8f8e8;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        padding: 32px 24px 24px 24px;
+    }
+    .create-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #218838;
+        margin-bottom: 24px;
+        text-align: center;
+    }
+    .create-form .form-control {
+        border-radius: 8px;
+        border: 1px solid #d1cfc7;
+        margin-bottom: 16px;
+    }
+    .create-form label {
+        font-weight: 500;
+        color: #333;
+    }
+    .btn-save {
+        background: #218838;
+        color: #fff;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 8px 24px;
+        margin-right: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .btn-cancel {
+        background: #e74c3c;
+        color: #fff;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 8px 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        margin-top: 16px;
+        display: block;
+        text-align: center;
+        width: 100%;
+        transition: background 0.2s, color 0.2s;
+    }
+    .btn-cancel:hover {
+        background: #c0392b;
+        color: #fff;
+    }
+</style>
+<div class="create-container">
+    <h3 class="create-title">Cadastrar Produto</h3>
+    <form method="post" class="create-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-save">Salvar Produto</button>
+    </form>
+    <br>
+    <a href="{% url 'produto_list' %}" class="btn btn-cancel">Cancelar e Voltar</a>
 </div>
 {% endblock %}
