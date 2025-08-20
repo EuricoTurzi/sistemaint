@@ -5,58 +5,68 @@
 {% endblock %}
 
 {% block content %}
-
-<div class="row mb-12">
-    <div class="col-md-12">
-        <form method="get" action="{% url 'produto_list' %}">
-            <div class="input-group">
-                <input type="text" class="form-control" name="nome" placeholder="nome" value="{{ request.GET.nome }}">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search"></i>
-                </button>
-            </div>
-        </form>
+<style>
+    .dashboard-bg { background: #595959; }
+    .card-custom { background: #f8f8e8; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .card-icon { font-size: 2rem; color: #2ecc40; }
+    .card-danger { color: #e74c3c; }
+    .table-custom { background: #fffbe6; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .btn-custom { border-radius: 8px; font-weight: 500; }
+    .btn-add { background: #218838; color: #fff; }
+    .btn-view { background: #c0392b; color: #fff; }
+    .btn-license { background: #2e5cff; color: #fff; }
+    .table th, .table td { vertical-align: middle; border-right: 1px solid #d1cfc7; }
+    .table th:last-child, .table td:last-child { border-right: none; }
+</style>
+<div class="container my-4">
+    <div class="d-flex align-items-center mb-3">
+        <i class="bi bi-pie-chart-fill text-white me-2" style="font-size:2rem"></i>
+        <h3 class="text-white mb-0">Resumo de Produtos</h3>
+        <div class="ms-auto d-flex gap-2 align-items-center">
+            <a href="{% url 'produto_create' %}" class="btn btn-add btn-custom">+ Adicionar Produto</a>
+        </div>
     </div>
-</div>
-
-{% if perms.produto.change_produto %}
-<div class="row mb-3">
-    <div class="col-md-12">
-        <a href="{% url 'produto_create' %}" class="btn btn-primary float-end">
-            <i class="bi bi-box-arrow-in-up-right"></i> Criar Produto
-        </a>
+    <div class="table-custom p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                            <th class="text-center">ID</th>
+                            <th class="text-center">NOME</th>
+                            <th class="text-center">QUANTIDADE</th>
+                            <th class="text-center">AÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produto|slice:":20" %}
+                    <tr>
+                            <td class="text-center">{{ produto.id }}</td>
+                            <td>{{ produto.nome }}</td>
+                            <td class="text-center">{{ produto.quantidade }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'produto_detail' produto.id %}" class="btn btn-sm btn-custom me-1" style="background:#00cfff; color:#fff; padding:8px 12px;">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                {% if perms.produto.change_produto %}
+                                <a href="{% url 'produto_update' produto.id %}" class="btn btn-sm btn-custom me-1" style="background:#ffd600; color:#222; padding:8px 12px;">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'produto_delete' produto.id %}" class="btn btn-sm btn-custom" style="background:#e74c3c; color:#fff; padding:8px 12px;">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                                {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">Nenhum produto encontrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
+    <br>
+    {% include 'components/_pagination.html' %}
 </div>
-{% endif %}
-
-<div class="table-responsive">
-    <table class="table table-striped table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th>ID</th>
-                <th>NOME</th>
-                <th>QUANTIDADE</th>
-                <th>AÇÕES</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for produto in produto %}
-            <tr>
-                <td>{{ produto.id }}</td>
-                <td>{{ produto.nome }}</td>
-                <td>{{ produto.quantidade }}</td>
-                <td>
-                    <a href="{% url 'produto_detail' produto.id %}" class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a>
-                    {% if perms.produto.change_produto %}
-                    <a href="{% url 'produto_update' produto.id %}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
-                    <a href="{% url 'produto_delete' produto.id %}" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-{% include 'components/_pagination.html' %}
 {% endblock %}
