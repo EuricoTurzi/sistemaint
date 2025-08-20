@@ -6,29 +6,31 @@
 
 {% block content %}
 <style>
+    html, body { max-width: 100vw; overflow-x: hidden; margin: 0px;}
     .dashboard-bg { background: #595959; }
-    .card-custom { background: #f8f8e8; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .card-custom { background: #f8f8e8; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); width: 100%; max-width: 900px; margin: 0 auto; }
     .card-icon { font-size: 2rem; color: #2ecc40; }
     .card-danger { color: #e74c3c; }
-    .table-custom { background: #fffbe6; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .table-custom { background: #fffbe6; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); width: 100%; padding: 0; }
     .btn-custom { border-radius: 8px; font-weight: 500; }
     .btn-add { background: #218838; color: #fff; }
     .btn-view { background: #c0392b; color: #fff; }
     .btn-license { background: #2e5cff; color: #fff; }
     .table th, .table td { vertical-align: middle; border-right: 1px solid #d1cfc7; }
     .table th:last-child, .table td:last-child { border-right: none; }
+    .table { width: 100%; table-layout: auto; }
 </style>
-<div class="container my-4">
+<div class="container my-4" style="max-width: 100vw; overflow-x: hidden; margin-top: 32px; padding-top: 24px;">
     <div class="d-flex align-items-center mb-3">
-        <i class="bi bi-pie-chart-fill text-white me-2" style="font-size:2rem"></i>
+        <i class="bi bi-pie-chart-fill text-white me-2" style="font-size:1.7rem"></i>
         <h3 class="text-white mb-0">Resumo de Produtos</h3>
         <div class="ms-auto d-flex gap-2 align-items-center">
             <a href="{% url 'produto_create' %}" class="btn btn-add btn-custom">+ Adicionar Produto</a>
         </div>
     </div>
-    <div class="table-custom p-4">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
+    <div class="table-custom" style="padding: 16px 0;">
+        <div>
+                <table class="table table-hover align-middle">
                 <thead>
                     <tr>
                             <th class="text-center">ID</th>
@@ -44,14 +46,14 @@
                             <td>{{ produto.nome }}</td>
                             <td class="text-center">{{ produto.quantidade }}</td>
                             <td class="text-center">
-                                <a href="{% url 'produto_detail' produto.id %}" class="btn btn-sm btn-custom me-1" style="background:#00cfff; color:#fff; padding:8px 12px;">
+                                <a href="{% url 'produto_detail' produto.id %}" class="btn btn-sm btn-custom me-1" style="background:#00cfff; color:#fff; padding:4px 6px; min-width:28px; min-height:28px; font-size:0.90rem;">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 {% if perms.produto.change_produto %}
-                                <a href="{% url 'produto_update' produto.id %}" class="btn btn-sm btn-custom me-1" style="background:#ffd600; color:#222; padding:8px 12px;">
+                                <a href="{% url 'produto_update' produto.id %}" class="btn btn-sm btn-custom me-1" style="background:#ffd600; color:#222; padding:4px 6px; min-width:28px; min-height:28px; font-size:0.90rem;">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="{% url 'produto_delete' produto.id %}" class="btn btn-sm btn-custom" style="background:#e74c3c; color:#fff; padding:8px 12px;">
+                                <a href="{% url 'produto_delete' produto.id %}" class="btn btn-sm btn-custom" style="background:#e74c3c; color:#fff; padding:4px 6px; min-width:28px; min-height:28px; font-size:0.90rem;">
                                     <i class="bi bi-trash"></i>
                                 </a>
                                 {% endif %}
