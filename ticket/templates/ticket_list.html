@@ -2,95 +2,260 @@
 {% block title %}| Faturamento |{% endblock %}
 {% include 'components/_header.html' %}
 {% block content %}
+
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
     body {
-        background-color: #45494E; /* Cor de fundo mais escura */
+        background-color: #0f0f0fbe;
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+    .bg-setor-personalizada {
+        background-color: #23446e !important; /* Altere para a cor desejada */
+        color: #fff !important;
+    }
+
+    .main-content {
+    width: 235%;
+    margin-left: -750px;
+    min-height: 92vh;
+    padding: 1.5rem 2rem;
+    background-color: #f0f2f5;
+    border-radius: 20px;
+}
+
+
+    .badge-status {
+        font-size: 1.1em;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 6px;
+        color: #0e0d0d;
+    }
+    /* Only the top cards: Negado, Atualizado, and setor cards */
+    .card-status.text-white .count {
+        color: #fff !important;
+    }
+
+    .card {
+        transition: box-shadow 0.3s;
+        border: none;
+        margin-bottom: 32px;
+        border-radius: 18px;
         display: flex;
         flex-direction: column;
-        height: 80rem;
-        margin: 0;
-    }
-    .container-fluid {
-        padding: 0;
+        align-items: center;
+        background: #cccacaaf;
+        min-height: 320px;
+        width: 400px;
+        max-width: 400px;
+        position: relative;
+        overflow: hidden;
+        color: #0e0d0d;
+        padding: 18px 12px 24px 16px;
+        box-sizing: border-box;
+        font-size: 1.15em;
     }
     .row {
-        margin: 0;
-    }
-    .table-responsive {
-        padding: 0 15px;
-        margin-left: -55vh;
-        width: 160rem;
-    }
-    .form-control {
+        margin-right: 0;
+        margin-left: 0;
         width: 100%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .dropdown-status {
-        width: 10rem;
-    }
-    .filter-container {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 0;
-    }
-    .thead-dark {
-        background-color: #344038;
-        color: white;
-    }
-    .card {
-        transition: transform 0.3s;
-        border: none; /* Remover bordas padrão */
+        overflow-x: auto;
+        box-sizing: border-box;
     }
     .card:hover {
-        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 6px 24px #bfc7d1;
     }
-    .pendente {
-        background-color: #f8d7da;
+    .card-title {
+        font-size: 1.35em;
+        margin-bottom: 0.5em;
+        color: #222;
     }
-    .atualizado {
-        background-color: #d1ecf1;
+    .dropdown-details {
+        display: none;
+        background: #f7f8fa;
+        padding: 12px 18px;
+        border-top: 1px solid #e0e3e8;
+        margin-top: 10px;
+        border-radius: 0 0 12px 12px;
+        font-size: 1.08em;
+        color: #444;
     }
-    .negado {
-        background-color: #fa6363;
+    .dropdown-toggle {
+        cursor: pointer;
+        color: #1976d2;
+        text-decoration: underline;
+        font-size: 1.08em;
+        font-weight: 500;
     }
-    .default {
-        background-color: #ffffff;
+    .status-bar {
+        width: 14px;
+        border-radius: 18px 0 0 18px;
+        margin-right: 0;
+        margin-left: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        flex-shrink: 0;
+        z-index: 1;
     }
+    .status-circle {
+        display: none;
+    }
+    .status-pendente { background: #fff9c4; }
+    .status-atualizado { background: #7be495; }
+    .status-negado { background: #ff8a80; }
+    .avatar-circle {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        border: 3px solid #bfa76a;
+        background: #232323;
+        margin: 0 auto 16px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2em;
+        color: #bfa76a;
+    }
+    .status-pendente { background: linear-gradient(180deg, #eedd42 80%, #fff9c4 100%); }
+    .status-atualizado { background: linear-gradient(180deg, #7be495 80%, #c8f7c5 100%); }
+    .status-negado { background: linear-gradient(180deg, #ff8a80 80%, #ffcdd2 100%); }
+    
+    .card-status {
+        border-radius: 12px;
+        padding: 18px 0 10px 0;
+        margin: 0 8px 18px 0;
+        box-shadow: 0 2px 8px #0001;
+        font-weight: 500;
+        font-size: 1em;
+        background: #fff;
+        color: #222;
+        border-left: 6px solid #4caf50;
+        min-width: 180px;
+        max-width: 220px;
+        display: inline-block;
+        text-align: left;
+    }
+    .card-status .count {
+        font-size: 1.9em;
+        font-weight: bold;
+        margin-bottom: 2px;
+        margin-left: 8px;
+        color: #222;
+    }
+    .card-status .label {
+        font-size: 1.08em;
+        margin-left: 8px;
+        color: #444;
+        font-weight: 400;
+    }
+    /* Only the top cards: Negado, Atualizado, and setor cards */
+    .card-status.text-white .label {
+        color: #fff !important;
+    }
+    
+    /* Remover borda lateral dos cards do topo */
+    .card-status.bg-warning,
+    .card-status.bg-info,
+    .card-status.bg-setor-personalizada {
+        border-left: none !important;
+    }
+    .card-status.bg-secondary { border-left: 6px solid #6c757d; }
+    .card-status.bg-primary { border-left: 6px solid #007bff; }
+    .card-status.bg-success { border-left: 6px solid #4caf50; }
+    .card-status.bg-danger { border-left: 6px solid #dc3545; }
+    .card-status.bg-dark { border-left: 6px solid #343a40; }
+    .card-status.bg-light { border-left: 6px solid #e0e0e0; }
 </style>
-<div class="row">
-    {% for item in ticket %}
-    <div class="col-md-4 mb-4">
-        {% if item.setor != 'Faturamento' or perms.faturamento.delete_formulario %}
-        <div class="card {% if item.status == 'Pendente' %}pendente{% elif item.status == 'Atualizado' %}atualizado{% elif item.status == 'Negado' %}negado{% else %}default{% endif %}">
-            <div class="card-body">
-                <h2>Ticket</h2>
-                <h3><b>ID</b>: {{ item.id }}</h3>
-                <h5 class="card-title">{{ item.usuario.username }}</h5>
-                <p class="card-text"><b>Setor</b>: {{ item.setor }}</p>
-                <p class="card-text"><b>Erro</b>: {{ item.erro }}</p>
-                <p class="card-text"><b>Correção</b>: {{ item.correcao }}</p>
-                <p class="card-text"><b>Data</b>: {{ item.data_criacao|date:"d/m/Y H:i" }}</p>
-                <p class="card-text"><b>Status</b>: {{ item.status }}</p>
-             
-                
-                {% if perms.ticket.change_ticketmodel %}
 
-
-           
-                
-                    <a class="btn btn-success" href="{% url 'atualizar_status' item.id %}">Atualizar</a>
-                    <a class="btn btn-danger" href="{% url 'atualizar_status2' item.id %}">Negado</a>
-                   
-                    
-                {% endif %}
-            </div>
+<main class="main-content">
+    <div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: center; gap: 18px; margin-bottom: 16px; overflow-x: auto;">
+        <div class="card-status bg-warning text-white text-center" style="min-width:180px; max-width:220px;">
+            <div class="label">Negado</div>
+            <div class="count">{{ qtd_negado }}</div>
         </div>
-        {% endif %}
+        <div class="card-status bg-info text-white text-center" style="min-width:180px; max-width:220px;">
+            <div class="label">Atualizado</div>
+            <div class="count">{{ qtd_atualizado }}</div>
+        </div>
+        {% for setor in tickets_por_setor %}
+            <div class="card-status text-white text-center bg-setor-personalizada" style="min-width:180px; max-width:220px; height:110px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                <div class="label">{{ setor.setor }}</div>
+                <div class="count">{{ setor.total }}</div>
+            </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-    {% include 'components/_pagination.html' %}
-</div>
+
+    <div class="row">
+        {% for item in ticket %}
+            {% if item.setor != 'Faturamento' or perms.faturamento.delete_formulario %}
+                <div class="col-12 col-sm-6 col-md-3 mb-4 d-flex align-items-stretch">
+                    <div class="card" style="position:relative;">
+                        <div class="status-bar 
+                            {% if item.status == 'Pendente' %}status-pendente
+                            {% elif item.status == 'Atualizado' %}status-atualizado
+                            {% elif item.status == 'Negado' %}status-negado
+                            {% endif %}">
+                        </div>
+                        <div class="avatar-circle">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <div class="text-center" style="margin-bottom: 10px;">
+                            <span style="font-weight:600; font-size:1.1em;">#{{ item.id }}</span><br>
+                            <span style="font-size:1em; color:#75753e;">
+                                <i class="fas fa-users"></i> {{ item.setor }}
+                            </span>
+                        </div>
+                        <div class="text-center" style="margin-bottom: 8px;">
+                            <span style="font-weight:600;">Responsável:</span> {{ item.usuario.username }}<br>
+                            <span style="font-size:0.98em;">
+                                <i class="far fa-calendar-alt"></i> {{ item.data_criacao|date:"d/m/Y H:i" }}
+                            </span>
+                        </div>
+                        <div class="text-center" style="margin-bottom: 8px;">
+                            <span class="badge-status 
+                                {% if item.status == 'Pendente' %}badge-pendente
+                                {% elif item.status == 'Atualizado' %}badge-atualizado
+                                {% elif item.status == 'Negado' %}badge-negado
+                                {% endif %}">
+                                {% if item.status == 'Pendente' %}⏳ Pendente
+                                {% elif item.status == 'Atualizado' %}✅ Atualizado
+                                {% elif item.status == 'Negado' %}❌ Negado
+                                {% else %}{{ item.status }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-center" style="gap:10px;">
+                            {% if perms.ticket.change_ticketmodel %}
+                                <a class="btn btn-warning btn-sm" style="color:#fff;font-weight:600;" href="{% url 'atualizar_status' item.id %}">Atualizar</a>
+                                <a class="btn btn-danger btn-sm" style="font-weight:600;" href="{% url 'atualizar_status2' item.id %}">Negado</a>
+                            {% endif %}
+                        </div>
+                        <div class="text-center" style="margin-top: 8px;">
+                            <span class="dropdown-toggle" onclick="toggleDetails('{{ item.id }}')">Detalhes</span>
+                        </div>
+                        <div id="details-{{ item.id }}" class="dropdown-details">
+                            <strong>Erro:</strong> {{ item.erro }}<br>
+                            <br>
+                            <strong>Correção:</strong> {{ item.correcao }}<br>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% include 'components/_pagination.html' %}
+    </div>
+</main>
+
+<script>
+    function toggleDetails(id) {
+        var el = document.getElementById('details-' + id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+</script>
 {% endblock %}

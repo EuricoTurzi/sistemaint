@@ -1,55 +1,96 @@
 {% extends 'base.html' %}
 {% block content %}
 <style>
-
     .container {
-        max-width: 80rem; /* Define a largura máxima do container */
-        margin: 0 auto; /* Centraliza o container na tela */
+        max-width: 50rem;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 6px 24px #bfc7d1;
+        padding: 2.5rem 2rem;
     }
-    
     .card {
-        padding: 20px; /* Adiciona espaçamento interno ao card */
+        background: #f8f9fa;
+        border-radius: 16px;
+        padding: 24px 18px;
+        border: none;
     }
-    
+
     .card-body {
-        padding: 15px; /* Adiciona espaçamento interno ao corpo do card */
+        padding: 0;
     }
-    
-    form {
+
+    form.form {
         display: flex;
         flex-direction: column;
-        gap: 10px; /* Adiciona espaçamento entre os elementos do formulário */
+        gap: 18px;
+    }
+
+    form.form p {
+        margin-bottom: 0;
+    }
+
+    form.form label {
+        font-weight: 600;
+        color: #23446e;
+        margin-bottom: 4px;
+        font-size: 1.08em;
+    }
+
+    form.form input,
+    form.form select,
+    form.form textarea {
+        border-radius: 8px;
+        border: 1px solid #cfd8dc;
+        padding: 10px 12px;
+        font-size: 1.08em;
+        background: #fff;
+        transition: border-color 0.2s;
     }
     
-    input[type="submit"], .btn-secondary {
-    width: fit-content; /* Ajusta a largura dos botões ao conteúdo */
-    align-self: center; /* Centraliza os botões no formulário */
-}
+    form.form input:focus,
+    form.form select:focus,
+    form.form textarea:focus {
+        border-color: #23446e;
+        outline: none;
+    }
 
-h3.display-4 {
-    font-size: 2rem; /* Ajusta o tamanho da fonte do título */
-    text-align: center; /* Centraliza o título */
-}
+    .btn-primary {
+        background: linear-gradient(90deg, #23446e 60%, #506d94 100%);
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 32px;
+        font-size: 1.08em;
+        box-shadow: 0 2px 8px #0001;
+        transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #506d94 60%, #23446e 100%);
+        color: #fff;
+    }
+    
+    h3.display-4 {
+        font-size: 2.2rem;
+        text-align: center;
+        color: #23446e;
+        font-weight: 700;
+        margin-bottom: 2rem;
+    }
 </style>
 <br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 <div class="container mt-4">
-<h3 class="display-4"> <strong> Cadastro de Ticket</h3></strong>
-
-<div class="card">
-    <div class="card-body">
-        <form method="post" class="form">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary"> Salvar </button>
-        </form>
+    <h3 class="display-4"><strong>Cadastro de Ticket</strong></h3>
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+        </div>
     </div>
-</div>
-
 </div>
 {% endblock %}

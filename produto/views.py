@@ -2,6 +2,7 @@ from typing import Any
 from django.db.models.query import QuerySet
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from . import models, forms
+from django.db.models import Sum
 from django.urls import reverse_lazy
 from rolepermissions.decorators import has_role_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -20,6 +21,14 @@ class produtoviews(PermissionRequiredMixin, LoginRequiredMixin, ListView):
         if nome:
             queryset = queryset.filter(nome__icontains=nome)
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Soma das quantidades de todos os produtos
+        context['total_quantidade'] = self.model.objects.aggregate(total=Sum('quantidade'))['total'] or 0
+        # Total geral de produtos cadastrados (sem paginação)
+        context['total_produtos_geral'] = self.model.objects.count()
+        return context
 
 class produtocrateview(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     model = models.Produto

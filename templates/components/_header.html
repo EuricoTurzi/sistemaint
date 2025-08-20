@@ -6,46 +6,164 @@
     <title>Header</title>
    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+    {% load static %}
     <style>
+        .header-top {
+            background: linear-gradient(90deg, #665b1d 60%, #222 100%);
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.3rem 2rem;
+        }
+        .header-logo {
+            display: flex;
+            align-items: center;
+        }
+        .header-logo img {
+            height: 38px;
+            margin-right: 12px;
+        }
+        .header-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            color: #ffd700;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+        .header-actions i {
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .header-bottom {
+            background: whitesmoke;
+            border-bottom: 2px solid #bfa16c;
+            padding: 0.2rem 0;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            box-sizing: border-box;
+        }
         .navbar-custom {
-            background-color: #343a40; 
-            font-size: 0.99rem;/* Cor de fundo */
+            background: transparent;
+            box-shadow: none;
+            font-size: 1rem;
+            border: none;
+            text-decoration: none;
         }
         .navbar-custom .nav-link {
-            color: #ffffff; /* Cor do texto */
+            color: #0c0c0c;
+            background: whitesmoke;
+            font-weight: 600;
+            padding: 0.5rem 1.1rem;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
         }
-        .navbar-custom .nav-link:hover {
-            color: #f8f9fa; /* Cor do texto ao passar o mouse */
+
+        .navbar-custom .nav-link:hover, .navbar-custom .nav-link:focus {
+            color: #bfa16c;
+            background: none;
         }
         .navbar-custom .nav-link i {
-            margin-right: 5px; /* Espaço entre ícone e texto */
+            margin-right: 7px;
+            font-size: 1.1rem;
         }
-        
+        .navbar-custom .dropdown-menu {
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #bfa16c;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        .navbar-custom .dropdown-item {
+            color: #7a1c1c;
+            padding: 0.5rem 1.2rem;
+            border-radius: 4px;
+        }
+        .navbar-custom .dropdown-item:hover {
+            background: #f5e6d6;
+            color: #bfa16c;
+        }
+        .navbar-toggler {
+            border: none;
+        }
+        @media (max-width: 991px) {
+            .header-top {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0.5rem 1rem;
+            }
+            .header-title {
+                font-size: 1rem;
+            }
+            .header-bottom {
+                padding: 0.2rem 0.5rem;
+                width: 100vw;
+                margin-left: calc(-50vw + 50%);
+            }
+            .navbar-custom .nav-link {
+                padding: 0.5rem 0.7rem;
+                font-size: 0.95rem;
+            }
+            .navbar-nav {
+                flex-direction: column;
+                width: 100%;
+            }
+        }
+        @media (max-width: 600px) {
+            .header-top {
+                padding: 0.3rem 0.3rem;
+            }
+            .header-title {
+                font-size: 0.9rem;
+            }
+            .header-logo img {
+                height: 28px;
+                margin-right: 8px;
+            }
+            .header-bottom {
+                padding: 0.1rem 0.1rem;
+            }
+            .navbar-custom .nav-link {
+                padding: 0.4rem 0.4rem;
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="header-top">
+        <div class="header-logo">
+            <!-- Substitua o src abaixo pelo seu logo real se desejar -->
+            <img src="{% static 'logo.png' %}" alt="Logo">
+            <span class="header-title">GS SISTEMA INT</span>
+        </div>
+    </div>
+    <div class="header-bottom">
     <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container-fluid">
-            <a class="navbar-brand text-white" href="#">Golden Sat</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav" style="width:100%;">
 
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'lembretes' %}">
-                            <i class="bi bi-speedometer2"></i> Painel
+                            <i class="bi bi-grid-fill"></i> Painel
                         </a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdownAcompanhamento" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                         <i class="bi bi-bank2"></i> Ticket
+                         <i class="bi bi-ticket-perforated-fill"></i> Ticket
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownAcompanhamento">
                             <li><a class="dropdown-item" href="{% url 'ticketCreateView' %}">Ticket</a></li>
-                            <li><a class="dropdown-item" href="{% url 'ticketListView' %}">Ticket List </a></li>
-                            
+                            <li><a class="dropdown-item" href="{% url 'ticketListView' %}">Ticket List </a></li>                          
                          
                          </ul>
                            
@@ -77,21 +195,21 @@
                        
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}">
-                            <i class="bi bi-house-add-fill"></i> Home
+                            <i class="bi bi-house-door-fill"></i> Home
                         </a>
                     </li>
                
                     <li class="nav-item">
                         {% if perms.produto.view_produto %}
                             <a class="nav-link" href="{% url 'produto_list' %}">
-                                <i class="bi bi-dropbox"></i> Produtos
+                                <i class="bi bi-box-seam"></i> Produtos
                             </a>
                             {% endif %}
                     </li>
                     <li class="nav-item">
                         {% if perms.produto.view_produto %}
                             <a class="nav-link" href="{% url 'cliente_list' %}">
-                                <i class="bi bi-file-person"></i> Clientes
+                                <i class="bi bi-people-fill"></i> Clientes
                             </a>
                             {% endif %}
                     </li>
@@ -374,7 +492,7 @@
         {% csrf_token %}
         </form>
         <a class="nav-link" href="#" onclick="document.getElementById('logout-form').submit();">
-        <i class="bi bi-box-arrow-left"></i> Logout
+        <i class="bi bi-box-arrow-right"></i> Logout
         </a>
         </li>
                 </ul>
