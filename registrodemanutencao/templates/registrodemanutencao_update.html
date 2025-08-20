@@ -203,6 +203,15 @@
 
 
 <script>
+    // ========================================
+    // SISTEMA DE REMOÇÃO DE PADRÕES ESPECÍFICOS
+    // ========================================
+    // Este script remove automaticamente os seguintes padrões dos campos de equipamento:
+    // - 35154, 35642, 86590, 86325, 35196, 35643, 03GO1
+    // - Mantém no máximo 10 números (corta números com 11+ dígitos)
+    // - Substitui os padrões por 5 espaços em branco
+    // ========================================
+
     function addField() {
         const container = document.getElementById('fields-container');
         const totalForms = document.getElementById('id_imagens-TOTAL_FORMS');
@@ -319,6 +328,75 @@
         if (e.key === "Enter") {
             e.preventDefault();
         }
+    });
+
+    // Lógica para remover padrões específicos dos campos de ID do equipamento
+    document.addEventListener("input", function (e) {
+        // Verifica se o campo é um campo de ID do equipamento ou número de equipamento
+        if (e.target && (e.target.name && (e.target.name.includes('id_equipamento') || e.target.name.includes('numero_equipamento')) || 
+                        e.target.id && (e.target.id.includes('id_equipamento') || e.target.id.includes('numero_equipamento')))) {
+            
+            var input = e.target;
+            var value = input.value;
+            var patterns = ["35154", "35642", "86590", "86325", "35196", "35643", "03GO1"]; // Padrões a serem encontrados
+
+            // Itera pelos padrões e substitui cada ocorrência
+            patterns.forEach(function (pattern) {
+                var regex = new RegExp(pattern, "g"); // Regex global para encontrar o padrão
+                value = value.replace(regex, function () {
+                    console.log(`Padrão removido: ${pattern}`);
+                    return "     "; // Substitui o padrão por 5 espaços
+                });
+            });
+
+            // Mantém no máximo 10 números - corta números com 11+ dígitos
+            // Encontra números com 12+ dígitos e mantém apenas os primeiros 10
+            var regex12plus = /(\d{10})(\d+)/g;
+            value = value.replace(regex12plus, function(match, p1, p2) {
+                console.log(`Número de ${match.length} dígitos cortado para 10: ${match} -> ${p1}`);
+                return p1; // Mantém apenas os primeiros 10 dígitos
+            });
+
+            // Encontra números com 11 dígitos e mantém apenas os primeiros 10
+            var regex11 = /(\d{10})(\d)/g;
+            value = value.replace(regex11, function(match, p1, p2) {
+                console.log(`Número de 11 dígitos cortado para 10: ${match} -> ${p1}`);
+                return p1; // Mantém apenas os primeiros 10 dígitos
+            });
+
+            // Atualiza o valor do campo de entrada sem os padrões
+            input.value = value;
+        }
+    });
+
+    // Aplicar a lógica também aos campos existentes quando a página carrega
+    document.addEventListener('DOMContentLoaded', function() {
+        // Processa todos os campos de ID do equipamento e número de equipamento existentes
+        document.querySelectorAll('input[name*="id_equipamento"], input[id*="id_equipamento"], input[name*="numero_equipamento"], input[id*="numero_equipamento"]').forEach(function(input) {
+            var value = input.value;
+            var patterns = ["35154", "35642", "86590", "86325", "35196", "35643", "03GO1"];
+
+            // Remove padrões
+            patterns.forEach(function (pattern) {
+                var regex = new RegExp(pattern, "g");
+                value = value.replace(regex, "     ");
+            });
+
+            // Mantém no máximo 10 números - corta números com 11+ dígitos
+            // Encontra números com 12+ dígitos e mantém apenas os primeiros 10
+            var regex12plus = /(\d{10})(\d+)/g;
+            value = value.replace(regex12plus, function(match, p1, p2) {
+                return p1; // Mantém apenas os primeiros 10 dígitos
+            });
+
+            // Encontra números com 11 dígitos e mantém apenas os primeiros 10
+            var regex11 = /(\d{10})(\d)/g;
+            value = value.replace(regex11, function(match, p1, p2) {
+                return p1; // Mantém apenas os primeiros 10 dígitos
+            });
+
+            input.value = value;
+        });
     });
 </script>
 
