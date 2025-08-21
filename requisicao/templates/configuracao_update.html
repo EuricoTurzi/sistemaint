@@ -55,10 +55,10 @@
 
 
 
-        // Remove o último número a cada 10 números inteiros e adiciona 5 espaços
-        var regex = /(\d{9})(\d)/g;
+        // Mantém exatamente 10 números e remove o excesso se houver mais de 10
+        var regex = /(\d{10})(\d+)/g;
         value = value.replace(regex, function(match, p1, p2) {
-            return p1 + "     "; // Remove o último número e adiciona 5 espaços
+            return p1 + "     "; // Mantém os 10 números e adiciona 5 espaços
         });
 
 input.value = value; // Atualiza o valor do campo de entrada
