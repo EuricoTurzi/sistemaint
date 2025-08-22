@@ -416,7 +416,7 @@ class historicoListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
         status = self.request.GET.get('status')
         
         if nome:
-            queryset = queryset.filter(nome__nome__icontains=nome)
+            queryset = queryset.filter(nome__icontains=nome)
         
         if status:
             queryset = queryset.filter(status__icontains=status)

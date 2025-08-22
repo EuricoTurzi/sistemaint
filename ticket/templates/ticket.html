@@ -15,28 +15,23 @@
         padding: 24px 18px;
         border: none;
     }
-
     .card-body {
         padding: 0;
     }
-
     form.form {
         display: flex;
         flex-direction: column;
         gap: 18px;
     }
-
     form.form p {
         margin-bottom: 0;
     }
-
     form.form label {
         font-weight: 600;
         color: #23446e;
         margin-bottom: 4px;
         font-size: 1.08em;
     }
-
     form.form input,
     form.form select,
     form.form textarea {
@@ -47,14 +42,12 @@
         background: #fff;
         transition: border-color 0.2s;
     }
-    
     form.form input:focus,
     form.form select:focus,
     form.form textarea:focus {
         border-color: #23446e;
         outline: none;
     }
-
     .btn-primary {
         background: linear-gradient(90deg, #23446e 60%, #506d94 100%);
         color: #fff;
@@ -66,18 +59,53 @@
         box-shadow: 0 2px 8px #0001;
         transition: background 0.2s;
     }
-
     .btn-primary:hover {
         background: linear-gradient(90deg, #506d94 60%, #23446e 100%);
         color: #fff;
     }
-    
     h3.display-4 {
         font-size: 2.2rem;
         text-align: center;
         color: #23446e;
         font-weight: 700;
         margin-bottom: 2rem;
+    }
+    @media (max-width: 768px) {
+        .container {
+            max-width: 100%;
+            padding: 1.2rem 0.5rem;
+            border-radius: 12px;
+        }
+        .card {
+            padding: 14px 6px;
+            border-radius: 10px;
+        }
+        h3.display-4 {
+            font-size: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+        .btn-primary {
+            padding: 8px 18px;
+            font-size: 1em;
+        }
+    }
+    @media (max-width: 576px) {
+        .container {
+            padding: 0.5rem 0.1rem;
+            border-radius: 6px;
+        }
+        .card {
+            padding: 8px 2px;
+            border-radius: 6px;
+        }
+        h3.display-4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.7rem;
+        }
+        .btn-primary {
+            padding: 6px 10px;
+            font-size: 0.95em;
+        }
     }
 </style>
 <br>
