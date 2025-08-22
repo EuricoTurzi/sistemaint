@@ -9,6 +9,7 @@
   /* remove scroll horizontal global */
   html, body {
       overflow-x: hidden;
+      overflow-y: hidden;
   }
 
   /* sobrescreve container padrão */
@@ -30,10 +31,12 @@
 
   /* wrapper com scroll só para a tabela */
   .table-scroll {
-      max-height: 70vh;
-      overflow-x: auto;  /* scroll horizontal só aqui */
-      overflow-y: auto;
-      width: 100%;
+    max-height: 70vh;
+    overflow-x: auto;  /* scroll horizontal só aqui */
+    overflow-y: auto;
+    width: 100%;
+    margin-top: 0px !important;
+    padding-top: 0px !important;
   }
 
   /* tabela pode ser maior que a tela */
@@ -41,19 +44,27 @@
     min-width: 1200px;
     width: max-content;
     margin-bottom: 0;
+    font-size: 0.85rem;
+    margin-top: 0.5rem !important;
   }
 
   .table-scroll thead th {
     position: sticky;
     top: 0;
-    background: #212529;
+    background: #212529 !important;
     color: #fff;
-    z-index: 2;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
   }
 </style>
 
-<div class="container-page mt-4 mb-5">
-  <div class="w-100 py-3">
+<div class="container-page mt-2 mb-5">
+  <div class="w-100 py-1">
+    <div class="alert alert-info py-2 mb-2" style="width: 100%;">
+      <i class="bi bi-info-circle"></i>
+      Dica: Use o scroll horizontal → para ver todas as colunas da tabela.
+      O cabeçalho permanece fixo durante a rolagem.
+    </div>
     <div class="card shadow-sm mb-4" style="width: 100%;">
       <div class="card-body">
         <form method="get" action="{% url 'cliente_list' %}">            
@@ -75,80 +86,74 @@
             </div>
           </div>
         </form>
+  <div class="table-scroll">
+          <table class="table table-hover table-bordered align-middle table-wide">
+            <thead class="table-dark sticky">
+              <tr>
+                <th class="text-center">ID</th>
+                <th class="text-center">Nome</th>
+                <th class="text-center">Fantasia</th>
+                <th class="text-center">Endereço</th>
+                <th class="text-center">CNPJ</th>
+                <th class="text-center">Comercial</th>
+                <th class="text-center">Tipo de Contrato</th>
+                <th class="text-center">Inicio de Contrato</th>
+                <th class="text-center">Vigencia</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Termino</th>
+                <th class="text-center">Data Treinamento</th>
+                <th class="text-center">Equipamento</th>
+                <th class="text-center">Quantidade</th>
+                <th class="text-center">GR</th>
+                <th class="text-center">Corretora</th>
+                <th class="text-center">Seguradora</th>
+                <th class="text-center">Treinamento</th>
+                <th class="text-center">Ações</th>
+              </tr>
+            </thead>
+            <br>
+            <br>
+            <tbody>
+              {% for cliente in cliente %}
+              <tr>
+                <td>{{ cliente.id }}</td>
+                <td>{{ cliente.nome }}</td>
+                <td>{{ cliente.nome_fantasia }}</td>
+                <td>{{ cliente.endereco }}</td>
+                <td>{{ cliente.cnpj }}</td>
+                <td>{{ cliente.comercial }}</td>
+                <td>{{ cliente.tipo_contrato }}</td>
+                <td>{{ cliente.inicio_de_contrato }}</td>
+                <td>{{ cliente.vigencia }}</td>
+                <td>{{ cliente.status }}</td>
+                <td>{{ cliente.termino }}</td>
+                <td>{{ cliente.data_treinamento }}</td>
+                <td>{{ cliente.equipamento }}</td>
+                <td>{{ cliente.quantidade_em_contrato }}</td>
+                <td>{{ cliente.gr }}</td>
+                <td>{{ cliente.corretora }}</td>
+                <td>{{ cliente.seguradora }}</td>
+                <td>{{ cliente.data_treinamento }}</td>
+                <td>
+                  <a href="{% url 'cliente_update' cliente.id %}" class="btn btn-warning btn-sm" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <a href="{% url 'cliente_detail' cliente.id %}" class="btn btn-info btn-sm" title="Visualizar">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                  <a href="{% url 'cliente_delete' cliente.id %}" class="btn btn-danger btn-sm" title="Excluir">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <br>
+        {% include 'components/_pagination.html' %}
       </div>
     </div>
-
-    <div class="alert alert-info py-2 mb-2" style="width: 100%;">
-      <i class="bi bi-info-circle"></i>
-      Dica: Use o scroll horizontal → para ver todas as colunas da tabela.
-      O cabeçalho permanece fixo durante a rolagem.
-    </div>
-
-    <div class="table-scroll">
-      <table class="table table-hover table-bordered align-middle table-wide">
-        <thead class="table-dark sticky">
-          <tr>
-            <th class="text-center">ID</th>
-            <th class="text-center">Nome</th>
-            <th class="text-center">Fantasia</th>
-            <th class="text-center">Endereço</th>
-            <th class="text-center">CNPJ</th>
-            <th class="text-center">Comercial</th>
-            <th class="text-center">Tipo de Contrato</th>
-            <th class="text-center">Inicio de Contrato</th>
-            <th class="text-center">Vigencia</th>
-            <th class="text-center">Status</th>
-            <th class="text-center">Termino</th>
-            <th class="text-center">Data Treinamento</th>
-            <th class="text-center">Equipamento</th>
-            <th class="text-center">Quantidade</th>
-            <th class="text-center">GR</th>
-            <th class="text-center">Corretora</th>
-            <th class="text-center">Seguradora</th>
-            <th class="text-center">Treinamento</th>
-            <th class="text-center">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for cliente in cliente %}
-          <tr>
-            <td>{{ cliente.id }}</td>
-            <td>{{ cliente.nome }}</td>
-            <td>{{ cliente.nome_fantasia }}</td>
-            <td>{{ cliente.endereco }}</td>
-            <td>{{ cliente.cnpj }}</td>
-            <td>{{ cliente.comercial }}</td>
-            <td>{{ cliente.tipo_contrato }}</td>
-            <td>{{ cliente.inicio_de_contrato }}</td>
-            <td>{{ cliente.vigencia }}</td>
-            <td>{{ cliente.status }}</td>
-            <td>{{ cliente.termino }}</td>
-            <td>{{ cliente.data_treinamento }}</td>
-            <td>{{ cliente.equipamento }}</td>
-            <td>{{ cliente.quantidade_em_contrato }}</td>
-            <td>{{ cliente.gr }}</td>
-            <td>{{ cliente.corretora }}</td>
-            <td>{{ cliente.seguradora }}</td>
-            <td>{{ cliente.data_treinamento }}</td>
-            <td>
-              <a href="{% url 'cliente_update' cliente.id %}" class="btn btn-warning btn-sm" title="Editar">
-                <i class="bi bi-pencil"></i>
-              </a>
-              <a href="{% url 'cliente_detail' cliente.id %}" class="btn btn-info btn-sm" title="Visualizar">
-                <i class="bi bi-eye"></i>
-              </a>
-              <a href="{% url 'cliente_delete' cliente.id %}" class="btn btn-danger btn-sm" title="Excluir">
-                <i class="bi bi-trash"></i>
-              </a>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <br>
-
-    {% include 'components/_pagination.html' %}
   </div>
 </div>
 {% endblock %}

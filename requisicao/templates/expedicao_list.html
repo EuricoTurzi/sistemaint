@@ -8,185 +8,190 @@
     .card-status {
         position: relative;
         transition: transform 0.3s ease; 
-        width: 19rem;/* Adiciona uma transição suave */
-    }
 
-    .card-status.Aprovado {
-        background: linear-gradient(to bottom, #a0f0a0 0%, #ffffff 100%); /* Gradiente verde claro para branco */
-    }
+    /* removed duplicate block content and style */
+            .card-status.Reprovado-pelo-CEO { background: linear-gradient(135deg, #f08080 0%, #ffeaea 100%); }
+            .card-status.Aprovado-pelo-CEO { background: linear-gradient(135deg, #80f080 0%, #eaffea 100%); }
+            .card-status.Reprovado-pela-Diretoria { background: linear-gradient(135deg, #f08080 0%, #ffeaea 100%); }
+            .card-status.Aprovado-pela-Diretoria { background: linear-gradient(135deg, #80f080 0%, #eaffea 100%); }
+            .card-status.Expedido { background: linear-gradient(135deg, #ffb380 0%, #fff7e6 100%); }
+            .card-status.Enviado-para-o-Cliente { background: linear-gradient(135deg, #80b3ff 0%, #e6f0ff 100%); }
+            .card-status.Aprovado-Inteligencia { background: linear-gradient(135deg, #80f080 0%, #eaffea 100%); }
+            .card-body {
+                padding: 24px 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .card-status:hover {
+                transform: scale(1.04);
+                box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            }
+            .card-title {
+                font-size: 1.3rem;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 8px;
+            }
+            .card-text {
+                font-size: 1rem;
+                color: #444;
+                margin-bottom: 4px;
+            }
+            .card-body h2 {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #555;
+                margin-bottom: 10px;
+            }
+            .btn {
+                margin-right: 8px;
+                margin-bottom: 8px;
+                border-radius: 8px;
+                font-size: 0.95rem;
+                font-weight: 500;
+                padding: 8px 16px;
+            }
+            @media (max-width: 991px) {
+                .col-md-4 { flex: 0 0 50%; max-width: 50%; }
+            }
+            @media (max-width: 767px) {
+                .col-md-4 { flex: 0 0 100%; max-width: 100%; }
+                .container { padding-left: 8px; padding-right: 8px; }
+                .card-body { padding: 16px 8px; }
+                .btn { width: 100%; margin-right: 0; }
+            }
+            .form-control, .form-select {
+                border-radius: 8px;
+                font-size: 1rem;
+                margin-bottom: 8px;
+            }
+            .btn-primary {
+                background: linear-gradient(90deg, #007bff 0%, #0056b3 100%);
+                border: none;
+            }
+            .pagination .page-link {
+                border-radius: 8px;
+                font-size: 1rem;
+            }
+            .pagination .active .page-link {
+                background: #007bff;
+                color: #fff;
+                border: none;
+            }
+        </style>
 
-    .card-status.Reprovado {
-        background: linear-gradient(to bottom, #f0a0a0 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
-    }
-
-    .card-status.Pendente {
-        background: linear-gradient(to bottom, #d0d0d0 0%, #ffffff 100%); /* Gradiente cinza claro para branco */
-    }
-
-    .card-status.Configurado {
-        background: linear-gradient(to bottom, #ffd580 0%, #ffffff 100%); /* Gradiente laranja claro para branco */
-    }
-
-    .card-status.Reprovado-pelo-CEO {
-        background: linear-gradient(to bottom, #f08080 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
-    }
-
-    .card-status.Aprovado-pelo-CEO {
-        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%); /* Gradiente verde claro para branco */
-    }
-
-    .card-status.Reprovado-pela-Diretoria {
-        background: linear-gradient(to bottom, #f08080 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
-    }
-
-    .card-status.Aprovado-pela-Diretoria {
-        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%); /* Gradiente verde claro para branco */
-    }
-
-    .card-status.Expedido {
-        background: linear-gradient(to bottom, #ffb380 0%, #ffffff 100%); /* Gradiente laranja escuro claro para branco */
-    }
-
-    .card-status.Enviado-para-o-Cliente {
-        background: linear-gradient(to bottom, #80b3ff 0%, #ffffff 100%); /* Gradiente azul claro para branco */
-    }
-
-    .card-status.Aprovado-Inteligencia {
-        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%); /* Gradiente verde claro para branco */
-    }
-
-    .card-body {
-        padding: 10px; /* Adiciona um espaço interno de 30px */
-    }
-
-    .card-status:hover {
-        transform: scale(1.05); /* Faz o card crescer um pouco */
-    }
-</style>
-<div class="container mt-4">
-    <h3 class="display-6">Expedição</h3>
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <form method="get" action="{% url 'expedicaoListViews' %}" class="d-flex">
-                <input type="text" class="form-control me-2" name="nome" placeholder="Buscar por nome" value="{{ request.GET.nome|default:'' }}">
-                <button type="submit" class="btn btn-primary">Buscar</button>
-                {% if request.GET.nome %}
-                    <a href="{% url 'expedicaoListViews' %}" class="btn btn-secondary ms-2">Limpar</a>
-                {% endif %}
-            </form>
-        </div>
-    </div>
-    <div class="row">
-        {% for registro in expedicao_list %}
-        <div class="col-md-3 mb-4">
-            <div class="card card-status Configurado">
-                <div class="card-body">
-                    {% if registro.endereco %}
-                    <h3>Requisição</h3>
-                    <h5 class="card-title"><h3>Protocolo #{{ registro.id }}</h3></h5>
-                    <h5 class="card-title">Nome: {{ registro.nome }}</h5>
-                    <p class="card-text"><b>Endereço:</b> {{ registro.endereco }}</p>
-                    <p class="card-text"><b>Contrato:</b> {{ registro.contrato }}</p>
-                    <p class="card-text"><b>CNPJ:</b> {{ registro.cnpj }}</p>
-                    {% if registro.aos_cuidados %}
-                    <p class="card-text"><b>Aos Cuidados:</b> {{ registro.aos_cuidados }}</p>
-                    {% endif %}
-                    <p class="card-text"><b>Criada em :</b> {{ registro.data_alteracao }}</p>
-                    <p class="card-text"><b>Alterada em :</b> {{ registro.data }}</p>
-                    <p class="card-text"><b>Motivo:</b> {{ registro.motivo }}</p>
-                    <p class="card-text"><b>Envio:</b> {{ registro.envio }}</p>
-                    <p class="card-text"><b>Comercial:</b> {{ registro.comercial }}</p>
-                    <p class="card-text"><b>Taxa de Envio:</b> {{ registro.taxa_envio }}</p>
-                    <p class="card-text"><b>Tipo de Produto:</b> {{ registro.tipo_produto }}</p>
-                    <p class="card-text"><b>Carregador:</b> {{ registro.carregador }}</p>
-                    <p class="card-text"><b>Cabo:</b> {{ registro.cabo }}</p>
-                    <p class="card-text"><b>Quantidade:</b> {{ registro.numero_de_equipamentos }}</p>
-                    
-                  
-                    
-                    <p class="card-text"><b>Observações:</b> {{ registro.observacoes }}</p>
-                  
-                  
-                   
-                    {% if perms.requisicao.add_requisicoes %}
-                            {% if perms.registrodemanutencao.add_registrodemanutencao %}
-                    <a href="{% url 'expedicao_expedido' registro.id %}" class="btn btn-primary">Enviar ao Cliente</a>
-                    {% endif %}
-                    {% endif %}
-                    <a class="btn btn-info" href="{% url 'gerar_pdf_saida' registro.id %}">Download PDF</a>
-                    {% if perms.reativacao.views_reativacao %}
-                    <div class="d-flex justify-content-between">
-                        <a href="{% url 'RequisicaoUpdateView' registro.id %}" class="btn btn-primary">Editar</a>
-                        {% if perms.nestle.delete_gridinternacional %}
-                        <a href="{% url 'requisicoesdeleteview' registro.id %}" class="btn btn-danger">Excluir</a>
-                    {% endif %}
-                    </div>
-                    {% endif %}
-                    {% else %}
-
-		   
-
-
-                    <h3>Requisicao</h3>
-                    <h5 class="card-title">Registro #{{ registro.id }}</h5>
-                    <h5 class="card-title">Nome: {{ registro.nome }}</h5>
-                    <p class="card-text"><b>Tipo de Produto:</b> {{ registro.tipo_produto }}</p>
-                    <p class="card-text"><b>Motivo:</b> {{ registro.motivo }}</p>
-                    <p class="card-text"><b>Faturamento:</b> {{ registro.faturamento }}</p>
-                    <p class="card-text"><b>Tipo de Entrada:</b> {{ registro.tipo_entrada }}</p>
-                    <p class="card-text"><b>Customização:</b> {{ registro.customizacao }}</p>
-                    <p class="card-text"><b>Número do Equipamento:</b> {{ registro.numero_equipamento }}</p>
-                    <p class="card-text"><b>Tratativa:</b> {{ registro.tratativa }}</p>
-                    <p class="card-text"><b>Status:</b> {{ registro.status }}</p>
-                    <p class="card-text"><b>Tipo de Customização:</b> {{ registro.tipo_customizacao }}</p>
-                    <p class="card-text"><b>Recebimento:</b> {{ registro.recebimento }}</p>
-                    <p class="card-text"><b>Entregue / Retirado por:</b> {{ registro.entregue_por_retirado_por }}</p>
-                    <p class="card-text"><b>Manutenção Equipamento:</b> {{ registro.manutencaoequipamentos }}</p>
-                    <p class="card-text"><b>Retorno Equipamento:</b> {{ registro.retornoequipamentos }}</p>
-                    <p class="card-text"><b>Setor:</b> {{ registro.setor }}</p>
-                    <a href="{% url 'expedicao_expedido2' registro.id %}" class="btn btn-primary">Enviar ao Cliente</a>
-                    <a class="btn btn-info" href="{% url 'download_pdfmanutencao' registro.id %}">Download PDF</a>
-			{% if perms.reativacao.views_reativacao %}
-		    <a href="{% url 'ConfiguracaoUpdateView' registro.id %}" class="btn btn-secondary">Incluir ID</a>
-                    {% endif %}
-			{% endif %}
+        <div class="container mt-4">
+            <div class="d-flex flex-column flex-md-row align-items-center justify-content-between mb-3">
+                <h3 class="display-5 mb-2 mb-md-0" style="font-weight:700;color:#ffd700;letter-spacing:1px;">Expedição</h3>
+                <span class="badge registros-badge" style="font-size:1rem;">{{ expedicao_list|length }} registros p/pagina</span>
+                <style>
+                    .registros-badge {
+                        background: #ffd700 !important;
+                        color: #333 !important;
+                        font-weight: 700;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                    }
+                </style>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <form method="get" action="{% url 'expedicaoListViews' %}" class="d-flex flex-column flex-sm-row gap-2 align-items-center">
+                        <input type="text" class="form-control" name="nome" placeholder="Nome" value="{{ request.GET.nome|default:'' }}">
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </form>
                 </div>
             </div>
+            <div class="row">
+                {% for registro in expedicao_list %}
+                <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                    <div class="card card-status {% if registro.status == 'Aprovado' %}Aprovado{% elif registro.status == 'Reprovado' %}Reprovado{% elif registro.status == 'Configurado' %}Configurado{% elif registro.status == 'Pendente' %}Pendente{% elif registro.status == 'Expedido' %}Expedido{% elif registro.status == 'Enviado para o Cliente' %}Enviado-para-o-Cliente{% endif %}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h2 style="font-size:1.1rem;font-weight:700;color:#555;">Requisição</h2>
+                                <span class="badge bg-secondary" style="font-size:0.95rem;">ID: {{ registro.id }}</span>
+                            </div>
+                            <h5 class="card-title">{{ registro.nome }}</h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="card-text"><b>CNPJ:</b> {{ registro.cnpj }}</p>
+                                    <p class="card-text"><b>Comercial:</b> {{ registro.comercial }}</p>
+                                    <p class="card-text"><b>Tipo de Produto:</b> {{ registro.tipo_produto }}</p>
+                                    <p class="card-text"><b>Quantidade:</b> {{ registro.numero_de_equipamentos }}</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="card-text"><b>Data:</b> {{ registro.data_alteracao|date:'d/m/Y H:i' }}</p>
+                                    <p class="card-text"><b>Data Alteração:</b> {{ registro.data|date:'d/m/Y H:i' }}</p>
+                                    <p class="card-text"><b>Status:</b> <span class="status-highlight status-{{ registro.status|slugify }}">{{ registro.status }}</span></p>
+                                    <style>
+                                        .status-highlight {
+                                            display: inline-block;
+                                            padding: 3px 10px;
+                                            border-radius: 6px;
+                                            font-weight: 500;
+                                            font-size: 0.98rem;
+                                            box-shadow: none;
+                                            border: 1px solid #e0e0e0;
+                                            background: #f7f7f7;
+                                            color: #444;
+                                            letter-spacing: 0.2px;
+                                        }
+                                        .status-Aprovado {
+                                            background: #eafbe7;
+                                            color: #2e7d32;
+                                            border-color: #cdeac0;
+                                        }
+                                        .status-Reprovado {
+                                            background: #faeaea;
+                                            color: #b71c1c;
+                                            border-color: #f5c6cb;
+                                        }
+                                        .status-Pendente {
+                                            background: #f7f7f7;
+                                            color: #757575;
+                                            border-color: #e0e0e0;
+                                        }
+                                        .status-Configurado, .status-Expedido {
+                                            background: #fff7e6;
+                                            color: #ff9800;
+                                            border-color: #ffe0b2;
+                                        }
+                                        .status-Enviado-para-o-Cliente {
+                                            background: #e6f0ff;
+                                            color: #1976d2;
+                                            border-color: #bbdefb;
+                                        }
+                                        .status-Aprovado-pelo-CEO, .status-Aprovado-pela-Diretoria, .status-Aprovado-Inteligencia {
+                                            background: #eafbe7;
+                                            color: #2e7d32;
+                                            border-color: #cdeac0;
+                                        }
+                                        .status-Reprovado-pelo-CEO, .status-Reprovado-pela-Diretoria {
+                                            background: #faeaea;
+                                            color: #b71c1c;
+                                            border-color: #f5c6cb;
+                                        }
+                                    </style>
+                                    <p class="card-text"><b>TP:</b> {{ registro.TP }}</p>
+                                </div>
+                            </div>
+                            <p class="card-text"><b>Valor Unitário:</b> R$ {{ registro.valor_unitario }}</p>
+                            <p class="card-text"><b>Taxa:</b> R$ {{ registro.taxa_envio }}</p>
+                            <p class="card-text"><b>Observações:</b> {{ registro.observacoes }}</p>
+                            <div class="d-flex flex-wrap gap-2 mt-2">
+                                <a class="btn btn-info" href="{% url 'gerar_pdf_saida' registro.id %}"><i class="fas fa-file-download"></i> Download PDF</a>
+                                <a class="btn btn-info" href="{% url 'download_pdf_requisicao' registro.id %}"><i class="fas fa-file-pdf"></i> Saída PDF</a>
+                                {% if perms.nestle.delete_gridinternacional %}
+                                    <a href="{% url 'requisicoesdeleteview' registro.id %}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Excluir</a>
+                                    <a class="btn btn-warning" href="{% url 'requisicao_update' registro.id %}"><i class="fas fa-edit"></i> Editar</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
-    </div>
-</div>
-
-<script>
-document.querySelectorAll('.add-equipamento').forEach(function(button) {
-    button.addEventListener('click', function() {
-        var containerId = this.getAttribute('data-container-id');
-        var container = document.getElementById(containerId);
-        var newField = document.createElement('textarea');
-        newField.setAttribute('name', 'id_equipamentos');
-        newField.setAttribute('class', 'form-control');
-        container.appendChild(newField);
-    });
-});
+        {% endblock %}
 </script>
-
-<!-- Modal de Confirmação para cada item -->
-
-
-{% endblock %}
-
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Adiciona evento de clique para os botões de exclusão
-    const deleteButtons = document.querySelectorAll('[data-bs-toggle="modal"]');
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const modalId = this.getAttribute('data-bs-target');
-            const modal = new bootstrap.Modal(document.querySelector(modalId));
-            modal.show();
-        });
-    });
-});
-</script>
-{% endblock %}

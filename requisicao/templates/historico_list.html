@@ -8,157 +8,323 @@
 <style>
     .card-status {
         position: relative;
-        transition: transform 0.3s ease; /* Adiciona uma transição suave */
+        transition: transform 0.3s ease;
+        border-radius: 18px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        margin-bottom: 24px;
+        border: none;
+        overflow: hidden;
+        min-height: 340px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .card-status.Aprovado {
-        background: linear-gradient(to bottom, #a0f0a0 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+        background: linear-gradient(135deg, #a0f0a0 0%, #eaffea 100%);
     }
-
     .card-status.Reprovado {
-        background: linear-gradient(to bottom, #f0a0a0 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
+        background: linear-gradient(135deg, #f0a0a0 0%, #ffeaea 100%);
     }
-
     .card-status.Pendente {
-        background: linear-gradient(to bottom, #d0d0d0 0%, #ffffff 100%); /* Gradiente cinza claro para branco */
+        background: linear-gradient(135deg, #d0d0d0 0%, #f7f7f7 100%);
     }
-
     .card-status.Configurado {
-        background: linear-gradient(to bottom, #ffd580 0%, #ffffff 100%); /* Gradiente laranja claro para branco */
+        background: linear-gradient(135deg, #ffd580 0%, #fff7e6 100%);
     }
-
     .card-status.Reprovado-pelo-CEO {
-        background: linear-gradient(to bottom, #f08080 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
+        background: linear-gradient(135deg, #f08080 0%, #ffeaea 100%);
     }
-
     .card-status.Aprovado-pelo-CEO {
-        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+        background: linear-gradient(135deg, #80f080 0%, #eaffea 100%);
     }
-
     .card-status.Reprovado-pela-Diretoria {
-        background: linear-gradient(to bottom, #f08080 0%, #ffffff 100%); /* Gradiente vermelho claro para branco */
+        background: linear-gradient(135deg, #f08080 0%, #ffeaea 100%);
     }
-
     .card-status.Aprovado-pela-Diretoria {
-        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+        background: linear-gradient(135deg, #80f080 0%, #eaffea 100%);
     }
-
     .card-status.Expedido {
-        background: linear-gradient(to bottom, #ffb380 0%, #ffffff 100%); /* Gradiente laranja escuro claro para branco */
+        background: linear-gradient(135deg, #ffb380 0%, #fff7e6 100%);
     }
-
     .card-status.Enviado-para-o-Cliente {
-        background: linear-gradient(to bottom, #80b3ff 0%, #ffffff 100%); /* Gradiente azul claro para branco */
+        background: linear-gradient(135deg, #80b3ff 0%, #e6f0ff 100%);
     }
-
     .card-status.Aprovado-Inteligencia {
-        background: linear-gradient(to bottom, #80f080 0%, #ffffff 100%); /* Gradiente verde claro para branco */
+        background: linear-gradient(135deg, #80f080 0%, #eaffea 100%);
     }
 
     .card-body {
-        padding: 30px; /* Adiciona um espaço interno de 30px */
+        padding: 24px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
     }
 
     .card-status:hover {
-        transform: scale(1.05); /* Faz o card crescer um pouco */
+        transform: scale(1.04);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.12);
     }
+
+    .card-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .card-text {
+        font-size: 1rem;
+        color: #444;
+        margin-bottom: 4px;
+    }
+
+    .card-body h2 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+    .btn {
+        margin-right: 8px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        padding: 8px 16px;
+    }
+
+    @media (max-width: 991px) {
+        .col-md-4 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+    @media (max-width: 767px) {
+        .col-md-4 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        .container {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+        .card-body {
+            padding: 16px 8px;
+        }
+        .btn {
+            width: 100%;
+            margin-right: 0;
+        }
+    }
+    .form-control, .form-select {
+        border-radius: 8px;
+        font-size: 1rem;
+        margin-bottom: 8px;
+    }
+    .btn-primary {
+        background: linear-gradient(90deg, #007bff 0%, #0056b3 100%);
+        border: none;
+    }
+    .pagination .page-link {
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+    .pagination .active .page-link {
+        background: #007bff;
+        color: #fff;
+        border: none;
+    }
+</style>
 </style>
 
 <div class="container mt-4">
-    <h3 class="display-4">Historico de Requisições</h3>
+    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between mb-3">
+        <h3 class="display-5 mb-2 mb-md-0" style="font-weight:700;color:#ffd700;letter-spacing:1px;">Histórico de Requisições</h3>
+    <span class="badge registros-badge" style="font-size:1rem;">{{ historico_list|length }} registros</span>
+    <style>
+        .registros-badge {
+            background: #ffd700 !important;
+            color: #333 !important;
+            font-weight: 700;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+    </style>
+    </div>
     <div class="row mb-4">
         <div class="col-md-6">
-            <form method="get" action="{% url 'historicoListViews' %}">
-                <input type="text" class="form-control" name="nome" placeholder="Nome" value="{{ nome_filter }}">
-                <button type="submit" class="btn btn-primary">Buscar</button>
-            </form>
+                <form method="get" action="{% url 'historicoListViews' %}" class="d-flex flex-column flex-sm-row gap-2 align-items-center">
+                    <input type="text" class="form-control" name="nome" placeholder="Nome" value="{{ nome_filter }}">
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </form>
         </div>
         <div class="col-md-6">
-            <form method="get" action="{% url 'historicoListViews' %}">
-                <select class='form-select' name="status">
-                    <option value="">Escolha um status</option>
-                    <option value="Aprovado" {% if status_filter == 'Aprovado' %}selected{% endif %}>Aprovado</option>
-                    <option value="Reprovado" {% if status_filter == 'Reprovado' %}selected{% endif %}>Reprovado</option>
-                    <option value="Pendente" {% if status_filter == 'Pendente' %}selected{% endif %}>Pendente</option>
-                    <option value="Configurado" {% if status_filter == 'Configurado' %}selected{% endif %}>Configurado</option>
-                    <option value="Expedido" {% if status_filter == 'Expedido' %}selected{% endif %}>Expedido</option>
-                    <option value="Enviado para o Cliente" {% if status_filter == 'Enviado para o Cliente' %}selected{% endif %}>Enviado para o Cliente</option>
-                </select>
-                <button type="submit" class="btn btn-primary">Filtrar</button>
-            </form>
+                <form method="get" action="{% url 'historicoListViews' %}" class="d-flex flex-column flex-sm-row gap-2 align-items-center">
+                    <select class='form-select' name="status">
+                        <option value="">Escolha um status</option>
+                        <option value="Aprovado" {% if status_filter == 'Aprovado' %}selected{% endif %}>Aprovado</option>
+                        <option value="Reprovado" {% if status_filter == 'Reprovado' %}selected{% endif %}>Reprovado</option>
+                        <option value="Pendente" {% if status_filter == 'Pendente' %}selected{% endif %}>Pendente</option>
+                        <option value="Configurado" {% if status_filter == 'Configurado' %}selected{% endif %}>Configurado</option>
+                        <option value="Expedido" {% if status_filter == 'Expedido' %}selected{% endif %}>Expedido</option>
+                        <option value="Enviado para o Cliente" {% if status_filter == 'Enviado para o Cliente' %}selected{% endif %}>Enviado para o Cliente</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </form>
         </div>
     </div>
 
     <div class="row">
-        {% for item in historico_list %}
-<div class="col-md-4 mb-4">
-    <div class="card card-status {% if item.status == 'Aprovado' %}Aprovado{% elif item.status == 'Reprovado' %}Reprovado{% elif item.status == 'Configurado' %}Configurado{% endif %}">
-        <div class="card-body">
-            <h2>Requisição</h2>
-            <h5 class="card-title">{{ item.nome }}</h5>
-            <p class="card-text"><h3><b>ID</b>: {{ item.id }}</h3></p>
-            <p class="card-text"><b>CNPJ</b>: {{ item.cnpj }}</p>
-            <p class="card-text"><b>Comercial</b>: {{ item.comercial }}</p>
-            <p class="card-text"><b>Data</b>: {{ item.data_alteracao }}</p>
-            <p class="card-text"><b>Data Alteração</b>: {{ item.data }}</p>
-            <p class="card-text"><b>Tipo de Produto</b>: {{ item.tipo_produto }}</p>
-            <p class="card-text"><b>Quantidade</b>: {{ item.numero_de_equipamentos }}</p>
-            <p class="card-text"><b>Observações</b>: {{ item.observacoes }}</p>
-            <p class="card-text"><b>Status</b>: {{ item.status }}</p>
-            <p class="card-text"><b>TP</b>: {{ item.TP }}</p>
-            <p class="card-text"><b>Valor Unitario</b>: {{ item.valor_unitario }}</p>
-            
-            <p class="card-text"><b>Taxa</b>: {{ item.taxa_envio }}</p>
-
-            {% if item.status == "Enviado para o Cliente" %}
-                <a class="btn btn-info" href="{% url 'gerar_pdf_saida' item.id %}">Download PDF</a>
-<a class="btn btn-info" href="{% url 'download_pdf_requisicao' item.id %}">saida PDF</a>
-            {% else %}
- <a class="btn btn-info" href="{% url 'gerar_pdf_saida' item.id %}">Download PDF</a>
-<a class="btn btn-info" href="{% url 'download_pdf_requisicao' item.id %}">saida PDF</a>
-            {% endif %}
-            {% if perms.nestle.delete_gridinternacional %}
-            <a href="{% url 'requisicoesdeleteview' item.id %}" class="btn btn-danger">Excluir</a>
-	     <a class="btn btn-warning" href="{% url 'requisicao_update' item.id %}">Editar</a>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-
-
-        {% endfor %}
+            {% for item in historico_list %}
+            <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                <div class="card card-status {% if item.status == 'Aprovado' %}Aprovado{% elif item.status == 'Reprovado' %}Reprovado{% elif item.status == 'Configurado' %}Configurado{% elif item.status == 'Pendente' %}Pendente{% elif item.status == 'Expedido' %}Expedido{% elif item.status == 'Enviado para o Cliente' %}Enviado-para-o-Cliente{% endif %}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h2 style="font-size:1.1rem;font-weight:700;color:#555;">Requisição</h2>
+                            <span class="badge bg-secondary" style="font-size:0.95rem;">ID: {{ item.id }}</span>
+                        </div>
+                        <h5 class="card-title">{{ item.nome }}</h5>
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="card-text"><b>CNPJ:</b> {{ item.cnpj }}</p>
+                                <p class="card-text"><b>Comercial:</b> {{ item.comercial }}</p>
+                                <p class="card-text"><b>Tipo de Produto:</b> {{ item.tipo_produto }}</p>
+                                <p class="card-text"><b>Quantidade:</b> {{ item.numero_de_equipamentos }}</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="card-text"><b>Data:</b> {{ item.data_alteracao|date:'d/m/Y H:i' }}</p>
+                                <p class="card-text"><b>Data Alteração:</b> {{ item.data|date:'d/m/Y H:i' }}</p>
+                                <p class="card-text"><b>Status:</b> <span class="status-highlight status-{{ item.status|slugify }}">{{ item.status }}</span></p>
+    <style>
+        .status-highlight {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.98rem;
+            box-shadow: none;
+            border: 1px solid #e0e0e0;
+            background: #f7f7f7;
+            color: #444;
+            letter-spacing: 0.2px;
+        }
+        .status-Aprovado {
+            background: #eafbe7;
+            color: #2e7d32;
+            border-color: #cdeac0;
+        }
+        .status-Reprovado {
+            background: #faeaea;
+            color: #b71c1c;
+            border-color: #f5c6cb;
+        }
+        .status-Pendente {
+            background: #f7f7f7;
+            color: #757575;
+            border-color: #e0e0e0;
+        }
+        .status-Configurado, .status-Expedido {
+            background: #fff7e6;
+            color: #ff9800;
+            border-color: #ffe0b2;
+        }
+        .status-Enviado-para-o-Cliente {
+            background: #e6f0ff;
+            color: #1976d2;
+            border-color: #bbdefb;
+        }
+        .status-Aprovado-pelo-CEO, .status-Aprovado-pela-Diretoria, .status-Aprovado-Inteligencia {
+            background: #eafbe7;
+            color: #2e7d32;
+            border-color: #cdeac0;
+        }
+        .status-Reprovado-pelo-CEO, .status-Reprovado-pela-Diretoria {
+            background: #faeaea;
+            color: #b71c1c;
+            border-color: #f5c6cb;
+        }
+    </style>
+                                <p class="card-text"><b>TP:</b> {{ item.TP }}</p>
+                            </div>
+                        </div>
+                        <p class="card-text"><b>Valor Unitário:</b> R$ {{ item.valor_unitario }}</p>
+                        <p class="card-text"><b>Taxa:</b> R$ {{ item.taxa_envio }}</p>
+                        <p class="card-text"><b>Observações:</b> {{ item.observacoes }}</p>
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+                            <a class="btn btn-info" href="{% url 'gerar_pdf_saida' item.id %}"><i class="fas fa-file-download"></i> Download PDF</a>
+                            <a class="btn btn-info" href="{% url 'download_pdf_requisicao' item.id %}"><i class="fas fa-file-pdf"></i> Saída PDF</a>
+                            {% if perms.nestle.delete_gridinternacional %}
+                                <a href="{% url 'requisicoesdeleteview' item.id %}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Excluir</a>
+                                <a class="btn btn-warning" href="{% url 'requisicao_update' item.id %}"><i class="fas fa-edit"></i> Editar</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
     </div>
 
     <!-- Paginação personalizada com preservação dos filtros -->
     {% if is_paginated %}
     <nav aria-label="Navegação de páginas">
-        <ul class="pagination justify-content-center">
+        <ul class="pagination justify-content-center" style="gap:8px;">
             {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?page=1{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Primeira</a>
+                    <a class="page-link custom-page-link" href="?page=1{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Primeira</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Anterior</a>
+                    <a class="page-link custom-page-link" href="?page={{ page_obj.previous_page_number }}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Anterior</a>
                 </li>
             {% endif %}
 
             <li class="page-item active">
-                <span class="page-link">
-                    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                <span class="page-link custom-page-link active-page">
+                    <i class="fas fa-list-ol"></i> Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
                 </span>
             </li>
 
             {% if page_obj.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Próxima</a>
+                    <a class="page-link custom-page-link" href="?page={{ page_obj.next_page_number }}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Próxima</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Última</a>
+                    <a class="page-link custom-page-link" href="?page={{ page_obj.paginator.num_pages }}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Última</a>
                 </li>
             {% endif %}
         </ul>
     </nav>
+    <style>
+        .custom-page-link {
+            border-radius: 12px !important;
+            font-size: 1.05rem !important;
+            padding: 8px 18px !important;
+            background: #f8f9fa;
+            color: #007bff;
+            border: 1px solid #e0e0e0;
+            transition: background 0.2s, color 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .custom-page-link:hover {
+            background: #e3f2fd;
+            color: #0056b3;
+            text-decoration: none;
+        }
+        .active-page {
+            background: linear-gradient(90deg, #007bff 0%, #ffd700 100%) !important;
+            color: #fff !important;
+            font-weight: 700;
+            border: none !important;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+        }
+        @media (max-width: 767px) {
+            .custom-page-link {
+                font-size: 0.95rem !important;
+                padding: 7px 10px !important;
+            }
+        }
+    </style>
     {% endif %}
 </div>
 {% endblock %}

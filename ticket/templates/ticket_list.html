@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}| Faturamento |{% endblock %}
-{% include 'components/_header.html' %}
 {% block content %}
 
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
     body {
         background-color: #0f0f0fbe;
@@ -12,20 +10,20 @@
         overflow-x: hidden;
     }
     .bg-setor-personalizada {
-        background-color: #23446e !important; /* Altere para a cor desejada */
+        background-color: #23446e !important;
         color: #fff !important;
     }
-
     .main-content {
-    width: 235%;
-    margin-left: -750px;
-    min-height: 92vh;
-    padding: 1.5rem 2rem;
-    background-color: #f0f2f5;
-    border-radius: 20px;
-}
-
-
+        min-height: 92vh;
+        padding: 1.5rem 0.5rem;
+        background-color: #f0f2f5;
+        border-radius: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
     .badge-status {
         font-size: 1.1em;
         padding: 4px 10px;
@@ -35,11 +33,9 @@
         margin-bottom: 6px;
         color: #0e0d0d;
     }
-    /* Only the top cards: Negado, Atualizado, and setor cards */
     .card-status.text-white .count {
         color: #fff !important;
     }
-
     .card {
         transition: box-shadow 0.3s;
         border: none;
@@ -50,7 +46,7 @@
         align-items: center;
         background: #cccacaaf;
         min-height: 320px;
-        width: 400px;
+        width: 100%;
         max-width: 400px;
         position: relative;
         overflow: hidden;
@@ -58,13 +54,6 @@
         padding: 18px 12px 24px 16px;
         box-sizing: border-box;
         font-size: 1.15em;
-    }
-    .row {
-        margin-right: 0;
-        margin-left: 0;
-        width: 100%;
-        overflow-x: auto;
-        box-sizing: border-box;
     }
     .card:hover {
         box-shadow: 0 6px 24px #bfc7d1;
@@ -125,7 +114,6 @@
     .status-pendente { background: linear-gradient(180deg, #eedd42 80%, #fff9c4 100%); }
     .status-atualizado { background: linear-gradient(180deg, #7be495 80%, #c8f7c5 100%); }
     .status-negado { background: linear-gradient(180deg, #ff8a80 80%, #ffcdd2 100%); }
-    
     .card-status {
         border-radius: 12px;
         padding: 18px 0 10px 0;
@@ -154,12 +142,9 @@
         color: #444;
         font-weight: 400;
     }
-    /* Only the top cards: Negado, Atualizado, and setor cards */
     .card-status.text-white .label {
         color: #fff !important;
     }
-    
-    /* Remover borda lateral dos cards do topo */
     .card-status.bg-warning,
     .card-status.bg-info,
     .card-status.bg-setor-personalizada {
@@ -171,84 +156,104 @@
     .card-status.bg-danger { border-left: 6px solid #dc3545; }
     .card-status.bg-dark { border-left: 6px solid #343a40; }
     .card-status.bg-light { border-left: 6px solid #e0e0e0; }
+    /* Notebook */
+    @media (min-width: 1024px) and (max-width: 1366px) {
+        .main-content { padding: 1.2rem 0.3rem; border-radius: 16px; }
+        .card { min-height: 260px; font-size: 1.08em; }
+        .card-status { min-width: 140px; max-width: 180px; font-size: 1em; }
+    }
+    /* Tablet e celular */
+    @media (max-width: 991px) {
+        .main-content { padding: 1rem 0.1rem; border-radius: 10px; }
+        .card { min-height: 180px; font-size: 0.95em; padding: 8px 2px 10px 4px; max-width: 100%; }
+        .card-status { min-width: 90px; max-width: 120px; font-size: 0.9em; }
+        .row { gap: 0.5rem !important; }
+    }
+    @media (max-width: 576px) {
+        .main-content { padding: 0.3rem 0.01rem; border-radius: 6px; }
+        .card { min-height: 100px; font-size: 0.9em; padding: 4px 1px 6px 2px; max-width: 100%; }
+        .card-status { min-width: 60px; max-width: 90px; font-size: 0.85em; }
+        .row { gap: 0.3rem !important; }
+    }
 </style>
 
 <main class="main-content">
-    <div style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: center; gap: 18px; margin-bottom: 16px; overflow-x: auto;">
-        <div class="card-status bg-warning text-white text-center" style="min-width:180px; max-width:220px;">
-            <div class="label">Negado</div>
-            <div class="count">{{ qtd_negado }}</div>
-        </div>
-        <div class="card-status bg-info text-white text-center" style="min-width:180px; max-width:220px;">
-            <div class="label">Atualizado</div>
-            <div class="count">{{ qtd_atualizado }}</div>
-        </div>
-        {% for setor in tickets_por_setor %}
-            <div class="card-status text-white text-center bg-setor-personalizada" style="min-width:180px; max-width:220px; height:110px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-                <div class="label">{{ setor.setor }}</div>
-                <div class="count">{{ setor.total }}</div>
+    <div class="container-fluid px-0">
+        <div class="d-flex flex-row flex-wrap justify-content-center align-items-center mb-3 gap-3">
+            <div class="card-status bg-warning text-white text-center">
+                <div class="label">Negado</div>
+                <div class="count">{{ qtd_negado }}</div>
             </div>
-        {% endfor %}
-    </div>
-
-    <div class="row">
-        {% for item in ticket %}
-            {% if item.setor != 'Faturamento' or perms.faturamento.delete_formulario %}
-                <div class="col-12 col-sm-6 col-md-3 mb-4 d-flex align-items-stretch">
-                    <div class="card" style="position:relative;">
-                        <div class="status-bar 
-                            {% if item.status == 'Pendente' %}status-pendente
-                            {% elif item.status == 'Atualizado' %}status-atualizado
-                            {% elif item.status == 'Negado' %}status-negado
-                            {% endif %}">
-                        </div>
-                        <div class="avatar-circle">
-                            <i class="fas fa-ticket-alt"></i>
-                        </div>
-                        <div class="text-center" style="margin-bottom: 10px;">
-                            <span style="font-weight:600; font-size:1.1em;">#{{ item.id }}</span><br>
-                            <span style="font-size:1em; color:#75753e;">
-                                <i class="fas fa-users"></i> {{ item.setor }}
-                            </span>
-                        </div>
-                        <div class="text-center" style="margin-bottom: 8px;">
-                            <span style="font-weight:600;">Responsável:</span> {{ item.usuario.username }}<br>
-                            <span style="font-size:0.98em;">
-                                <i class="far fa-calendar-alt"></i> {{ item.data_criacao|date:"d/m/Y H:i" }}
-                            </span>
-                        </div>
-                        <div class="text-center" style="margin-bottom: 8px;">
-                            <span class="badge-status 
-                                {% if item.status == 'Pendente' %}badge-pendente
-                                {% elif item.status == 'Atualizado' %}badge-atualizado
-                                {% elif item.status == 'Negado' %}badge-negado
+            <div class="card-status bg-info text-white text-center">
+                <div class="label">Atualizado</div>
+                <div class="count">{{ qtd_atualizado }}</div>
+            </div>
+            {% for setor in tickets_por_setor %}
+                <div class="card-status text-white text-center bg-setor-personalizada d-flex flex-column justify-content-center align-items-center" style="height:110px;">
+                    <div class="label">{{ setor.setor }}</div>
+                    <div class="count">{{ setor.total }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    <div class="row gx-3 gy-4 justify-content-center">
+            {% for item in ticket %}
+                {% if item.setor != 'Faturamento' or perms.faturamento.delete_formulario %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch mb-4">
+                        <div class="card w-100 h-100" style="position:relative;">
+                            <div class="status-bar 
+                                {% if item.status == 'Pendente' %}status-pendente
+                                {% elif item.status == 'Atualizado' %}status-atualizado
+                                {% elif item.status == 'Negado' %}status-negado
                                 {% endif %}">
-                                {% if item.status == 'Pendente' %}⏳ Pendente
-                                {% elif item.status == 'Atualizado' %}✅ Atualizado
-                                {% elif item.status == 'Negado' %}❌ Negado
-                                {% else %}{{ item.status }}
+                            </div>
+                            <div class="avatar-circle">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                            <div class="text-center mb-2">
+                                <span style="font-weight:600; font-size:1.1em;">#{{ item.id }}</span><br>
+                                <span style="font-size:1em; color:#75753e;">
+                                    <i class="fas fa-users"></i> {{ item.setor }}
+                                </span>
+                            </div>
+                            <div class="text-center mb-2">
+                                <span style="font-weight:600;">Responsável:</span> {{ item.usuario.username }}<br>
+                                <span style="font-size:0.98em;">
+                                    <i class="far fa-calendar-alt"></i> {{ item.data_criacao|date:"d/m/Y H:i" }}
+                                </span>
+                            </div>
+                            <div class="text-center mb-2">
+                                <span class="badge-status 
+                                    {% if item.status == 'Pendente' %}badge-pendente
+                                    {% elif item.status == 'Atualizado' %}badge-atualizado
+                                    {% elif item.status == 'Negado' %}badge-negado
+                                    {% endif %}">
+                                    {% if item.status == 'Pendente' %}⏳ Pendente
+                                    {% elif item.status == 'Atualizado' %}✅ Atualizado
+                                    {% elif item.status == 'Negado' %}❌ Negado
+                                    {% else %}{{ item.status }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-center" style="gap:10px;">
+                                {% if perms.ticket.change_ticketmodel %}
+                                    <a class="btn btn-warning btn-sm" style="color:#fff;font-weight:600;" href="{% url 'atualizar_status' item.id %}">Atualizar</a>
+                                    <a class="btn btn-danger btn-sm" style="font-weight:600;" href="{% url 'atualizar_status2' item.id %}">Negado</a>
                                 {% endif %}
-                            </span>
-                        </div>
-                        <div class="d-flex justify-content-center" style="gap:10px;">
-                            {% if perms.ticket.change_ticketmodel %}
-                                <a class="btn btn-warning btn-sm" style="color:#fff;font-weight:600;" href="{% url 'atualizar_status' item.id %}">Atualizar</a>
-                                <a class="btn btn-danger btn-sm" style="font-weight:600;" href="{% url 'atualizar_status2' item.id %}">Negado</a>
-                            {% endif %}
-                        </div>
-                        <div class="text-center" style="margin-top: 8px;">
-                            <span class="dropdown-toggle" onclick="toggleDetails('{{ item.id }}')">Detalhes</span>
-                        </div>
-                        <div id="details-{{ item.id }}" class="dropdown-details">
-                            <strong>Erro:</strong> {{ item.erro }}<br>
-                            <br>
-                            <strong>Correção:</strong> {{ item.correcao }}<br>
+                            </div>
+                            <div class="text-center mt-2">
+                                <span class="dropdown-toggle" onclick="toggleDetails('{{ item.id }}')">Detalhes</span>
+                            </div>
+                            <div id="details-{{ item.id }}" class="dropdown-details">
+                                <strong>Erro:</strong> {{ item.erro }}<br>
+                                <br>
+                                <strong>Correção:</strong> {{ item.correcao }}<br>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endif %}
-        {% endfor %}
-        {% include 'components/_pagination.html' %}
+                {% endif %}
+            {% endfor %}
+            {% include 'components/_pagination.html' %}
+        </div>
     </div>
 </main>
 
