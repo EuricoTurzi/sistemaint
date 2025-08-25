@@ -2,33 +2,91 @@
 {% block content %}
 <style>
     .container {
-        max-width: 70rem;
-        margin: 0 auto;
-        height: 80rem;
+        max-width: 700px;
+        margin: 2rem auto;
+        padding: 0 1rem;
     }
-
+        .form-row {
+            display: flex;
+            gap: 1.2rem;
+            align-items: flex-end;
+        }
+        .form-row > div {
+            flex: 1;
+        }
+        @media (max-width: 767px) {
+            .form-row { flex-direction: column; gap: 0.5rem; }
+        }
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 767px) {
+            .form-actions { flex-direction: column; gap: 0.5rem; }
+        }
     .card {
-        padding: 20px;
+        border-radius: 18px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        border: none;
+        background: #f8f9fa;
+        margin-bottom: 2rem;
+        padding: 0;
     }
-
     .card-body {
-        padding: 15px;
+        padding: 2rem 1.5rem;
+        background: #fff;
+        border-radius: 18px;
     }
-
+    h3.display-4 {
+        font-size: 2.2rem;
+        text-align: center;
+        color: #ffd600;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
     form {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 1.2rem;
     }
-
-    input[type="submit"], .btn-secondary {
-        width: fit-content;
+    form p {
+        margin-bottom: 0.5rem;
+    }
+    input[type="submit"], .btn-primary, .btn-secondary {
+        min-width: 160px;
+        font-size: 1.05rem;
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1.2rem;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
         align-self: center;
+        box-shadow: 0 2px 8px rgba(108,99,255,0.07);
     }
-
-    h3.display-4 {
-        font-size: 2rem;
-        text-align: center;
+    .btn-primary {
+        background: linear-gradient(90deg, #063364 60%, #063364 100%);
+        border: none;
+        color: #fff;
+    }
+    .btn-secondary {
+        background: #e9ecef;
+        color: #333;
+        border: none;
+    }
+    @media (max-width: 991px) {
+        .container { max-width: 95vw; }
+        .card-body { padding: 1.2rem 0.5rem; }
+        h3.display-4 { font-size: 1.5rem; }
+        input[type="submit"], .btn-primary, .btn-secondary { min-width: 120px; font-size: 0.98rem; }
+    }
+    @media (max-width: 767px) {
+        .container { max-width: 100vw; padding: 0 0.2rem; }
+        .card { margin-bottom: 1rem; }
+        .card-body { padding: 1rem 0.2rem; }
+        h3.display-4 { font-size: 1.1rem; }
+        input[type="submit"], .btn-primary, .btn-secondary { min-width: 100px; font-size: 0.95rem; }
     }
 </style>
 
@@ -38,15 +96,36 @@
         <div class="card-body">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ form.as_p }}
-
-                
-                
+                <div class="form-row">
+                    <div>
+                        {{ form.nome.label_tag }}
+                        {{ form.nome }}
+                    </div>
+                    <div>
+                        {{ form.tipo_produto.label_tag }}
+                        {{ form.tipo_produto }}
+                    </div>
                 </div>
-
-                <button type="submit" class="btn btn-primary">Salvar Entrada</button>
-            </form>
-            <a href="{% url 'FormulariosCreateView' %}" class="btn btn-secondary mt-3">Cancelar e Voltar</a>
+                <div class="form-row">
+                    <div>
+                        {{ form.tipo_entrada.label_tag }}
+                        {{ form.tipo_entrada }}
+                    </div>
+                    <div>
+                        {{ form.status.label_tag }}
+                        {{ form.status }}
+                    </div>
+                </div>
+                {% for field in form %}
+                    {% if field.name != 'nome' and field.name != 'tipo_produto' and field.name != 'tipo_entrada' and field.name != 'status' %}
+                        <p>{{ field.label_tag }}{{ field }}</p>
+                    {% endif %}
+                {% endfor %}
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Salvar Entrada</button>
+                        <a href="{% url 'FormulariosCreateView' %}" class="btn btn-secondary">Cancelar e Voltar</a>
+                    </div>
+                </form>
         </div>
     </div>
 </div>
