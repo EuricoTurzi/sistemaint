@@ -22,7 +22,9 @@
         }
         .header-logo img {
             height: 38px;
+            width: auto;
             margin-right: 12px;
+            object-fit: contain;
         }
         .header-title {
             font-weight: 700;
@@ -125,7 +127,9 @@
             }
             .header-logo img {
                 height: 28px;
+                width: auto;
                 margin-right: 8px;
+                object-fit: contain;
             }
             .header-bottom {
                 padding: 0.1rem 0.1rem;
@@ -141,7 +145,7 @@
     <div class="header-top">
         <div class="header-logo">
             <!-- Logo Golden Sat -->
-            <img src="{% static 'logo.png' %}" alt="Logo Golden Sat">
+            <img src="{% static 'logo-golden.png' %}" alt="Logo Golden Sat" onerror="this.style.display='none'">
             <span class="header-title">GS SISTEMA INT</span>
         </div>
     </div>

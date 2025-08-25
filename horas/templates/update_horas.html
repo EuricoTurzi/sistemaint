@@ -53,7 +53,9 @@
 
 <!-- Função para preencher o campo com a data/hora atual -->
 <script>
+  // Função principal que registra a data e hora exata do momento do clique
   function fillCurrentDateTime(fieldId) {
+    // Captura o momento exato do clique
     var now = new Date();
     var year = now.getFullYear();
     var month = ("0" + (now.getMonth() + 1)).slice(-2);
@@ -61,61 +63,135 @@
     var hours = ("0" + now.getHours()).slice(-2);
     var minutes = ("0" + now.getMinutes()).slice(-2);
     var seconds = ("0" + now.getSeconds()).slice(-2);
+    
+    // Formato brasileiro (DD/MM/AAAA HH:MM:SS) - como na imagem
     var dateTimeString =
-      year +
-      "-" +
-      month +
-      "-" +
       day +
+      "/" +
+      month +
+      "/" +
+      year +
       " " +
       hours +
       ":" +
       minutes +
       ":" +
       seconds;
+    
     document.getElementById(fieldId).value = dateTimeString;
-    calculateTotal(); // Atualiza o total sempre que a hora final for preenchida
+    
+    // Log para debug
+    console.log('Data e hora registrada:', dateTimeString, 'para o campo:', fieldId);
+    
+    // Sempre calcula o total após preencher qualquer campo de hora
+    calculateTotal();
+  }
+
+  // Função para converter formato brasileiro (DD/MM/AAAA HH:MM:SS) para ISO
+  function convertToISO(dateTimeString) {
+    // Verifica se já está no formato ISO (contém hífen)
+    if (dateTimeString.includes('-')) {
+      return dateTimeString.replace(" ", "T");
+    }
+    
+    // Converte formato brasileiro (DD/MM/AAAA HH:MM:SS) para ISO
+    var parts = dateTimeString.split(' ');
+    if (parts.length === 2) {
+      var datePart = parts[0]; // DD/MM/AAAA
+      var timePart = parts[1]; // HH:MM:SS
+      
+      var dateParts = datePart.split('/');
+      if (dateParts.length === 3) {
+        var day = dateParts[0];
+        var month = dateParts[1];
+        var year = dateParts[2];
+        
+        // Retorna formato ISO: AAAA-MM-DDTHH:MM:SS
+        return year + '-' + month + '-' + day + 'T' + timePart;
+      }
+    }
+    
+    // Se não conseguir converter, retorna o original
+    return dateTimeString.replace(" ", "T");
   }
 
   // Função para calcular a diferença entre hora final e hora inicial
   function calculateTotal() {
-    var inicio = document.getElementById("id_hora_inicial").value;
-    var fim = document.getElementById("id_hora_final").value;
-    if (inicio && fim) {
-      // Para um formato "YYYY-MM-DD HH:MM:SS", substituímos o espaço por "T"
-      var inicioISO = inicio.replace(" ", "T");
-      var fimISO = fim.replace(" ", "T");
-      var dtInicio = new Date(inicioISO);
-      var dtFim = new Date(fimISO);
-      if (dtFim > dtInicio) {
-        var diff = dtFim - dtInicio; // Diferença em milissegundos
-        var totalSeconds = Math.floor(diff / 1000);
-        var hours = Math.floor(totalSeconds / 3600);
-        var minutes = Math.floor((totalSeconds % 3600) / 60);
-        var seconds = totalSeconds % 60;
-        var formatted =
-          ("0" + hours).slice(-2) +
-          ":" +
-          ("0" + minutes).slice(-2) +
-          ":" +
-          ("0" + seconds).slice(-2);
-        document.getElementById("id_total").value = formatted;
-      } else {
-        document.getElementById("id_total").value = "00:00:00";
+    var inicio = document.getElementById("id_hora_inicial");
+    var fim = document.getElementById("id_hora_final");
+    var totalField = document.getElementById("id_total");
+    
+    if (inicio && fim && totalField) {
+      var inicioValue = inicio.value;
+      var fimValue = fim.value;
+      
+             if (inicioValue && fimValue) {
+         try {
+           // Converte formato brasileiro (DD/MM/AAAA HH:MM:SS) para ISO
+           var inicioISO = convertToISO(inicioValue);
+           var fimISO = convertToISO(fimValue);
+           
+           var dtInicio = new Date(inicioISO);
+           var dtFim = new Date(fimISO);
+          
+          // Verifica se as datas são válidas
+          if (isNaN(dtInicio.getTime()) || isNaN(dtFim.getTime())) {
+            console.log("Datas inválidas detectadas");
+            return;
+          }
+          
+          if (dtFim > dtInicio) {
+            var diff = dtFim - dtInicio; // Diferença em milissegundos
+            var totalSeconds = Math.floor(diff / 1000);
+            var hours = Math.floor(totalSeconds / 3600);
+            var minutes = Math.floor((totalSeconds % 3600) / 60);
+            var seconds = totalSeconds % 60;
+            
+            var formatted =
+              ("0" + hours).slice(-2) +
+              ":" +
+              ("0" + minutes).slice(-2) +
+              ":" +
+              ("0" + seconds).slice(-2);
+            
+            totalField.value = formatted;
+            console.log('Total calculado:', formatted);
+          } else {
+            totalField.value = "00:00:00";
+            console.log('Hora final menor ou igual à inicial');
+          }
+        } catch (error) {
+          console.error('Erro ao calcular total:', error);
+          totalField.value = "00:00:00";
+        }
       }
     }
   }
 
-  // Adiciona event listeners para atualizar o total sempre que os campos de hora mudarem
+  // Adiciona event listeners para capturar cliques e mudanças
   document.addEventListener("DOMContentLoaded", function () {
     var horaInicial = document.getElementById("id_hora_inicial");
     var horaFinal = document.getElementById("id_hora_final");
+    
+    // Adiciona listeners para cliques nos campos de hora
     if (horaInicial) {
+      horaInicial.addEventListener("click", function() {
+        fillCurrentDateTime("id_hora_inicial");
+      });
       horaInicial.addEventListener("change", calculateTotal);
+      horaInicial.addEventListener("input", calculateTotal);
     }
+    
     if (horaFinal) {
+      horaFinal.addEventListener("click", function() {
+        fillCurrentDateTime("id_hora_final");
+      });
       horaFinal.addEventListener("change", calculateTotal);
+      horaFinal.addEventListener("input", calculateTotal);
     }
+    
+    // Calcula o total inicial se os campos já tiverem valores
+    calculateTotal();
   });
 </script>
 {% endblock %}
