@@ -8,6 +8,9 @@
 <style>
     /* ───── CARD E CABEÇALHO ────────────────────────────────────────────────── */
     .card {
+        max-width: 1400px;
+        width: 95vw;
+        margin: 1rem auto 2rem auto; /* centraliza horizontalmente */
         border: none;
         border-radius: 0.75rem;
         overflow: hidden;
@@ -71,6 +74,8 @@
         text-align: center;
         padding: 0.75rem 0.5rem;
         white-space: nowrap;
+        min-width: 60px;
+        max-width: 80px;
     }
 
     table.table thead th:first-child {
@@ -96,6 +101,9 @@
         padding: 0.75rem 0.5rem;
         cursor: pointer;
         transition: background-color 0.2s;
+        min-width: 60px;
+        max-width: 80px;
+        word-break: break-word;
     }
     table.table tbody td:hover {
         background-color: #E9ECEF;
@@ -170,32 +178,7 @@
         background-color: white !important;
         color: black !important;
     }
-    
-    /* Botões de debug */
-    .debug-btn {
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        z-index: 9999;
-        background: red;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 12px;
-    }
-    
-    .debug-btn:nth-child(2) {
-        top: 50px;
-    }
-    
-    .debug-btn:nth-child(3) {
-        top: 90px;
-    }
 </style>
-
-<!-- Botões de debug removidos -->
 
 <div class="card shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -232,11 +215,8 @@
                                             data-ano="{{ ano_atual }}"
                                             data-valor="{{ valor.valor|default:'' }}"
                                             data-enviado="{{ valor.enviado|yesno:'true,false' }}"
-                                            data-codigo-rastreio="{{ valor.codigo_rastreio|default:'' }}"
-                                            style="cursor: pointer;"
-                                            onclick="console.log('CLIQUE - Cliente: {{ cliente.cliente }}, Mês: {{ mes_codigo }}, Código: {{ valor.codigo_rastreio|default:'' }}');">
+                                            data-codigo-rastreio="{{ valor.codigo_rastreio|default:'' }}">
                                             {{ valor.valor|default:'-' }}
-                                            <!-- DEBUG: Mostrar código de rastreio no HTML -->
                                             {% if valor.codigo_rastreio %}
                                                 <br><small style="font-size: 0.7em; color: #666;">{{ valor.codigo_rastreio }}</small>
                                             {% endif %}
@@ -262,7 +242,7 @@
     </div>
 </div>
 
-<!-- Modal de Edição -->
+<!-- Modal -->
 <div class="modal fade" id="valorModal" tabindex="-1" aria-labelledby="valorModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
