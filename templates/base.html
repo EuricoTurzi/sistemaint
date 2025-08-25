@@ -2,7 +2,7 @@
 <html lang="pt-br" data-bs-theme="light">
 <head>
     {% load static %}
-    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}| Grupo Golden Sat |{% endblock %}</title>
@@ -12,52 +12,206 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
 
     <style>
+        /* Configurações base responsivas */
+        :root {
+            --base-font-size: clamp(14px, 2vw, 18px);
+            --heading-font-size: clamp(1.5rem, 4vw, 2.5rem);
+            --subheading-font-size: clamp(1.2rem, 3vw, 1.8rem);
+            --small-font-size: clamp(12px, 1.5vw, 16px);
+        }
+
         body {
             background-color: #45494E; /* Cor de fundo cinza mais escuro */
             color: #f2f4f7; /* Cor do texto */
-            /*background-image: url("{% static 'logo-golden.png' %}");  Caminho da imagem */
+            background-image: url("{% static 'logo-golden.png' %}");  /* Caminho da imagem de fundo */
             background-repeat: no-repeat;
             background-size: contain; /* Ajusta a imagem para caber na tela */
             background-position: center; /* Centraliza a imagem */
             background-attachment: fixed; /* Fixa a imagem no fundo */
+            font-size: var(--base-font-size);
+            line-height: 1.6;
         }
+
+        /* Títulos responsivos */
+        h1, .h1 {
+            font-size: var(--heading-font-size);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        h2, .h2 {
+            font-size: var(--subheading-font-size);
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        h3, .h3 {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+        }
+
+        h4, .h4 {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Texto responsivo */
+        p, .text-body {
+            font-size: var(--base-font-size);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .text-small {
+            font-size: var(--small-font-size);
+        }
+
+        /* Navegação responsiva */
         .navbar {
             background-color: #ffffff; /* Fundo branco para a barra de navegação */
             border-bottom: 1px solid #dee2e6; /* Linha de separação */
         }
+
         .navbar-custom {
             background-color: #343a40;
-            font-size: 0.99rem;
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
         }
+
         .navbar-custom .nav-link {
             color: #ffffff;
+            font-size: clamp(0.85rem, 1.3vw, 0.95rem);
+            padding: clamp(0.4rem, 1vw, 0.6rem) clamp(0.6rem, 1.5vw, 1rem);
         }
+
         .navbar-custom .nav-link:hover {
             color: #f8f9fa;
         }
+
         .navbar-custom .nav-link i {
-            margin-right: 5px;
+            margin-right: clamp(3px, 0.5vw, 5px);
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
         }
+
         .navbar-brand, .nav-link {
             color: #afc26d; /* Cor do texto */
         }
+
         .navbar-brand:hover, .nav-link:hover {
             color: #007bff; /* Cor do texto ao passar o mouse */
         }
+
+        /* Cards responsivos */
         .card {
             border: 1px solid #f4f4f5; /* Borda das cartas */
-            border-radius: 0.25rem; /* Bordas arredondadas */
+            border-radius: clamp(0.2rem, 0.5vw, 0.4rem); /* Bordas arredondadas */
+            margin-bottom: clamp(1rem, 2vw, 1.5rem);
         }
+
         .card-body {
-            padding: 20px; /* Espaçamento interno das cartas */
+            padding: clamp(15px, 3vw, 25px); /* Espaçamento interno das cartas */
         }
+
+        .card-title {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            font-weight: 600;
+        }
+
+        /* Botões responsivos */
+        .btn {
+            font-size: clamp(0.8rem, 1.5vw, 1rem);
+            padding: clamp(0.4rem, 1vw, 0.6rem) clamp(0.8rem, 2vw, 1.2rem);
+            border-radius: clamp(0.2rem, 0.5vw, 0.4rem);
+        }
+
         .btn-primary {
             background-color: #007bff; /* Cor do botão primário */
             border-color: #007bff; /* Cor da borda do botão primário */
         }
+
         .btn-primary:hover {
             background-color: #0056b3; /* Cor do botão primário ao passar o mouse */
             border-color: #0056b3; /* Cor da borda do botão primário ao passar o mouse */
+        }
+
+        /* Containers responsivos */
+        .container {
+            padding-left: clamp(10px, 2vw, 20px);
+            padding-right: clamp(10px, 2vw, 20px);
+        }
+
+        /* Formulários responsivos */
+        .form-control, .form-select {
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+            padding: clamp(0.4rem, 1vw, 0.6rem);
+        }
+
+        .form-label {
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+            font-weight: 500;
+            margin-bottom: clamp(0.3rem, 0.8vw, 0.5rem);
+        }
+
+        /* Tabelas responsivas */
+        .table {
+            font-size: clamp(0.8rem, 1.3vw, 0.95rem);
+        }
+
+        .table th, .table td {
+            padding: clamp(0.3rem, 0.8vw, 0.6rem);
+        }
+
+        /* Media queries para ajustes específicos */
+        @media (max-width: 768px) {
+            body {
+                font-size: clamp(13px, 3.5vw, 16px);
+            }
+            
+            .container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+            .card-body {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                font-size: clamp(12px, 4vw, 15px);
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            .navbar-custom .nav-link {
+                padding: 0.5rem 0.3rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            body {
+                font-size: 16px;
+            }
+            
+            .container {
+                max-width: 1140px;
+            }
+        }
+
+        /* Utilitários responsivos */
+        .text-responsive {
+            font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+        }
+
+        .spacing-responsive {
+            margin: clamp(0.5rem, 1.5vw, 1rem) 0;
+            padding: clamp(0.5rem, 1.5vw, 1rem);
         }
     </style>
     <!-- Bootstrap JS - apenas uma vez -->
