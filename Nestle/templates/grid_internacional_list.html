@@ -6,10 +6,19 @@
 
 <style>
     .table-responsive {
-        max-height: 550px;
-        overflow-y: auto;
-        overflow-x: auto;
-    }
+    max-height: 550px;
+    overflow-y: auto;
+    overflow-x: auto;
+    margin: 0;
+    width: 100%;
+    display: block;
+}
+
+.table-container {
+    width: 100%;
+    margin: 0;
+    display: block;
+}
 /* Typography */
 .main-content,
 .table,
@@ -22,11 +31,12 @@
 
 /* Layout */
 .main-content {
-    width: 210%;
-    margin-left: -750px;
+    width: 200%;
+    margin-left: -50%;
     min-height: 92vh;
     padding: 1.5rem 2rem;
     background-color: #f0f2f5;
+    overflow-x: auto;
 }
 
 .grid-container {
@@ -35,6 +45,12 @@
 }
 
 /* Table */
+.table {
+    margin: 0;
+    width: 100%;
+    min-width: 100%;
+}
+
 .table thead th {
     position: sticky;
     top: 0;
@@ -659,7 +675,8 @@
 
             <!-- 7) Tabela de Registros -->
             <div class="table-section">
-                <div class="table-responsive">
+                <div class="table-container">
+                    <div class="table-responsive">
                     <form method="post" action="{% url 'grid_internacional_send_email' %}" class="mb-3">
                         {% csrf_token %}
                         <input type="hidden" name="cliente" value="{{ request.GET.cliente }}">
