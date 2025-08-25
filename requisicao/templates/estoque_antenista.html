@@ -1,61 +1,111 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+    @media (max-width: 576px) {
+        h1 {
+            font-size: 1.5rem;
+        }
+        .card {
+            margin-bottom: 1rem;
+        }
+        .table-responsive {
+            font-size: 0.95rem;
+        }
+        .form-label {
+            font-size: 1rem;
+        }
+    }
+    @media (max-width: 768px) {
+        .container {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+        .table th, .table td {
+            padding: 0.5rem;
+        }
+    }
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        border: none;
+    }
+    .card-body {
+        background: #f8f9fa;
+        border-radius: 12px;
+    }
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+    }
+    .table thead {
+        background: #e9ecef;
+    }
+    .table th {
+        font-weight: 600;
+    }
+    .btn-primary {
+        width: 100%;
+        font-size: 1.1rem;
+        padding: 0.6rem;
+        border-radius: 8px;
+    }
+</style>
 <div class="container mt-4">
-    <h1>Estoque dos Antenistas</h1>
+    <h1 class="text-center mb-4">Estoque dos Antenistas</h1>
     {% if perms.registrodemanutencao.change_registrodemanutencao %}
     {% if perms.requisicao.add_requisicoes %}
     {% if perms.produto.add_produto %}
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-body">
-            <form method="post" class="form" enctype="multipart/form-data">
+            <form method="post" class="form row g-3" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="mb-3">
+                <div class="col-12 col-md-6">
                     <label for="tipo_produto" class="form-label">Nome</label>
                     {{ form.nome }}
                 </div>
-                <div class="mb-3">
+                <div class="col-12 col-md-6">
                     <label for="tipo_produto" class="form-label">Tipo de Produto</label>
                     {{ form.tipo_produto }}
                 </div>
-                <div class="mb-3">
+                <div class="col-12 col-md-6">
                     <label for="tipo_produto" class="form-label">Estado</label>
                     {{ form.endereco }}
                 </div>
-                <div class="mb-3">
+                <div class="col-12 col-md-6">
                     <label for="quantidade" class="form-label">Quantidade</label>
                     {{ form.quantidade }}
                 </div>
-                <button type="submit" class="btn btn-primary">Salvar</button>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary mt-2">Salvar</button>
+                </div>
             </form>
         </div>
     </div>
-</div>
-{% endif %}
-{% endif %}
-{% endif %}
-<div class="container mt-4">
-    
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">Nome</th>
-                <th scope="col">Modelo</th>
-                <th scope="col">Cidade/Estado</th>
-                
-                <th scope="col">Quantidade em Estoque</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for estoque in estoques %}
-            <tr>
-                <td>{{ estoque.nome }}</td>
-                <td>{{ estoque.tipo_produto }}</td>
-                <td>{{ estoque.endereco }}</td>
-                
-                <td>{{ estoque.quantidade }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% endif %}
+    {% endif %}
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Modelo</th>
+                    <th scope="col">Cidade/Estado</th>
+                    <th scope="col">Quantidade em Estoque</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estoque in estoques %}
+                <tr>
+                    <td>{{ estoque.nome }}</td>
+                    <td>{{ estoque.tipo_produto }}</td>
+                    <td>{{ estoque.endereco }}</td>
+                    <td>{{ estoque.quantidade }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
