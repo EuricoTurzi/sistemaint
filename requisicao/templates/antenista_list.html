@@ -1,44 +1,164 @@
-
-
 {% extends 'base.html' %}
 {% block title %} | Grupo Golden Sat | {% endblock %}
 
 
-
 {% block content %}
 <style>
+    body {
+        margin-top: 0;
+    }
     /* Seus estilos CSS existentes */
     .card-status {
         position: relative;
         transition: transform 0.3s ease;
         width: 25rem;
     }
-
     .card-status.Aprovado {
         background: linear-gradient(to bottom, #a0f0a0 0%, #ffffff 100%);
     }
-
-    /* ... outros estilos ... */
-
     .card-status:hover {
         transform: scale(1.05);
     }
-
     .card-body p {
         transition: transform 0.3s ease, color 0.3s ease;
     }
-
     .card-body p:hover {
-        transform: translateY(-3px); /* Move o texto para cima */
-        color: #007bff; /* Muda a cor do texto ao passar o mouse */
+        transform: translateY(-3px);
+        color: #007bff;
     }
 
-    
+    /* Responsividade para container */
+    .container {
+        max-width: 100%;
+        padding: 1rem;
+        margin-top: 0 !important;
+    }
 
-   
+    /* Tabela responsiva */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table.table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+    }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            vertical-align: middle;
+            border-bottom: 1px solid #dee2e6;
+            border-right: 1px solid #dee2e6;
+            word-break: break-word;
+            font-size: 1rem;
+        }
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+
+    .table thead th {
+        background-color: #f8ec81b2 !important;
+        font-weight: 600;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    /* Botões */
+    .btn {
+        font-size: 0.95rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.3rem;
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        white-space: nowrap;
+    }
+    .btn-warning {
+        background: linear-gradient(90deg, #c49f31 0%, #ffd54f 100%);
+        color: #333;
+        border: none;
+    }
+    .btn-warning:hover {
+        background: linear-gradient(90deg, #ffd54f 0%, #ffe082 100%);
+        color: #222;
+        box-shadow: 0 2px 8px rgba(255, 213, 79, 0.2);
+    }
+    .btn-success {
+        background: linear-gradient(90deg, #0a490c 0%, #0b420e 100%);
+        color: #fff;
+        border: none;
+    }
+    .btn-success:disabled {
+        opacity: 0.7;
+    }
+    .btn-primary {
+        background: linear-gradient(90deg, #42a5f5 0%, #1976d2 100%);
+        color: #fff;
+        border: none;
+    }
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
+    }
+
+    /* Alertas */
+    .alert {
+        font-size: 1rem;
+        border-radius: 0.4rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Responsividade */
+    @media (max-width: 1200px) {
+        .card-status {
+            width: 100%;
+        }
+        th, td {
+            font-size: 0.95rem;
+        }
+    }
+    @media (max-width: 768px) {
+        .container {
+            padding: 0.5rem;
+        }
+        h1 {
+            font-size: 1.5rem;
+        }
+        .table-responsive {
+            margin-bottom: 1rem;
+        }
+        th, td {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .btn {
+            font-size: 0.9rem;
+            padding: 0.3rem 0.6rem;
+        }
+    }
+    @media (max-width: 480px) {
+        h1 {
+            font-size: 1.2rem;
+        }
+        .table {
+            font-size: 0.85rem;
+        }
+        th, td {
+            padding: 0.3rem;
+        }
+        .btn {
+            font-size: 0.85rem;
+            padding: 0.2rem 0.4rem;
+        }
+    }
 </style>
 <div class="container mt-5">
-    <h1 class="mb-4">Lista de Antenistas</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 class="mb-4">Lista de Antenistas</h1>
+        <a href="{% url 'novo_antenista' %}" class="btn btn-primary">Novo Antenista</a>
+    </div>
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -47,55 +167,56 @@
             </div>
         {% endfor %}
     {% endif %}
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Tipo de Produto</th>
-                <th>Telefone</th>
-                <th>Cliente</th>
-                <th>Quantidade</th>
-                <th>Equipamentos</th>
-                <th>Solicitante</th>
-	 	<th>Valor de Entrega</th>
-		<th>Contrato</th>
-                <th>Status</th> <!-- Nova coluna para Status -->
-                <th>Data de Criação</th>
-                <th>Ações</th> <!-- Nova coluna para o botão -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for antenista in antenistas %}
-            <tr>
-                <td>{{ antenista.nome }}</td>
-                <td>{{ antenista.tipo_produto }}</td>
-                <td>{{ antenista.telefone }}</td>
-                <td>{{ antenista.cliente }}</td>
-                <td>{{ antenista.quantidade }}</td>
-                <td>{{ antenista.equipamentos }}</td>
-                <td>{{ antenista.solicitante }}</td>
-                <td>{{ antenista.valor_entrega }}</td>
-                <td>{{ antenista.contrato }}</td>
-                <td>{{ antenista.status }}</td> <!-- Exibe o status atual -->
-                <td>{{ antenista.data_criacao|date:"d/m/Y" }}</td>
-                <td>
-                    {% if antenista.status != 'Atualizado' %}
-                        <form action="{% url 'atualizar_atualizado' antenista.pk %}" method="POST" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-warning btn-sm">Atualizado</button>
-                        </form>
-                    {% else %}
-                        <button class="btn btn-success btn-sm" disabled>Atualizado</button>
-                    {% endif %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7">Nenhum registro encontrado.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="{% url 'novo_antenista' %}" class="btn btn-primary">Novo Antenista</a>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Tipo de Produto</th>
+                    <th>Telefone</th>
+                    <th>Cliente</th>
+                    <th>Quantidade</th>
+                    <th>Equipamentos</th>
+                    <th>Solicitante</th>
+                    <th>Valor de Entrega</th>
+                    <th>Contrato</th>
+                    <th>Status</th>
+                    <th>Data de Criação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for antenista in antenistas %}
+                <tr>
+                    <td>{{ antenista.nome }}</td>
+                    <td>{{ antenista.tipo_produto }}</td>
+                    <td>{{ antenista.telefone }}</td>
+                    <td>{{ antenista.cliente }}</td>
+                    <td>{{ antenista.quantidade }}</td>
+                    <td>{{ antenista.equipamentos }}</td>
+                    <td>{{ antenista.solicitante }}</td>
+                    <td>{{ antenista.valor_entrega }}</td>
+                    <td>{{ antenista.contrato }}</td>
+                    <td>{{ antenista.status }}</td>
+                    <td>{{ antenista.data_criacao|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if antenista.status != 'Atualizado' %}
+                            <form action="{% url 'atualizar_atualizado' antenista.pk %}" method="POST" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-warning btn-sm">Atualizado</button>
+                            </form>
+                        {% else %}
+                            <button class="btn btn-success btn-sm" disabled>Atualizado</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="12">Nenhum registro encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

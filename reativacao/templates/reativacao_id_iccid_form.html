@@ -54,41 +54,6 @@
 </style>
 
 <form method="get" action="{% url 'reativacao_list' %}">
-    <div class="filter-container">
-        <div class="mb-3">
-            <select name="cliente_filtro" class="form-control dropdown-status">
-                <option value="">Selecione o Cliente</option>
-                {% for cliente in clientes_choices %}
-                    <option value="{{ cliente.id }}" {% if request.GET.cliente_filtro == cliente.id|stringformat:"s" %}selected{% endif %}>
-                        {{ cliente.nome }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="mb-3">
-            <select name="status_reativacao_filtro" class="form-control dropdown-status">
-                <option value="">Selecione o Status de Reativação</option>
-                {% for status in status_reativacao_choices %}
-                    <option value="{{ status.0 }}" {% if request.GET.status_reativacao_filtro == status.0 %}selected{% endif %}>
-                        {{ status.1 }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="mb-3">
-            <select name="motivo_filtro" class="form-control dropdown-status">
-                <option value="">Selecione o Motivo</option>
-                {% for motivo in motivos_choices %}
-                    <option value="{{ motivo.0 }}" {% if request.GET.motivo_filtro == motivo.0 %}selected{% endif %}>
-                        {{ motivo.1 }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="mb-3">
-            <button class="btn btn-outline-secondary w-100" type="submit">Filtrar</button>
-        </div>
-    </div>
 </form>
 
 <div class="table-responsive">

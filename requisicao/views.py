@@ -414,13 +414,13 @@ class historicoListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
         queryset = Requisicoes.objects.all().order_by('-id')
         nome = self.request.GET.get('nome')
         status = self.request.GET.get('status')
-        
+
         if nome:
-            queryset = queryset.filter(nome__icontains=nome)
-        
+            queryset = queryset.filter(nome__nome__icontains=nome)
+
         if status:
             queryset = queryset.filter(status__icontains=status)
-        
+
         return queryset
 
     def get_context_data(self, **kwargs):

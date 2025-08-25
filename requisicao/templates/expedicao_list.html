@@ -186,6 +186,7 @@
                                     <a href="{% url 'requisicoesdeleteview' registro.id %}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Excluir</a>
                                     <a class="btn btn-warning" href="{% url 'requisicao_update' registro.id %}"><i class="fas fa-edit"></i> Editar</a>
                                 {% endif %}
+                                <a class="btn btn-success" href="{% url 'expedicao_expedido' registro.id %}"><i class="fas fa-paper-plane"></i> Enviado ao Cliente</a>
                             </div>
                         </div>
                     </div>
