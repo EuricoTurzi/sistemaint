@@ -68,7 +68,8 @@
         min-width: 280px;
         max-width: 370px;
         width: 100%;
-        height: auto;
+        max-height: 600px;
+        overflow: hidden;
         margin-left: 0;
         margin-right: 0;
     }
@@ -81,6 +82,8 @@
         display: flex;
         flex-direction: column;
         gap: 4px;
+        max-height: 550px;
+        overflow-y: auto;
     }
     .card-title {
         font-size: 1.2rem;
@@ -92,6 +95,8 @@
         font-size: 1rem;
         color: #444;
         margin-bottom: 4px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
     .card-body h3 {
         font-size: 1.1rem;
@@ -153,6 +158,41 @@
         .card-body { padding: 16px 8px; }
         .btn { width: 100%; margin-right: 0; }
     }
+
+    /* Estilo para equipamentos truncados */
+    .equipamentos-truncados {
+        color: #666;
+        font-style: italic;
+    }
+    .equipamentos-truncados:hover {
+        color: #333;
+    }
+    
+    /* Estilo para lista de equipamentos compacta */
+    .equipamentos-lista {
+        display: inline-block;
+        max-width: 100%;
+        word-wrap: break-word;
+        line-height: 1.2;
+        font-size: 0.9rem;
+        color: #555;
+    }
+    
+    /* Scrollbar personalizada para o card-body */
+    .card-body::-webkit-scrollbar {
+        width: 6px;
+    }
+    .card-body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+    .card-body::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 3px;
+    }
+    .card-body::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
 </style>
 
 <h3 class="mb-3 text-center" style="color: #ffd600;">APROVAÇÃO DE MANUTENÇÃO</h3>
@@ -205,7 +245,22 @@
                         <p class="card-text"><b>Tipo de Produto:</b> {{ registro.tipo_produto }}</p>
                     </div>
                     <div class="col-12">
-                        <p class="card-text mt-2"><b>Equipamento:</b> {{ registro.numero_equipamento }}</p>
+                        <p class="card-text mt-2">
+                            <b>Equipamento:</b> 
+                            {% if registro.numero_equipamento %}
+                                {% with equipamentos=registro.numero_equipamento.split %}
+                                    {% if equipamentos|length > 5 %}
+                                        <span title="{{ registro.numero_equipamento }}" style="cursor: help;" class="equipamentos-truncados equipamentos-lista">
+                                            {{ equipamentos.0 }}, {{ equipamentos.1 }}, {{ equipamentos.2 }}, {{ equipamentos.3 }}, {{ equipamentos.4 }}... (+{{ equipamentos|length|add:"-5" }} mais)
+                                        </span>
+                                    {% else %}
+                                        <span class="equipamentos-lista">{{ registro.numero_equipamento }}</span>
+                                    {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                Não informado
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
                 <div class="d-flex flex-wrap mt-2">

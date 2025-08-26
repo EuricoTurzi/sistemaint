@@ -8,7 +8,9 @@
     .card-status {
         position: relative;
         transition: transform 0.3s ease;
-        width: 25rem;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
     }
 
     .card-status.Aprovado {
@@ -56,20 +58,46 @@
     }
 
     .card-body {
-        padding: 30px;
+        padding: 20px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 
     .card-status:hover {
-        transform: scale(1.05);
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     }
 
     .card-body p {
         transition: transform 0.3s ease, color 0.3s ease;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
     }
 
     .card-body p:hover {
-        transform: translateY(-3px); /* Move o texto para cima */
-        color: #007bff; /* Muda a cor do texto ao passar o mouse */
+        transform: translateY(-2px);
+        color: #007bff;
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .col-md-4 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        .card-status {
+            max-width: 100%;
+        }
+        .card-body {
+            padding: 15px;
+        }
+    }
+    
+    @media (max-width: 1200px) and (min-width: 769px) {
+        .col-md-4 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
     }
 </style>
 
