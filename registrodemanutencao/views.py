@@ -731,10 +731,20 @@ class historico_manutencaoListView(PermissionRequiredMixin, LoginRequiredMixin, 
     
     def get_queryset(self):
         queryset = registrodemanutencao.objects.all().order_by('-id')  # Ordenar por ID decrescente
+        
+        # Filtros existentes
         nome = self.request.GET.get('nome')
         retornoequipamentos = self.request.GET.get('retornoequipamentos')
         status_tratativa = self.request.GET.get('status_tratativa')
         
+        # Novos filtros
+        id_registro = self.request.GET.get('id_registro')
+        tipo_entrada = self.request.GET.get('tipo_entrada')
+        status = self.request.GET.get('status')
+        data_inicio = self.request.GET.get('data_inicio')
+        data_fim = self.request.GET.get('data_fim')
+        
+        # Aplicar filtros existentes
         if nome:
             queryset = queryset.filter(nome__nome__icontains=nome)
         
@@ -743,6 +753,24 @@ class historico_manutencaoListView(PermissionRequiredMixin, LoginRequiredMixin, 
         
         if status_tratativa:
             queryset = queryset.filter(status_tratativa=status_tratativa)
+        
+        # Aplicar novos filtros
+        if id_registro:
+            queryset = queryset.filter(id=id_registro)
+        
+        if tipo_entrada:
+            queryset = queryset.filter(tipo_entrada=tipo_entrada)
+        
+        if status:
+            queryset = queryset.filter(status=status)
+        
+        # Filtro de range de datas
+        if data_inicio and data_fim:
+            queryset = queryset.filter(data_criacao__date__range=[data_inicio, data_fim])
+        elif data_inicio:
+            queryset = queryset.filter(data_criacao__date__gte=data_inicio)
+        elif data_fim:
+            queryset = queryset.filter(data_criacao__date__lte=data_fim)
         
         return queryset
     
@@ -754,10 +782,17 @@ class historico_manutencaoListView(PermissionRequiredMixin, LoginRequiredMixin, 
             'nome': self.request.GET.get('nome', ''),
             'retornoequipamentos': self.request.GET.get('retornoequipamentos', ''),
             'status_tratativa': self.request.GET.get('status_tratativa', ''),
+            'id_registro': self.request.GET.get('id_registro', ''),
+            'tipo_entrada': self.request.GET.get('tipo_entrada', ''),
+            'status': self.request.GET.get('status', ''),
+            'data_inicio': self.request.GET.get('data_inicio', ''),
+            'data_fim': self.request.GET.get('data_fim', ''),
         }
         
-        # Adicionar as escolhas do status de tratativa
+        # Adicionar as escolhas dos filtros
         context['status_tratativa_choices'] = registrodemanutencao.STATUS_TRATATIVA_CHOICES
+        context['tipo_entrada_choices'] = registrodemanutencao.ENTRADA
+        context['status_choices'] = registrodemanutencao.STATUS_CHOICES
         
         return context
 

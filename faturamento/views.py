@@ -14,7 +14,8 @@ class FaturamentoListView(PermissionRequiredMixin, LoginRequiredMixin, ListView)
     model = Requisicoes
     template_name = "faturamento_list.html"
     context_object_name = 'requisicoes'
-    paginate_by = 10
+    paginate_by = 6
+    
     permission_required = 'faturamento.view_formulario'  # Substitua 'faturamento' pelo nome do seu aplicativo
 
     def get_queryset(self):
