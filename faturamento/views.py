@@ -386,26 +386,156 @@ class FaturamentoGetDataView(View):
             
             # Usar raw SQL para evitar problemas de conversão de decimal
             with connection.cursor() as cursor:
-                # Primeiro, contar o total de registros
-                cursor.execute("""
-                    SELECT COUNT(*) FROM faturamento_faturamento
-                """)
+                # Obter filtros
+                cliente_filter = request.GET.get('cliente', '').strip()
+                comercial_filter = request.GET.get('comercial', '').strip()
+                nome_fantasia_filter = request.GET.get('nome_fantasia', '').strip()
+                sistema_omie_filter = request.GET.get('sistema_omie', '').strip()
+                empresa_filter = request.GET.get('empresa', '').strip()
+                email_filter = request.GET.get('email', '').strip()
+                forma_pagamento_filter = request.GET.get('forma_pagamento', '').strip()
+                data_inicio = request.GET.get('data_inicio', '').strip()
+                data_fim = request.GET.get('data_fim', '').strip()
+                tipo_data = request.GET.get('tipo_data', 'faturamento').strip()  # 'faturamento' ou 'emissao'
+                
+                # Construir condições WHERE
+                where_conditions = []
+                count_params = []
+                
+                if cliente_filter:
+                    where_conditions.append("(cliente LIKE %s OR nome_fantasia LIKE %s)")
+                    count_params.extend([f'%{cliente_filter}%', f'%{cliente_filter}%'])
+                
+                if comercial_filter:
+                    where_conditions.append("comercial LIKE %s")
+                    count_params.append(f'%{comercial_filter}%')
+                
+                if nome_fantasia_filter:
+                    where_conditions.append("nome_fantasia LIKE %s")
+                    count_params.append(f'%{nome_fantasia_filter}%')
+                
+                if sistema_omie_filter:
+                    where_conditions.append("sistema_omie LIKE %s")
+                    count_params.append(f'%{sistema_omie_filter}%')
+                
+                if empresa_filter:
+                    where_conditions.append("empresa LIKE %s")
+                    count_params.append(f'%{empresa_filter}%')
+                
+                if email_filter:
+                    where_conditions.append("email LIKE %s")
+                    count_params.append(f'%{email_filter}%')
+                
+                if forma_pagamento_filter:
+                    where_conditions.append("forma_pagamento LIKE %s")
+                    count_params.append(f'%{forma_pagamento_filter}%')
+                
+                # Filtro de data
+                if data_inicio and data_fim:
+                    if tipo_data == 'emissao':
+                        where_conditions.append("emissao BETWEEN %s AND %s")
+                    else:  # faturamento
+                        where_conditions.append("faturamento BETWEEN %s AND %s")
+                    count_params.extend([data_inicio, data_fim])
+                
+                # Obter parâmetro de ordenação
+                ordenacao = request.GET.get('ordenacao', 'faturamento_desc').strip()
+                
+                # Contar total de registros com filtros
+                count_query = "SELECT COUNT(*) FROM faturamento_faturamento"
+                if where_conditions:
+                    count_query += " WHERE " + " AND ".join(where_conditions)
+                
+                cursor.execute(count_query, count_params)
                 total_count = cursor.fetchone()[0]
                 
-                # Calcular total de páginas
+                                # Calcular total de páginas
                 total_pages = (total_count + per_page - 1) // per_page
                 
-                # Buscar os registros da página atual
-                cursor.execute("""
+                # Construir a query base
+                base_query = """
                     SELECT id, faturamento, emissao, reajustado, reajuste, contrato, tempo, 
                            comercial, n_contrato, sistema_omie, empresa, cliente, nome_fantasia, 
-                           email, tipo_servico, descricao, forma_pagamento, vecimento_documento, 
-                           tipo_documento, valor_bruto, coluna1, valor_liquido, juros, data_pgto, 
+                           email, tipo_servico, descricao, forma_pagamento, vecimento_documento as vecimento, 
+                           tipo_documento as documento, valor_bruto, coluna1, valor_liquido, juros, data_pgto, 
                            valor_pago, status2, situacao
                     FROM faturamento_faturamento 
-                    ORDER BY faturamento DESC, id DESC 
-                    LIMIT %s OFFSET %s
-                """, [per_page, offset])
+                """
+                
+                # Construir condições WHERE para a query principal
+                where_conditions = []
+                params = []
+                
+                if cliente_filter:
+                    where_conditions.append("(cliente LIKE %s OR nome_fantasia LIKE %s)")
+                    params.extend([f'%{cliente_filter}%', f'%{cliente_filter}%'])
+                
+                if comercial_filter:
+                    where_conditions.append("comercial LIKE %s")
+                    params.append(f'%{comercial_filter}%')
+                
+                if nome_fantasia_filter:
+                    where_conditions.append("nome_fantasia LIKE %s")
+                    params.append(f'%{nome_fantasia_filter}%')
+                
+                if sistema_omie_filter:
+                    where_conditions.append("sistema_omie LIKE %s")
+                    params.append(f'%{sistema_omie_filter}%')
+                
+                if empresa_filter:
+                    where_conditions.append("empresa LIKE %s")
+                    params.append(f'%{empresa_filter}%')
+                
+                if email_filter:
+                    where_conditions.append("email LIKE %s")
+                    params.append(f'%{email_filter}%')
+                
+                if forma_pagamento_filter:
+                    where_conditions.append("forma_pagamento LIKE %s")
+                    params.append(f'%{forma_pagamento_filter}%')
+                
+                # Filtro de data
+                if data_inicio and data_fim:
+                    if tipo_data == 'emissao':
+                        where_conditions.append("emissao BETWEEN %s AND %s")
+                    else:  # faturamento
+                        where_conditions.append("faturamento BETWEEN %s AND %s")
+                    params.extend([data_inicio, data_fim])
+                
+                # Query final com ordenação e paginação
+                where_clause = ""
+                if where_conditions:
+                    where_clause = " WHERE " + " AND ".join(where_conditions)
+                
+                # Definir ordenação baseada no parâmetro
+                order_clause = "ORDER BY faturamento DESC, id DESC"  # Padrão
+                
+                if ordenacao == 'faturamento_desc':
+                    order_clause = "ORDER BY faturamento DESC, id DESC"
+                elif ordenacao == 'faturamento_asc':
+                    order_clause = "ORDER BY faturamento ASC, id ASC"
+                elif ordenacao == 'emissao_desc':
+                    order_clause = "ORDER BY emissao DESC, id DESC"
+                elif ordenacao == 'emissao_asc':
+                    order_clause = "ORDER BY emissao ASC, id ASC"
+                elif ordenacao == 'cliente_asc':
+                    order_clause = "ORDER BY cliente ASC, id ASC"
+                elif ordenacao == 'cliente_desc':
+                    order_clause = "ORDER BY cliente DESC, id DESC"
+                elif ordenacao == 'valor_desc':
+                    order_clause = "ORDER BY valor_bruto DESC, id DESC"
+                elif ordenacao == 'valor_asc':
+                    order_clause = "ORDER BY valor_bruto ASC, id ASC"
+                elif ordenacao == 'id_desc':
+                    order_clause = "ORDER BY id DESC"
+                elif ordenacao == 'id_asc':
+                    order_clause = "ORDER BY id ASC"
+                
+                final_query = base_query + where_clause + " " + order_clause + " LIMIT %s OFFSET %s"
+                params.extend([per_page, offset])
+                
+                # Executar query com filtros
+                cursor.execute(final_query, params)
                 
                 faturamentos_raw = cursor.fetchall()
             
@@ -481,6 +611,216 @@ class FaturamentoGetDataView(View):
                 }
             })
             
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=400)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class FaturamentoGetClientesView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            from django.db import connection
+            
+            with connection.cursor() as cursor:
+                # Buscar todos os clientes únicos
+                cursor.execute("""
+                    SELECT DISTINCT cliente 
+                    FROM faturamento_faturamento 
+                    WHERE cliente IS NOT NULL 
+                    AND cliente != '' 
+                    AND cliente != 'cliente'
+                    ORDER BY cliente
+                """)
+                
+                clientes = [row[0] for row in cursor.fetchall()]
+                
+                return JsonResponse({
+                    'success': True,
+                    'clientes': clientes
+                })
+                
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=400)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class FaturamentoGetComerciaisView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            from django.db import connection
+            
+            with connection.cursor() as cursor:
+                # Buscar todos os comerciais únicos
+                cursor.execute("""
+                    SELECT DISTINCT comercial 
+                    FROM faturamento_faturamento 
+                    WHERE comercial IS NOT NULL 
+                    AND comercial != '' 
+                    AND comercial != 'comercial'
+                    ORDER BY comercial
+                """)
+                
+                comerciais = [row[0] for row in cursor.fetchall()]
+                
+                return JsonResponse({
+                    'success': True,
+                    'comerciais': comerciais
+                })
+                
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=400)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class FaturamentoGetNomesFantasiaView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            from django.db import connection
+            
+            with connection.cursor() as cursor:
+                # Buscar todos os nomes fantasia únicos
+                cursor.execute("""
+                    SELECT DISTINCT nome_fantasia 
+                    FROM faturamento_faturamento 
+                    WHERE nome_fantasia IS NOT NULL 
+                    AND nome_fantasia != '' 
+                    AND nome_fantasia != 'nome_fantasia'
+                    ORDER BY nome_fantasia
+                """)
+                
+                nomes_fantasia = [row[0] for row in cursor.fetchall()]
+                
+                return JsonResponse({
+                    'success': True,
+                    'nomes_fantasia': nomes_fantasia
+                })
+                
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=400)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class FaturamentoGetSistemasOmieView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            from django.db import connection
+            
+            with connection.cursor() as cursor:
+                # Buscar todos os sistemas omie únicos
+                cursor.execute("""
+                    SELECT DISTINCT sistema_omie 
+                    FROM faturamento_faturamento 
+                    WHERE sistema_omie IS NOT NULL 
+                    AND sistema_omie != '' 
+                    AND sistema_omie != 'sistema_omie'
+                    ORDER BY sistema_omie
+                """)
+                
+                sistemas_omie = [row[0] for row in cursor.fetchall()]
+                
+                return JsonResponse({
+                    'success': True,
+                    'sistemas_omie': sistemas_omie
+                })
+                
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=400)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class FaturamentoGetEmpresasView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            from django.db import connection
+            
+            with connection.cursor() as cursor:
+                # Buscar todas as empresas únicas
+                cursor.execute("""
+                    SELECT DISTINCT empresa 
+                    FROM faturamento_faturamento 
+                    WHERE empresa IS NOT NULL 
+                    AND empresa != '' 
+                    AND empresa != 'empresa'
+                    ORDER BY empresa
+                """)
+                
+                empresas = [row[0] for row in cursor.fetchall()]
+                
+                return JsonResponse({
+                    'success': True,
+                    'empresas': empresas
+                })
+                
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=400)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class FaturamentoGetEmailsView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            from django.db import connection
+            
+            with connection.cursor() as cursor:
+                # Buscar todos os emails únicos
+                cursor.execute("""
+                    SELECT DISTINCT email 
+                    FROM faturamento_faturamento 
+                    WHERE email IS NOT NULL 
+                    AND email != '' 
+                    AND email != 'email'
+                    ORDER BY email
+                """)
+                
+                emails = [row[0] for row in cursor.fetchall()]
+                
+                return JsonResponse({
+                    'success': True,
+                    'emails': emails
+                })
+                
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=400)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class FaturamentoGetFormasPagamentoView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            from django.db import connection
+            
+            with connection.cursor() as cursor:
+                # Buscar todas as formas de pagamento únicas
+                cursor.execute("""
+                    SELECT DISTINCT forma_pagamento 
+                    FROM faturamento_faturamento 
+                    WHERE forma_pagamento IS NOT NULL 
+                    AND forma_pagamento != '' 
+                    AND forma_pagamento != 'forma_pagamento'
+                    ORDER BY forma_pagamento
+                """)
+                
+                formas_pagamento = [row[0] for row in cursor.fetchall()]
+                
+                return JsonResponse({
+                    'success': True,
+                    'formas_pagamento': formas_pagamento
+                })
+                
         except Exception as e:
             return JsonResponse({
                 'success': False,

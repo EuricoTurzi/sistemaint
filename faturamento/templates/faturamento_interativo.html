@@ -113,6 +113,48 @@
         border: 1px solid #ffeaa7;
     }
 
+    /* Estilos para status de faturamento */
+    .status-recebido {
+        background-color: #d4edda !important;
+        color: #155724 !important;
+        font-weight: 600;
+        border-radius: 4px;
+        padding: 2px 6px;
+        display: inline-block;
+        min-width: 80px;
+        text-align: center;
+        border: 1px solid #c3e6cb;
+    }
+
+    .status-a-receber {
+        background-color: #f8d7da !important;
+        color: #721c24 !important;
+        font-weight: 600;
+        border-radius: 4px;
+        padding: 2px 6px;
+        display: inline-block;
+        min-width: 80px;
+        text-align: center;
+        border: 1px solid #f5c6cb;
+    }
+
+    /* Estilos para linhas com status específico */
+    .row-recebido {
+        background-color: #f8fff9 !important;
+    }
+
+    .row-recebido:hover {
+        background-color: #e8f5e8 !important;
+    }
+
+    .row-a-receber {
+        background-color: #fff8f8 !important;
+    }
+
+    .row-a-receber:hover {
+        background-color: #ffe8e8 !important;
+    }
+
     .btn-action {
         min-width: 60px;
         margin-right: 0.2rem;
@@ -327,7 +369,17 @@
                height: 22px;
            }
            
-                     .table {
+           .status-recebido, .status-a-receber {
+               font-size: 0.6rem;
+               padding: 1px 4px;
+               min-width: 60px;
+           }
+           
+           .status-recebido i, .status-a-receber i {
+               margin-right: 2px;
+           }
+           
+           .table {
                 min-width: 1000px;
                 margin-left: -600px;
                 margin-right: auto;
@@ -352,7 +404,17 @@
                 height: 20px;
             }
             
-                      .table {
+            .status-recebido, .status-a-receber {
+                font-size: 0.55rem;
+                padding: 1px 3px;
+                min-width: 50px;
+            }
+            
+            .status-recebido i, .status-a-receber i {
+                margin-right: 1px;
+            }
+            
+            .table {
                 min-width: 800px;
                 margin-left: auto;
                 margin-right: auto;
@@ -363,9 +425,118 @@
  <div class="container-page mt-4 mb-5" style="margin-left:-620px; margin-right:auto; padding-left:0; width:99vw; max-width:98vw;">
     <div class="panel mb-3">
         <div class="content-card">
-                         <div class="text-center mb-4">
-                 <h4 class="panel-title mb-0" style="color: #111;">Faturamento Interativo</h4>
-                 <p class="text-muted mt-2">Clique nas células para editar. Use o botão + para adicionar novas linhas.</p>
+                   
+             
+             <!-- Filtros -->
+             <div class="row mb-3">
+                 <div class="col-md-3">
+                     <div class="input-group">
+                         <span class="input-group-text"><i class="fas fa-users"></i></span>
+                         <select class="form-select" id="clienteFilter">
+                             <option value="">Todos os clientes</option>
+                         </select>
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="input-group">
+                         <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
+                         <select class="form-select" id="comercialFilter">
+                             <option value="">Todos os comerciais</option>
+                         </select>
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="input-group">
+                         <span class="input-group-text"><i class="fas fa-building"></i></span>
+                         <select class="form-select" id="nomeFantasiaFilter">
+                             <option value="">Todos os nomes fantasia</option>
+                         </select>
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="input-group">
+                         <span class="input-group-text"><i class="fas fa-cogs"></i></span>
+                         <select class="form-select" id="sistemaOmieFilter">
+                             <option value="">Todos os sistemas Omie</option>
+                         </select>
+                     </div>
+                 </div>
+             </div>
+             <div class="row mb-3">
+                 <div class="col-md-3">
+                     <div class="input-group">
+                         <span class="input-group-text"><i class="fas fa-industry"></i></span>
+                         <select class="form-select" id="empresaFilter">
+                             <option value="">Todas as empresas</option>
+                         </select>
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="input-group">
+                         <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                         <select class="form-select" id="emailFilter">
+                             <option value="">Todos os emails</option>
+                         </select>
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="input-group">
+                         <span class="input-group-text"><i class="fas fa-credit-card"></i></span>
+                         <select class="form-select" id="formaPagamentoFilter">
+                             <option value="">Todas as formas de pagamento</option>
+                         </select>
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="input-group">
+                         <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                         <select class="form-select" id="tipoDataFilter">
+                             <option value="faturamento">Faturamento</option>
+                             <option value="emissao">Emissão</option>
+                         </select>
+                     </div>
+                 </div>
+             </div>
+             <div class="row mb-3">
+                 <div class="col-md-3">
+                     <div class="input-group">
+                         <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
+                         <input type="date" class="form-control" id="dataInicioFilter" placeholder="Data Início">
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="input-group">
+                         <span class="input-group-text"><i class="fas fa-calendar-day"></i></span>
+                         <input type="date" class="form-control" id="dataFimFilter" placeholder="Data Fim">
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="input-group">
+                         <span class="input-group-text"><i class="fas fa-sort"></i></span>
+                         <select class="form-select" id="ordenacaoFilter">
+                             <option value="faturamento_desc">Data de Faturamento (Mais Recente)</option>
+                             <option value="faturamento_asc">Data de Faturamento (Mais Antiga)</option>
+                             <option value="emissao_desc">Data de Emissão (Mais Recente)</option>
+                             <option value="emissao_asc">Data de Emissão (Mais Antiga)</option>
+                             <option value="cliente_asc">Cliente (A-Z)</option>
+                             <option value="cliente_desc">Cliente (Z-A)</option>
+                             <option value="valor_desc">Valor (Maior)</option>
+                             <option value="valor_asc">Valor (Menor)</option>
+                             <option value="id_desc">ID (Mais Recente)</option>
+                             <option value="id_asc">ID (Mais Antigo)</option>
+                         </select>
+                     </div>
+                 </div>
+                 <div class="col-md-3">
+                     <div class="d-flex gap-2">
+                         <button class="btn btn-outline-primary" type="button" id="btnFiltrar">
+                             <i class="fas fa-filter"></i> Filtrar
+                         </button>
+                         <button class="btn btn-outline-secondary" type="button" id="btnLimparFiltro">
+                             <i class="fas fa-times"></i> Limpar Filtros
+                         </button>
+                     </div>
+                 </div>
              </div>
 
             <!-- Tabela Interativa -->
@@ -687,17 +858,243 @@ let totalRecords = 0;
 
 // Inicializar a tabela
 document.addEventListener('DOMContentLoaded', function() {
+    loadClientes();
+    loadComerciais();
+    loadNomesFantasia();
+    loadSistemasOmie();
+    loadEmpresas();
+    loadEmails();
+    loadFormasPagamento();
     loadInitialData();
     setupTableEvents();
 });
+
+function loadClientes() {
+    // Carregar lista de clientes
+    fetch('/faturamento/get-clientes/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.clientes) {
+                const select = document.getElementById('clienteFilter');
+                
+                // Manter a opção "Todos os clientes"
+                select.innerHTML = '<option value="">Todos os clientes</option>';
+                
+                // Adicionar opções de clientes
+                data.clientes.forEach(cliente => {
+                    const option = document.createElement('option');
+                    option.value = cliente;
+                    option.textContent = cliente;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar clientes:', error);
+        });
+}
+
+function loadComerciais() {
+    // Carregar lista de comerciais
+    fetch('/faturamento/get-comerciais/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.comerciais) {
+                const select = document.getElementById('comercialFilter');
+                
+                // Manter a opção "Todos os comerciais"
+                select.innerHTML = '<option value="">Todos os comerciais</option>';
+                
+                // Adicionar opções de comerciais
+                data.comerciais.forEach(comercial => {
+                    const option = document.createElement('option');
+                    option.value = comercial;
+                    option.textContent = comercial;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar comerciais:', error);
+        });
+}
+
+function loadNomesFantasia() {
+    // Carregar lista de nomes fantasia
+    fetch('/faturamento/get-nomes-fantasia/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.nomes_fantasia) {
+                const select = document.getElementById('nomeFantasiaFilter');
+                
+                // Manter a opção "Todos os nomes fantasia"
+                select.innerHTML = '<option value="">Todos os nomes fantasia</option>';
+                
+                // Adicionar opções de nomes fantasia
+                data.nomes_fantasia.forEach(nome => {
+                    const option = document.createElement('option');
+                    option.value = nome;
+                    option.textContent = nome;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar nomes fantasia:', error);
+        });
+}
+
+function loadSistemasOmie() {
+    // Carregar lista de sistemas Omie
+    fetch('/faturamento/get-sistemas-omie/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.sistemas_omie) {
+                const select = document.getElementById('sistemaOmieFilter');
+                
+                // Manter a opção "Todos os sistemas Omie"
+                select.innerHTML = '<option value="">Todos os sistemas Omie</option>';
+                
+                // Adicionar opções de sistemas Omie
+                data.sistemas_omie.forEach(sistema => {
+                    const option = document.createElement('option');
+                    option.value = sistema;
+                    option.textContent = sistema;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar sistemas Omie:', error);
+        });
+}
+
+function loadEmpresas() {
+    // Carregar lista de empresas
+    fetch('/faturamento/get-empresas/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.empresas) {
+                const select = document.getElementById('empresaFilter');
+                
+                // Manter a opção "Todas as empresas"
+                select.innerHTML = '<option value="">Todas as empresas</option>';
+                
+                // Adicionar opções de empresas
+                data.empresas.forEach(empresa => {
+                    const option = document.createElement('option');
+                    option.value = empresa;
+                    option.textContent = empresa;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar empresas:', error);
+        });
+}
+
+function loadEmails() {
+    // Carregar lista de emails
+    fetch('/faturamento/get-emails/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.emails) {
+                const select = document.getElementById('emailFilter');
+                
+                // Manter a opção "Todos os emails"
+                select.innerHTML = '<option value="">Todos os emails</option>';
+                
+                // Adicionar opções de emails
+                data.emails.forEach(email => {
+                    const option = document.createElement('option');
+                    option.value = email;
+                    option.textContent = email;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar emails:', error);
+        });
+}
+
+function loadFormasPagamento() {
+    // Carregar lista de formas de pagamento
+    fetch('/faturamento/get-formas-pagamento/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.formas_pagamento) {
+                const select = document.getElementById('formaPagamentoFilter');
+                
+                // Manter a opção "Todas as formas de pagamento"
+                select.innerHTML = '<option value="">Todas as formas de pagamento</option>';
+                
+                // Adicionar opções de formas de pagamento
+                data.formas_pagamento.forEach(forma => {
+                    const option = document.createElement('option');
+                    option.value = forma;
+                    option.textContent = forma;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar formas de pagamento:', error);
+        });
+}
 
 function loadInitialData() {
     loadDataForPage(1);
 }
 
 function loadDataForPage(page) {
-    // Carregar dados do banco de dados via AJAX com paginação
-    const url = `/faturamento/get-data/?page=${page}&per_page=${perPage}`;
+    // Obter filtros
+    const clienteFilter = document.getElementById('clienteFilter').value.trim();
+    const comercialFilter = document.getElementById('comercialFilter').value.trim();
+    const nomeFantasiaFilter = document.getElementById('nomeFantasiaFilter').value.trim();
+    const sistemaOmieFilter = document.getElementById('sistemaOmieFilter').value.trim();
+    const empresaFilter = document.getElementById('empresaFilter').value.trim();
+    const emailFilter = document.getElementById('emailFilter').value.trim();
+    const formaPagamentoFilter = document.getElementById('formaPagamentoFilter').value.trim();
+    const dataInicioFilter = document.getElementById('dataInicioFilter').value.trim();
+    const dataFimFilter = document.getElementById('dataFimFilter').value.trim();
+    const tipoDataFilter = document.getElementById('tipoDataFilter').value.trim();
+    const ordenacaoFilter = document.getElementById('ordenacaoFilter').value.trim();
+    
+    // Carregar dados do banco de dados via AJAX com paginação e filtros
+    let url = `/faturamento/get-data/?page=${page}&per_page=${perPage}`;
+    if (clienteFilter) {
+        url += `&cliente=${encodeURIComponent(clienteFilter)}`;
+    }
+    if (comercialFilter) {
+        url += `&comercial=${encodeURIComponent(comercialFilter)}`;
+    }
+    if (nomeFantasiaFilter) {
+        url += `&nome_fantasia=${encodeURIComponent(nomeFantasiaFilter)}`;
+    }
+    if (sistemaOmieFilter) {
+        url += `&sistema_omie=${encodeURIComponent(sistemaOmieFilter)}`;
+    }
+    if (empresaFilter) {
+        url += `&empresa=${encodeURIComponent(empresaFilter)}`;
+    }
+    if (emailFilter) {
+        url += `&email=${encodeURIComponent(emailFilter)}`;
+    }
+    if (formaPagamentoFilter) {
+        url += `&forma_pagamento=${encodeURIComponent(formaPagamentoFilter)}`;
+    }
+    if (dataInicioFilter && dataFimFilter) {
+        url += `&data_inicio=${encodeURIComponent(dataInicioFilter)}`;
+        url += `&data_fim=${encodeURIComponent(dataFimFilter)}`;
+        url += `&tipo_data=${encodeURIComponent(tipoDataFilter)}`;
+    }
+    
+    // Adicionar parâmetro de ordenação
+    if (ordenacaoFilter) {
+        url += `&ordenacao=${encodeURIComponent(ordenacaoFilter)}`;
+    }
     
     fetch(url)
         .then(response => response.json())
@@ -826,6 +1223,13 @@ function addRowToTable(data, isNew = false) {
     const row = document.createElement('tr');
     row.dataset.rowId = data.id;
     
+    // Aplicar classes de cor baseadas no status
+    if (data.status2 === 'Recebido') {
+        row.classList.add('row-recebido');
+    } else if (data.status2 === 'A Receber') {
+        row.classList.add('row-a-receber');
+    }
+    
     if (isNew) {
         row.classList.add('new-row');
         tbody.insertBefore(row, tbody.firstChild); // Inserir no topo
@@ -851,6 +1255,17 @@ function addRowToTable(data, isNew = false) {
         } else if (field === 'cliente') {
             // Para o campo cliente, mostrar o nome diretamente
             cell.textContent = data[field] || '';
+            cell.classList.add('editable');
+        } else if (field === 'status2') {
+            // Para o campo status2, aplicar estilos específicos
+            const statusValue = data[field] || '';
+            if (statusValue === 'Recebido') {
+                cell.innerHTML = `<span class="status-recebido"><i class="fas fa-check-circle me-1"></i>${statusValue}</span>`;
+            } else if (statusValue === 'A Receber') {
+                cell.innerHTML = `<span class="status-a-receber"><i class="fas fa-clock me-1"></i>${statusValue}</span>`;
+            } else {
+                cell.textContent = statusValue;
+            }
             cell.classList.add('editable');
         } else {
             cell.textContent = data[field] || '';
@@ -985,13 +1400,34 @@ function setupTableEvents() {
          const cell = row.querySelector(`td[data-field="${field}"]`);
          if (cell) {
              const value = data[field] || '';
-             cell.textContent = value;
+             
+             // Aplicar estilos específicos para o campo status2
+             if (field === 'status2') {
+                 if (value === 'Recebido') {
+                     cell.innerHTML = `<span class="status-recebido"><i class="fas fa-check-circle me-1"></i>${value}</span>`;
+                 } else if (value === 'A Receber') {
+                     cell.innerHTML = `<span class="status-a-receber"><i class="fas fa-clock me-1"></i>${value}</span>`;
+                 } else {
+                     cell.textContent = value;
+                 }
+             } else {
+                 cell.textContent = value;
+             }
+             
              cell.dataset.value = value;
              console.log(`Atualizando célula ${field}:`, value);
          } else {
              console.warn(`Célula não encontrada: ${field}`);
          }
      });
+     
+     // Atualizar classes da linha baseadas no novo status
+     row.classList.remove('row-recebido', 'row-a-receber');
+     if (data.status2 === 'Recebido') {
+         row.classList.add('row-recebido');
+     } else if (data.status2 === 'A Receber') {
+         row.classList.add('row-a-receber');
+     }
      
            // Salvar no servidor (AJAX)
       saveToServer(currentRowIndex, data);
@@ -1202,6 +1638,118 @@ function getCookie(name) {
               $(this).modal('hide');
           }
       });
+      
+      // Adicionar eventos para filtros
+      const btnFiltrar = document.getElementById('btnFiltrar');
+      const btnLimparFiltro = document.getElementById('btnLimparFiltro');
+      const clienteFilter = document.getElementById('clienteFilter');
+      const comercialFilter = document.getElementById('comercialFilter');
+      const nomeFantasiaFilter = document.getElementById('nomeFantasiaFilter');
+      const sistemaOmieFilter = document.getElementById('sistemaOmieFilter');
+      const empresaFilter = document.getElementById('empresaFilter');
+      const emailFilter = document.getElementById('emailFilter');
+      const formaPagamentoFilter = document.getElementById('formaPagamentoFilter');
+      const dataInicioFilter = document.getElementById('dataInicioFilter');
+      const dataFimFilter = document.getElementById('dataFimFilter');
+      const tipoDataFilter = document.getElementById('tipoDataFilter');
+      
+      if (btnFiltrar) {
+          btnFiltrar.addEventListener('click', aplicarFiltro);
+      }
+      
+      if (btnLimparFiltro) {
+          btnLimparFiltro.addEventListener('click', limparFiltro);
+      }
+      
+      if (clienteFilter) {
+          clienteFilter.addEventListener('change', function() {
+              aplicarFiltro();
+          });
+      }
+      
+      if (comercialFilter) {
+          comercialFilter.addEventListener('change', function() {
+              aplicarFiltro();
+          });
+      }
+      
+      if (nomeFantasiaFilter) {
+          nomeFantasiaFilter.addEventListener('change', function() {
+              aplicarFiltro();
+          });
+      }
+      
+      if (sistemaOmieFilter) {
+          sistemaOmieFilter.addEventListener('change', function() {
+              aplicarFiltro();
+          });
+      }
+      
+      if (empresaFilter) {
+          empresaFilter.addEventListener('change', function() {
+              aplicarFiltro();
+          });
+      }
+      
+      if (emailFilter) {
+          emailFilter.addEventListener('change', function() {
+              aplicarFiltro();
+          });
+      }
+      
+      if (formaPagamentoFilter) {
+          formaPagamentoFilter.addEventListener('change', function() {
+              aplicarFiltro();
+          });
+      }
+      
+      if (dataInicioFilter) {
+          dataInicioFilter.addEventListener('change', function() {
+              aplicarFiltro();
+          });
+      }
+      
+      if (dataFimFilter) {
+          dataFimFilter.addEventListener('change', function() {
+              aplicarFiltro();
+          });
+      }
+      
+      if (tipoDataFilter) {
+          tipoDataFilter.addEventListener('change', function() {
+              aplicarFiltro();
+          });
+      }
+      
+      const ordenacaoFilter = document.getElementById('ordenacaoFilter');
+      if (ordenacaoFilter) {
+          ordenacaoFilter.addEventListener('change', function() {
+              aplicarFiltro();
+          });
+      }
   });
+  
+  // Função para aplicar filtro
+  function aplicarFiltro() {
+      currentPage = 1; // Voltar para a primeira página
+      loadDataForPage(1);
+  }
+  
+  // Função para limpar filtro
+  function limparFiltro() {
+      document.getElementById('clienteFilter').value = '';
+      document.getElementById('comercialFilter').value = '';
+      document.getElementById('nomeFantasiaFilter').value = '';
+      document.getElementById('sistemaOmieFilter').value = '';
+      document.getElementById('empresaFilter').value = '';
+      document.getElementById('emailFilter').value = '';
+      document.getElementById('formaPagamentoFilter').value = '';
+      document.getElementById('dataInicioFilter').value = '';
+      document.getElementById('dataFimFilter').value = '';
+      document.getElementById('tipoDataFilter').value = 'faturamento';
+      document.getElementById('ordenacaoFilter').value = 'faturamento_desc';
+      currentPage = 1; // Voltar para a primeira página
+      loadDataForPage(1);
+  }
 </script>
 {% endblock %}

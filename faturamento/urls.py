@@ -3,7 +3,10 @@ from .views import (
     FaturamentoListView, update_status_faturamento, contratosListView, 
     formularioCreateView, FinanceirohListViews, atualizar_observacoes, 
     external_vouchers_list, FaturamentoInterativoView, FaturamentoSaveView, 
-    FaturamentoDeleteView, FaturamentoGetDataView
+    FaturamentoDeleteView, FaturamentoGetDataView, FaturamentoGetClientesView,
+    FaturamentoGetComerciaisView, FaturamentoGetNomesFantasiaView,
+    FaturamentoGetSistemasOmieView, FaturamentoGetEmpresasView,
+    FaturamentoGetEmailsView, FaturamentoGetFormasPagamentoView
 )
 
 urlpatterns = [
@@ -19,5 +22,12 @@ urlpatterns = [
        path('save/', FaturamentoSaveView.as_view(), name='faturamento_save'),
        path('delete/', FaturamentoDeleteView.as_view(), name='faturamento_delete'),
        path('get-data/', FaturamentoGetDataView.as_view(), name='faturamento_get_data'),
+       path('get-clientes/', FaturamentoGetClientesView.as_view(), name='faturamento_get_clientes'),
+       path('get-comerciais/', FaturamentoGetComerciaisView.as_view(), name='faturamento_get_comerciais'),
+       path('get-nomes-fantasia/', FaturamentoGetNomesFantasiaView.as_view(), name='faturamento_get_nomes_fantasia'),
+       path('get-sistemas-omie/', FaturamentoGetSistemasOmieView.as_view(), name='faturamento_get_sistemas_omie'),
+       path('get-empresas/', FaturamentoGetEmpresasView.as_view(), name='faturamento_get_empresas'),
+       path('get-emails/', FaturamentoGetEmailsView.as_view(), name='faturamento_get_emails'),
+       path('get-formas-pagamento/', FaturamentoGetFormasPagamentoView.as_view(), name='faturamento_get_formas_pagamento'),
     
 ]
