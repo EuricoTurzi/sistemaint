@@ -14,7 +14,11 @@ urlpatterns = [
         enviar_email_relatorio_horas,
         name='enviar_email_relatorio_horas'
     ),
-     path('horas/validar/', views.validar_hora, name='validar_hora'),
+                     path('horas/validar/', views.validar_hora, name='validar_hora'),
+
+
+
+
     
-   
+    
 ]

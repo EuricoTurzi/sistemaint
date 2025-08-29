@@ -183,6 +183,7 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# Configuração de email para envio real
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
@@ -198,8 +199,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 EMAIL_HOST_USER = 'sysggoldensat@gmail.com'
-EMAIL_HOST_PASSWORD = 'yzxs ieko subp xesu'
+EMAIL_HOST_PASSWORD = 'yzxs ieko subp xesu'  # Senha de app do Gmail
+DEFAULT_FROM_EMAIL = 'sysggoldensat@gmail.com'
 
 LOGIN_REDIRECT_URL = 'home'  # Nome da URL para redirecionar após login
 LOGOUT_REDIRECT_URL = 'login'  # Nome da URL para redirecionar após logout
