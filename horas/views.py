@@ -277,13 +277,6 @@ def consulta_horas_pdf(request):
             'agg_total':   agg_total,
         })
 
-    # Carrega logo
-    logo_path = os.path.join(settings.MEDIA_ROOT, 'imagens_registros/SIDNEISIDNEISIDNEI.png')
-    if not os.path.exists(logo_path):
-        raise FileNotFoundError(f"Logo não encontrada em {logo_path}")
-    logo = Image(logo_path, width=70, height=70)
-    logo.hAlign = 'CENTER'
-
     # Monta documento
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4,
@@ -294,7 +287,6 @@ def consulta_horas_pdf(request):
     bold_style = ParagraphStyle('bold', parent=styles['Normal'], fontSize=8, leading=10, fontName='Helvetica-Bold')
 
     story = []
-    story.append(logo)
     story.append(Spacer(1, 12))
 
     title = Paragraph(
@@ -365,14 +357,25 @@ def enviar_email_relatorio_horas(request):
     Em caso de falha, redireciona de volta para a página de consulta.
     """
     try:
+        print("=== INICIANDO ENVIO DE EMAIL ===")
+        
         # Gera o PDF
+        print("1. Gerando PDF...")
         pdf_response = consulta_horas_pdf(request)
         pdf_content = pdf_response.content
+        print(f"   PDF gerado com {len(pdf_content)} bytes")
 
         # Assunto e corpo
         hoje = datetime.datetime.now().strftime("%d/%m/%Y")
         subject = f"Relatório de Horas - {hoje} Departamento de Inteligência"
-        body = "Olá,\n\nSegue em anexo o relatório de horas.\n\nAtenciosamente."
+        body = f"""Olá,
+
+Segue em anexo o relatório de horas do período solicitado.
+
+Data de geração: {hoje}
+
+Atenciosamente,
+Sistema de Gestão de Horas"""
 
         # Destinatários
         recipients = [
@@ -381,7 +384,7 @@ def enviar_email_relatorio_horas(request):
             'sjuniorr6@gmail.com',
         ]
 
-        # Prepara e‑mail
+        print("2. Preparando email...")
         email = EmailMessage(
             subject=subject,
             body=body,
@@ -392,20 +395,32 @@ def enviar_email_relatorio_horas(request):
         # Anexa o PDF
         filename = f'relatorio_horas_{hoje}.pdf'
         email.attach(filename, pdf_content, 'application/pdf')
+        print(f"   PDF anexado: {filename}")
 
         # Envia
+        print("3. Enviando email...")
         email.send(fail_silently=False)
+        print("   ✅ Email enviado com sucesso!")
+        
+        # Adiciona mensagem de sucesso
+        from django.contrib import messages
+        messages.success(request, 'Relatório enviado por email com sucesso!')
 
-        # Se quiser, você pode usar mensagens do Django:
-        # from django.contrib import messages
-        # messages.success(request, 'Email enviado com sucesso!')
+    except Exception as e:
+        # Log do erro para debug
+        print(f"❌ ERRO AO ENVIAR EMAIL: {str(e)}")
+        print(f"   Tipo do erro: {type(e).__name__}")
+        import traceback
+        print(f"   Traceback completo:")
+        traceback.print_exc()
+        
+        # Adiciona mensagem de erro
+        from django.contrib import messages
+        messages.error(request, f'Erro ao enviar email: {str(e)}')
 
-    except Exception:
-        # Em caso de qualquer erro, simplesmente retorna à página de consulta
-        return redirect('consultar_horas')
-
-    # Se tudo deu certo, também retornamos para consulta_horas
+    # Retorna para consulta_horas
     return redirect('consultar_horas')
+
 
 
 
@@ -421,3 +436,9 @@ def validar_hora(request):
     hora.status_choice = 'Aprovado'
     hora.save(update_fields=['status_choice'])
     return JsonResponse({'status':'success'})
+
+
+
+
+
+

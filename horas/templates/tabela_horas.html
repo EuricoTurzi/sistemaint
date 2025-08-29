@@ -95,6 +95,17 @@
   <div class="card card-custom" style="width: 100%;">
     <div class="card-body">
       <h2 class="mb-4 text-center"><i class="bi bi-clock-history me-2"></i>Consulta de Horas por Funcionário</h2>
+      
+      <!-- Mensagens de feedback -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+      
       <!-- Formulário de Filtro -->
       <form method="get" class="mb-4">
         <div class="row g-3 align-items-end">
@@ -118,13 +129,17 @@
               <a href="{% url 'consulta_horas_pdf' %}?data_inicial={{ request.GET.data_inicial }}&data_final={{ request.GET.data_final }}" class="btn btn-secondary btn-action" target="_blank">
                 <i class="bi bi-file-earmark-pdf"></i> Exportar PDF
               </a>
-              <form method="get" action="{% url 'enviar_email_relatorio_horas' %}" class="d-inline">
-                <input type="hidden" name="data_inicial" value="{{ request.GET.data_inicial }}" />
-                <input type="hidden" name="data_final" value="{{ request.GET.data_final }}" />
-                <button type="submit" class="btn btn-success btn-action">
-                  <i class="bi bi-envelope"></i> Enviar por E‑mail
-                </button>
-              </form>
+                                                              <form method="get" action="{% url 'enviar_email_relatorio_horas' %}" class="d-inline">
+                   <input type="hidden" name="data_inicial" value="{{ request.GET.data_inicial }}" />
+                   <input type="hidden" name="data_final" value="{{ request.GET.data_final }}" />
+                   <button type="submit" class="btn btn-success btn-action">
+                     <i class="bi bi-envelope"></i> Enviar por E‑mail
+                   </button>
+                 </form>
+
+
+                
+               
             </div>
           </div>
         </div>
