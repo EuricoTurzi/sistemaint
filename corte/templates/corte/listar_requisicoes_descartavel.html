@@ -1,0 +1,790 @@
+{% extends 'base.html' %}
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<style>
+    body {
+        background-color: #45494E;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0;
+    }
+    .container-fluid {
+        padding: 0;
+    }
+    .row {
+        margin: 0;
+    }
+    .table-responsive {
+        padding: 0 15px;
+        margin-left: 0;
+        width: 100%;
+    }
+    .form-control {
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .thead-dark {
+        background-color: #344038;
+        color: white;
+    }
+    .texto {
+        text-align: center;
+        color: white;
+    }
+    .table {
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        vertical-align: middle;
+    }
+    .table td {
+        vertical-align: middle;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+    .btn-secondary:hover {
+        background-color: #545b62;
+        border-color: #545b62;
+    }
+    .badge-success {
+        background-color: #28a745;
+    }
+    .badge-warning {
+        background-color: #ffc107;
+        color: #212529;
+    }
+    .badge-danger {
+        background-color: #dc3545;
+    }
+    .badge-secondary {
+        background-color: #6c757d;
+    }
+    .filter-card {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .stats-card {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .pagination {
+        justify-content: center;
+    }
+    .page-link {
+        color: #007bff;
+        background-color: white;
+        border: 1px solid #dee2e6;
+    }
+    .page-link:hover {
+        color: #0056b3;
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+    .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .modal-xl {
+        max-width: 1140px;
+    }
+    .modal-header {
+        border-bottom: 2px solid #dee2e6;
+    }
+    .modal-footer {
+        border-top: 2px solid #dee2e6;
+    }
+    .card-header {
+        font-weight: 600;
+    }
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border-radius: 0.2rem;
+    }
+    .alert pre {
+        background-color: rgba(0,0,0,0.1);
+        border-radius: 4px;
+        padding: 8px;
+        margin: 0;
+        font-size: 0.9rem;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    .table-borderless td {
+        padding: 0.5rem 0.75rem;
+        border: none;
+    }
+    .table-borderless td:first-child {
+        font-weight: 600;
+        color: #495057;
+        width: 40%;
+    }
+</style>
+
+<br><br><br>
+
+<div class="container mt-5">
+    <div class="texto">
+        <h2><i class="fas fa-recycle"></i> Requisições com Contrato Descartável</h2>
+        <p class="lead">Visualize e gerencie todas as requisições com contrato descartável</p>
+    </div>
+
+    <!-- Card de Estatísticas -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="stats-card">
+                <h4 class="text-white">
+                    <i class="fas fa-chart-bar"></i> 
+                    Total de Requisições: <span class="badge badge-primary">{{ total_requisicoes }}</span>
+                </h4>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stats-card">
+                <h4 class="text-white">
+                    <i class="fas fa-cut"></i> 
+                    Equipamentos Apto ao Corte: <span class="badge badge-danger">{{ total_equipamentos_aptos }}</span>
+                    {% if total_equipamentos_aptos > 0 %}
+                        <button type="button" class="btn btn-warning btn-sm ml-2" onclick="mostrarDetalhesEquipamentosAptos()">
+                            <i class="fas fa-info-circle"></i> Ver Detalhes
+                        </button>
+                    {% endif %}
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="filter-card">
+                <h5 class="text-white mb-3">
+                    <i class="fas fa-filter"></i> Filtros de Busca
+                </h5>
+                <form method="GET" action="">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <input type="text" name="id_equipamento" class="form-control" 
+                                   placeholder="ID do Equipamento" 
+                                   value="{{ id_equipamento_filter }}">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="iccid" class="form-control" 
+                                   placeholder="ICCID" 
+                                   value="{{ iccid_filter }}">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="cliente" class="form-control" 
+                                   placeholder="Nome do Cliente" 
+                                   value="{{ cliente_filter }}">
+                        </div>
+                        <div class="col-md-3">
+                            <select name="status" class="form-control">
+                                <option value="">Todos os Status</option>
+                                <option value="Pendente" {% if status_filter == 'Pendente' %}selected{% endif %}>Pendente</option>
+                                <option value="Configurado" {% if status_filter == 'Configurado' %}selected{% endif %}>Configurado</option>
+                                <option value="Aprovado pelo CEO" {% if status_filter == 'Aprovado pelo CEO' %}selected{% endif %}>Aprovado pelo CEO</option>
+                                <option value="Enviado para o cliente" {% if status_filter == 'Enviado para o cliente' %}selected{% endif %}>Enviado para o cliente</option>
+                                <option value="Reprovado pelo CEO" {% if status_filter == 'Reprovado pelo CEO' %}selected{% endif %}>Reprovado pelo CEO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Filtrar
+                            </button>
+                            <a href="{% url 'corte:requisicoes_descartavel_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Limpar Filtros
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela de Requisições -->
+    {% if requisicoes %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Nº</th>
+                        <th>ID Requisição</th>
+                        <th>Cliente</th>
+                        <th>ID Equipamentos</th>
+                        <th>ICCID</th>
+                        <th>Status</th>
+                        <th>Data Alteração</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for requisicao in requisicoes %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <strong>{{ requisicao.id }}</strong>
+                        </td>
+                        <td>
+                            {% if requisicao.nome %}
+                                <span class="text-primary">{{ requisicao.nome.nome }}</span>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if requisicao.id_equipamentos %}
+                                <span title="{{ requisicao.id_equipamentos }}">
+                                    {{ requisicao.id_equipamentos|truncatechars:30 }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if requisicao.iccid %}
+                                <span title="{{ requisicao.iccid }}">
+                                    {{ requisicao.iccid|truncatechars:30 }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge badge-{% if requisicao.status == 'Aprovado pelo CEO' %}success{% elif requisicao.status == 'Pendente' %}warning{% elif requisicao.status == 'Reprovado pelo CEO' %}danger{% else %}secondary{% endif %}">
+                                {{ requisicao.status|default:"N/A" }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if requisicao.data %}
+                                <small>{{ requisicao.data|date:"d/m/Y H:i" }}</small>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#requisicaoModal{{ requisicao.id }}">
+                                <i class="fas fa-info-circle"></i> Ver Detalhes
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginação -->
+        {% if is_paginated %}
+            <nav aria-label="Paginação das requisições">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if id_equipamento_filter %}&id_equipamento={{ id_equipamento_filter }}{% endif %}{% if iccid_filter %}&iccid={{ iccid_filter }}{% endif %}{% if cliente_filter %}&cliente={{ cliente_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                                <i class="fas fa-angle-double-left"></i> Primeira
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if id_equipamento_filter %}&id_equipamento={{ id_equipamento_filter }}{% endif %}{% if iccid_filter %}&iccid={{ iccid_filter }}{% endif %}{% if cliente_filter %}&cliente={{ cliente_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                                <i class="fas fa-angle-left"></i> Anterior
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if id_equipamento_filter %}&id_equipamento={{ id_equipamento_filter }}{% endif %}{% if iccid_filter %}&iccid={{ iccid_filter }}{% endif %}{% if cliente_filter %}&cliente={{ cliente_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                                Próxima <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if id_equipamento_filter %}&id_equipamento={{ id_equipamento_filter }}{% endif %}{% if iccid_filter %}&iccid={{ iccid_filter }}{% endif %}{% if cliente_filter %}&cliente={{ cliente_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                                Última <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+
+        <!-- Contador de resultados -->
+        <div class="text-center mt-3">
+            <p class="text-white">
+                Mostrando {{ page_obj.start_index|default:1 }} a {{ page_obj.end_index|default:requisicoes|length }} 
+                de {{ total_requisicoes }} requisições
+            </p>
+        </div>
+
+    {% else %}
+        <!-- Mensagem quando não há resultados -->
+        <div class="alert alert-info text-center mt-4">
+            <i class="fas fa-info-circle fa-2x mb-3"></i>
+            <h5>Nenhuma requisição encontrada</h5>
+            <p class="mb-0">
+                {% if id_equipamento_filter or iccid_filter or cliente_filter or status_filter %}
+                    Não foram encontradas requisições com os filtros aplicados.
+                    <br>
+                    <small class="text-muted">
+                        {% if id_equipamento_filter %}ID: <strong>{{ id_equipamento_filter }}</strong>{% endif %}
+                        {% if iccid_filter %}{% if id_equipamento_filter %} | {% endif %}ICCID: <strong>{{ iccid_filter }}</strong>{% endif %}
+                        {% if cliente_filter %}{% if id_equipamento_filter or iccid_filter %} | {% endif %}Cliente: <strong>{{ cliente_filter }}</strong>{% endif %}
+                        {% if status_filter %}{% if id_equipamento_filter or iccid_filter or cliente_filter %} | {% endif %}Status: <strong>{{ status_filter }}</strong>{% endif %}
+                    </small>
+                {% else %}
+                    Não existem requisições com contrato "Descartável" no sistema.
+                {% endif %}
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+{% for requisicao in requisicoes %}
+    <div class="modal fade" id="requisicaoModal{{ requisicao.id }}" tabindex="-1" role="dialog" aria-labelledby="requisicaoModalLabel{{ requisicao.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="requisicaoModalLabel{{ requisicao.id }}">
+                        <i class="fas fa-info-circle"></i> Detalhes da Requisição #{{ requisicao.id }}
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Informação sobre origem dos dados -->
+                    {% if todos_equipamentos_api %}
+                        <div class="alert alert-info mb-3">
+                            <i class="fas fa-info-circle"></i> 
+                            <strong>Origem dos dados:</strong> 
+                            {% if cache_data %}
+                                <span class="badge badge-warning">CACHE</span> - Dados carregados do cache local
+                            {% else %}
+                                <span class="badge badge-success">API</span> - Dados atualizados da API da STC
+                            {% endif %}
+                            <br><small class="text-muted">Última atualização: {{ data_atual|date:"d/m/Y H:i:s" }}</small>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0"><i class="fas fa-info"></i> Informações Gerais</h6>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>ID da Requisição:</strong></td>
+                                            <td><span class="badge badge-secondary">{{ requisicao.id }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Cliente:</strong></td>
+                                            <td>{% if requisicao.nome %}{{ requisicao.nome.nome }}{% else %}<span class="text-muted">N/A</span>{% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Status:</strong></td>
+                                            <td><span class="badge badge-{% if requisicao.status == 'Aprovado pelo CEO' %}success{% elif requisicao.status == 'Pendente' %}warning{% elif requisicao.status == 'Reprovado pelo CEO' %}danger{% else %}secondary{% endif %}">{{ requisicao.status|default:"N/A" }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Data da Requisição:</strong></td>
+                                            <td>{% if requisicao.data %}{{ requisicao.data|date:"d/m/Y H:i" }}{% else %}<span class="text-muted">N/A</span>{% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Valor Total:</strong></td>
+                                            <td>{% if requisicao.valor_total %}<span class="text-success font-weight-bold">R$ {{ requisicao.valor_total }}</span>{% else %}<span class="text-muted">N/A</span>{% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Comercial:</strong></td>
+                                            <td>{% if requisicao.comercial %}{{ requisicao.comercial }}{% else %}<span class="text-muted">N/A</span>{% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Contrato:</strong></td>
+                                            <td><span class="badge badge-info">{{ requisicao.contrato|default:"N/A" }}</span></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-success text-white">
+                                    <h6 class="mb-0"><i class="fas fa-box"></i> Equipamentos</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <strong>IDs dos Equipamentos:</strong>
+                                        {% if requisicao.id_equipamentos %}
+                                            <div class="alert alert-info">
+                                                <pre class="mb-0">{{ requisicao.id_equipamentos }}</pre>
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <strong>ICCIDs:</strong>
+                                        {% if requisicao.iccid %}
+                                            <div class="alert alert-warning">
+                                                <pre class="mb-0">{{ requisicao.iccid }}</pre>
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Nova seção para informações de posição de TODOS os equipamentos -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-warning text-dark">
+                                    <h6 class="mb-0"><i class="fas fa-map-marker-alt"></i> Última Posição de Todos os Equipamentos</h6>
+                                </div>
+                                <div class="card-body">
+                                    {% if requisicao.id_equipamentos %}
+                                        {% with todos_equipamentos=todos_equipamentos_api %}
+                                            {% for device_id, equipamento in todos_equipamentos.items %}
+                                                {% if requisicao.id_equipamentos and device_id|stringformat:"s" in requisicao.id_equipamentos %}
+                                                    {% comment %} Calcula apto ao corte baseado na data da requisição {% endcomment %}
+                                                    {% if requisicao.data %}
+                                                        {% with data_requisicao=requisicao.data %}
+                                                            {% if data_requisicao %}
+                                                                {% with data_limite=data_requisicao|add:"30 days" %}
+                                                                    {% with dias_atraso=data_limite|timeuntil:data_atual %}
+                                                                        {% with dias_atraso_num=dias_atraso|slice:":-5"|add:"0" %}
+                                                                            <div class="alert alert-{% if dias_atraso_num > 0 %}danger{% else %}info{% endif %} mb-3">
+                                                                                <h6 class="alert-heading">
+                                                                                    <i class="fas fa-satellite"></i> Equipamento: {{ device_id }}
+                                                                                    {% if dias_atraso_num > 0 %}
+                                                                                        <span class="badge badge-danger float-right">APTO AO CORTE</span>
+                                                                                    {% else %}
+                                                                                        <span class="badge badge-success float-right">ATIVO</span>
+                                                                                    {% endif %}
+                                                                                </h6>
+                                                                                <div class="row">
+                                                                                    <div class="col-md-6">
+                                                                                        <strong>Vehicle ID:</strong> {{ equipamento.vehicleId|default:"N/A" }}<br>
+                                                                                        <strong>Placa:</strong> {{ equipamento.plate|default:"N/A" }}<br>
+                                                                                        <strong>Device ID:</strong> {{ equipamento.deviceId }}<br>
+                                                                                        <strong>Modelo:</strong> {{ equipamento.deviceModel|default:"N/A" }}<br>
+                                                                                        <strong>Position ID:</strong> {{ equipamento.positionId }}<br>
+                                                                                        <strong>Data da Última Posição:</strong> {{ equipamento.data_ultima_posicao }}<br>
+                                                                                        <strong>Status:</strong> 
+                                                                                        <span class="badge badge-{% if equipamento.status_equipamento == 'ON' %}success{% elif equipamento.status_equipamento == 'OFF' %}danger{% else %}secondary{% endif %}">
+                                                                                            {{ equipamento.status_equipamento }}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <div class="col-md-6">
+                                                                                        <strong>Última Posição:</strong><br>
+                                                                                        {% if equipamento.latitude != 'N/A' and equipamento.longitude != 'N/A' %}
+                                                                                            <span class="text-primary">
+                                                                                                <i class="fas fa-map-pin"></i> 
+                                                                                                Lat: {{ equipamento.latitude }}, Long: {{ equipamento.longitude }}
+                                                                                            </span><br>
+                                                                                            {% if equipamento.endereco != 'N/A' %}
+                                                                                                <small class="text-muted">{{ equipamento.endereco }}</small><br>
+                                                                                            {% endif %}
+                                                                                            {% if equipamento.velocidade != 'N/A' %}
+                                                                                                <small><i class="fas fa-tachometer-alt"></i> Velocidade: {{ equipamento.velocidade }} km/h</small><br>
+                                                                                            {% endif %}
+                                                                                            {% if equipamento.direcao != 'N/A' %}
+                                                                                                <small><i class="fas fa-compass"></i> Direção: {{ equipamento.direcao }}°</small><br>
+                                                                                            {% endif %}
+                                                                                        {% else %}
+                                                                                            <span class="text-muted">Posição não disponível</span>
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr>
+                                                                                <div class="row">
+                                                                                    <div class="col-md-6">
+                                                                                        <strong>Data da Requisição:</strong> {{ requisicao.data|date:"d/m/Y" }}<br>
+                                                                                        <strong>Data Limite (30 dias):</strong> {{ data_limite|date:"d/m/Y" }}<br>
+                                                                                        <strong>Dias de Atraso:</strong> 
+                                                                                        {% if dias_atraso_num > 0 %}
+                                                                                            <span class="badge badge-danger">{{ dias_atraso_num }} dias</span>
+                                                                                        {% else %}
+                                                                                            <span class="badge badge-success">ATIVO</span>
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                    <div class="col-md-6">
+                                                                                        <strong>Status do Corte:</strong>
+                                                                                        {% if dias_atraso_num > 0 %}
+                                                                                            <span class="badge badge-danger">APTO AO CORTE</span>
+                                                                                        {% else %}
+                                                                                            <span class="badge badge-success">ATIVO</span>
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endwith %}
+                                                                    {% endwith %}
+                                                                {% endwith %}
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                    {% else %}
+                                                        <div class="alert alert-warning mb-3">
+                                                            <h6 class="alert-heading">
+                                                                <i class="fas fa-exclamation-triangle"></i> Equipamento: {{ device_id }}
+                                                            </h6>
+                                                            <p class="mb-0">Data da requisição não disponível para cálculo de corte.</p>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endwith %}
+                                        
+                                        <!-- Se não houver equipamentos da API, mostra mensagem -->
+                                        {% if not todos_equipamentos_api %}
+                                            <div class="alert alert-secondary">
+                                                <i class="fas fa-info-circle"></i> Nenhum equipamento encontrado na API da STC para esta requisição.
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="alert alert-secondary">
+                                            <i class="fas fa-info-circle"></i> Nenhum equipamento registrado para esta requisição.
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Seção para informações de posição dos equipamentos aptos ao corte -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-danger text-white">
+                                    <h6 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Equipamentos Apto ao Corte</h6>
+                                </div>
+                                <div class="card-body">
+                                    {% if requisicao.id_equipamentos %}
+                                        {% with todos_equipamentos=todos_equipamentos_api %}
+                                            {% for device_id, equipamento in todos_equipamentos.items %}
+                                                {% if requisicao.id_equipamentos and device_id|stringformat:"s" in requisicao.id_equipamentos and equipamento.apto_ao_corte %}
+                                                    <div class="alert alert-danger mb-3">
+                                                        <h6 class="alert-heading">
+                                                            <i class="fas fa-cut"></i> EQUIPAMENTO APTO AO CORTE: {{ device_id }}
+                                                            <span class="badge badge-danger float-right">{{ equipamento.diferenca_dias }} dias</span>
+                                                        </h6>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <strong>Vehicle ID:</strong> {{ equipamento.vehicleId|default:"N/A" }}<br>
+                                                                <strong>Placa:</strong> {{ equipamento.plate|default:"N/A" }}<br>
+                                                                <strong>Device ID:</strong> {{ equipamento.deviceId }}<br>
+                                                                <strong>Modelo:</strong> {{ equipamento.deviceModel|default:"N/A" }}<br>
+                                                                <strong>Position ID:</strong> {{ equipamento.positionId }}<br>
+                                                                <strong>Status:</strong> 
+                                                                <span class="badge badge-{% if equipamento.status_equipamento == 'ON' %}success{% elif equipamento.status_equipamento == 'OFF' %}danger{% else %}secondary{% endif %}">
+                                                                    {{ equipamento.status_equipamento }}
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <strong>Última Posição:</strong><br>
+                                                                {% if equipamento.latitude != 'N/A' and equipamento.longitude != 'N/A' %}
+                                                                    <span class="text-primary">
+                                                                        <i class="fas fa-map-pin"></i> 
+                                                                        Lat: {{ equipamento.latitude }}, Long: {{ equipamento.longitude }}
+                                                                    </span><br>
+                                                                    {% if equipamento.endereco != 'N/A' %}
+                                                                        <small class="text-muted">{{ equipamento.endereco }}</small><br>
+                                                                    {% endif %}
+                                                                    {% if equipamento.velocidade != 'N/A' %}
+                                                                        <small><i class="fas fa-tachometer-alt"></i> Velocidade: {{ equipamento.velocidade }} km/h</small><br>
+                                                                    {% endif %}
+                                                                    {% if equipamento.direcao != 'N/A' %}
+                                                                        <small><i class="fas fa-compass"></i> Direção: {{ equipamento.direcao }}°</small><br>
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <span class="text-muted">Posição não disponível</span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <strong>Primeira Posição:</strong><br>
+                                                                <small class="text-muted">
+                                                                    <i class="fas fa-calendar-plus"></i> 
+                                                                    {{ equipamento.data_primeira_posicao|default:"N/A" }}
+                                                                </small><br>
+                                                                {% if equipamento.primeira_posicao.latitude != 'N/A' and equipamento.primeira_posicao.longitude != 'N/A' %}
+                                                                    <small class="text-info">
+                                                                        <i class="fas fa-map-marker"></i> 
+                                                                        Lat: {{ equipamento.primeira_posicao.latitude }}, Long: {{ equipamento.primeira_posicao.longitude }}
+                                                                    </small>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <strong>Última Posição:</strong><br>
+                                                                <small class="text-muted">
+                                                                    <i class="fas fa-calendar-check"></i> 
+                                                                    {{ equipamento.data_ultima_posicao_detalhada|default:"N/A" }}
+                                                                </small><br>
+                                                                {% if equipamento.ultima_posicao_detalhada.latitude != 'N/A' and equipamento.ultima_posicao_detalhada.longitude != 'N/A' %}
+                                                                    <small class="text-info">
+                                                                        <i class="fas fa-map-marker"></i> 
+                                                                        Lat: {{ equipamento.ultima_posicao_detalhada.latitude }}, Long: {{ equipamento.ultima_posicao_detalhada.longitude }}
+                                                                    </small>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="row">
+                                                            <div class="col-12 text-center">
+                                                                <strong>Diferença entre posições:</strong><br>
+                                                                <span class="badge badge-danger badge-lg">
+                                                                    <i class="fas fa-exclamation-triangle"></i> 
+                                                                    {{ equipamento.diferenca_dias }} dias > 30 dias = APTO AO CORTE
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endwith %}
+                                        
+                                        <!-- Se não houver equipamentos aptos ao corte, mostra mensagem -->
+                                        {% if not equipamentos_aptos_corte %}
+                                            <div class="alert alert-success">
+                                                <i class="fas fa-check-circle"></i> Nenhum equipamento apto ao corte encontrado para esta requisição.
+                                                <br><small class="text-muted">
+                                                    {% if todos_equipamentos_api %}
+                                                        Todos os equipamentos têm diferença ≤ 30 dias entre primeira e última posição.
+                                                        <br><i class="fas fa-database"></i> Dados carregados {% if cache_data %}do cache{% else %}da API{% endif %}.
+                                                    {% else %}
+                                                        Nenhum equipamento encontrado na API ou cache.
+                                                    {% endif %}
+                                                </small>
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="alert alert-secondary">
+                                            <i class="fas fa-info-circle"></i> Nenhum equipamento registrado para esta requisição.
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times"></i> Fechar
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="window.print()">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<script>
+// Adiciona tooltips para campos truncados
+$(document).ready(function() {
+    $('[title]').tooltip();
+});
+
+// Scripts para os modais Bootstrap
+$(document).ready(function() {
+    // Inicializa todos os modais
+    $('.modal').modal({
+        show: false
+    });
+    
+    // Adiciona funcionalidade de fechar modal com ESC
+    $(document).keyup(function(e) {
+        if (e.keyCode === 27) { // ESC key
+            $('.modal').modal('hide');
+        }
+    });
+});
+
+// Função para mostrar detalhes dos equipamentos aptos ao corte
+function mostrarDetalhesEquipamentosAptos() {
+    var equipamentosAptosCorte = JSON.parse('{{ equipamentos_aptos_corte|escapejs }}');
+    
+    if (!equipamentosAptosCorte || Object.keys(equipamentosAptosCorte).length === 0) {
+        alert('Nenhum equipamento apto ao corte encontrado.');
+        return;
+    }
+    
+    var detalhes = 'Equipamentos Apto ao Corte:\n\n';
+    
+    for (var deviceId in equipamentosAptosCorte) {
+        var eq = equipamentosAptosCorte[deviceId];
+        detalhes += 'Device ID: ' + eq.deviceId + '\n';
+        detalhes += 'Position ID: ' + eq.positionId + '\n';
+        detalhes += 'Data Original: ' + eq.date + '\n';
+        detalhes += 'Data Limite (30 dias): ' + eq.data_limite + '\n';
+        detalhes += 'Dias de Atraso: ' + eq.dias_atraso + '\n';
+        
+        // Informações de posição
+        if (eq.latitude && eq.latitude !== 'N/A') {
+            detalhes += 'Última Posição: Lat ' + eq.latitude + ', Long ' + eq.longitude + '\n';
+        }
+        if (eq.endereco && eq.endereco !== 'N/A') {
+            detalhes += 'Endereço: ' + eq.endereco + '\n';
+        }
+        if (eq.velocidade && eq.velocidade !== 'N/A') {
+            detalhes += 'Velocidade: ' + eq.velocidade + '\n';
+        }
+        if (eq.direcao && eq.direcao !== 'N/A') {
+            detalhes += 'Direção: ' + eq.direcao + '\n';
+        }
+        if (eq.status_equipamento && eq.status_equipamento !== 'N/A') {
+            detalhes += 'Status: ' + eq.status_equipamento + '\n';
+        }
+        
+        detalhes += '─'.repeat(30) + '\n\n';
+    }
+    
+    alert(detalhes);
+}
+</script>
+
+{% endblock %}

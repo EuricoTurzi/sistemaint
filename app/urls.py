@@ -40,6 +40,7 @@ urlpatterns = [
     path('goldenx/', include('goldenx.urls')),     
     path('documentacoes/', include('documentacoes.urls')),   
     path('nestle/', include('Nestle.urls')),
+    path('corte/', include('corte.urls')),
    
      
      

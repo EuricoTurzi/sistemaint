@@ -380,6 +380,11 @@
                         Consulta de Iscas
                     </a>
                 </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'corte:requisicoes_descartavel_list' %}">
+                        Corte
+                    </a>
+                </li>
             {% endif %}
 
             {% if perms.qualit.delete_qualit %}
