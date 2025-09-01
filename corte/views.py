@@ -206,12 +206,23 @@ class RequisicoesDescartavelListView(LoginRequiredMixin, ListView):
                     # Calcula diferença em dias (se houver mais de uma posição)
                     if len(posicoes) > 1:
                         diferenca_dias = (ultima_posicao['data_posicao_dt'] - primeira_posicao['data_posicao_dt']).days
-                        apto_ao_corte = diferenca_dias > 30
-                        print(f"  Diferença: {diferenca_dias} dias, Apto ao corte: {apto_ao_corte}")
+                        print(f"  Diferença entre posições: {diferenca_dias} dias")
                     else:
                         diferenca_dias = 0
-                        apto_ao_corte = False
-                        print(f"  Apenas uma posição - não pode calcular diferença")
+                        print(f"  Apenas uma posição - não pode calcular diferença entre posições")
+                    
+                    # Determina se está apto ao corte baseado em duas regras:
+                    apto_ao_corte = False
+                    motivo_apto_corte = ""
+                    
+                    # Regra 1: Diferença entre primeira e última posição > 30 dias
+                    if len(posicoes) > 1 and diferenca_dias > 30:
+                        apto_ao_corte = True
+                        motivo_apto_corte = f"Diferença entre posições: {diferenca_dias} dias > 30 dias"
+                        print(f"  APTO AO CORTE - Regra 1: {motivo_apto_corte}")
+                    
+                    # Regra 2: Data da posição mais recente > 6 meses da data da requisição
+                    # (Esta verificação será feita no template para cada requisição específica)
                     
                     # Prepara dados do equipamento
                     equipamento_info = {
@@ -241,6 +252,7 @@ class RequisicoesDescartavelListView(LoginRequiredMixin, ListView):
                         'data_ultima_posicao_detalhada': ultima_posicao.get('date'),
                         'diferenca_dias': diferenca_dias,
                         'apto_ao_corte': apto_ao_corte,
+                        'motivo_apto_corte': motivo_apto_corte,
                         'total_posicoes': len(posicoes)
                     }
                     

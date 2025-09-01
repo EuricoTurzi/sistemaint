@@ -380,11 +380,7 @@
                         Consulta de Iscas
                     </a>
                 </li>
-                <li>
-                    <a class="dropdown-item" href="{% url 'corte:requisicoes_descartavel_list' %}">
-                        Corte
-                    </a>
-                </li>
+             
             {% endif %}
 
             {% if perms.qualit.delete_qualit %}
@@ -494,8 +490,14 @@
                      </ul>
                        
                 </li>
-
-
+                <li class="nav-item">
+                    {% if perms.saidas.delete_saidas %}
+                        <a class="nav-link" href="{% url 'corte:requisicoes_descartavel_list' %}">
+                            <i class="bi bi-postage"></i> Corte
+                        </a>
+                        {% endif %}
+                </li>
+                
                  
                   <li class="nav-item">
     <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
