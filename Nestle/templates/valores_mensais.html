@@ -13,7 +13,7 @@
     .card {
         max-width: 100%;
         width: 100%;
-        margin: 1rem auto; /* centraliza horizontalmente */
+        margin: 1.5rem auto; /* Aumentado de 1rem para 1.5rem */
         border: none;
         border-radius: 0.75rem;
         overflow: visible;
@@ -27,22 +27,24 @@
         background: linear-gradient(90deg, #0056b3 0%, #009BDE 100%);
         border: none;
         color: #FFFFFF;
-        padding: 1rem 1.5rem;
+        padding: 1.5rem 2rem; /* Aumentado de 1rem 1.5rem para 1.5rem 2rem */
         width: 100%;
     }
 
     .card-header h4 {
         margin: 0;
-        font-weight: 500;
-        font-size: 1.25rem;
+        font-weight: 600;
+        font-size: 1.5rem;
     }
 
     .card-header .form-select {
         background: rgba(255, 255, 255, 0.15);
         border: 1px solid rgba(255, 255, 255, 0.6);
         color: #FFFFFF;
-        min-width: 4.5rem;
+        min-width: 5rem;
         text-align: center;
+        font-size: 1.1rem;
+        padding: 0.5rem 0.75rem;
     }
     .card-header .form-select:focus {
         box-shadow: none;
@@ -59,20 +61,21 @@
 
     /* ───── TABELA ─────────────────────────────────────────────────────────── */
     .table-responsive {
-        margin-top: 1rem;
+        margin-top: 1.5rem; /* Aumentado de 1rem para 1.5rem */
         display: flex;
         justify-content: center;
         width: 100%;
-        padding: 0 1rem;
+        padding: 0 2rem; /* Aumentado de 0 1rem para 0 2rem */
         overflow: visible;
     }
     table.table {
         border-collapse: separate; 
-        border-spacing: 0.25rem;
+        border-spacing: 0.5rem;
         width: 100%;
         max-width: 100%;
         margin: 0 auto;
         table-layout: fixed;
+        font-size: 1.1rem;
     }
 
     table.table thead {
@@ -82,22 +85,25 @@
     table.table thead th {
         background-color: #FFFFFF;
         color: #6C757D;
-        font-weight: 500;
+        font-weight: 600;
         text-transform: uppercase;
-        font-size: 0.70rem;
+        font-size: 0.9rem;
         border: none;
         text-align: center;
-        padding: 0.5rem 0.25rem;
+        padding: 0.75rem 0.5rem;
         white-space: normal;
         width: auto;
+        min-width: 150px;
         word-break: break-word;
-        line-height: 1.1;
+        line-height: 1.2;
     }
 
     table.table thead th:first-child {
         color: #343A40;
         text-align: left;
-        padding-left: 1rem;
+        padding-left: 1.5rem;
+        min-width: 200px;
+        font-size: 1rem;
     }
 
     table.table thead th.active-month {
@@ -114,17 +120,18 @@
         border-radius: 0.25rem;
         text-align: center;
         vertical-align: middle;
-        padding: 0.5rem 0.25rem;
+        padding: 0.75rem 0.5rem;
         cursor: pointer;
         transition: background-color 0.2s;
         width: auto;
+        min-width: 150px;
         word-break: break-word;
         white-space: normal;
-        line-height: 1.1;
+        line-height: 1.2;
         overflow: visible;
         height: auto;
-        min-height: 40px;
-        font-size: 0.85rem;
+        min-height: 60px;
+        font-size: 1rem;
     }
     table.table tbody td:hover {
         background-color: #E9ECEF;
@@ -154,19 +161,22 @@
     table.table tfoot tr.total-row td {
         background-color: #FFFFFF;
         color: #343A40;
-        font-weight: 600;
+        font-weight: 700;
         border: none;
         text-align: center;
-        padding: 0.5rem 0.25rem;
+        padding: 0.75rem 0.5rem;
         white-space: normal;
         width: auto;
+        min-width: 150px;
         word-break: break-word;
-        line-height: 1.1;
-        font-size: 0.85rem;
+        line-height: 1.2;
+        font-size: 1rem;
     }
     table.table tfoot tr.total-row td:first-child {
         text-align: left;
-        padding-left: 1rem;
+        padding-left: 1.5rem;
+        min-width: 200px;
+        font-size: 1.1rem;
     }
 
     /* ─── CARD BODY ─────────────────────────────────────────── */
