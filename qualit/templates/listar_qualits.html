@@ -18,8 +18,8 @@
     }
     .table-responsive {
         padding: 0 15px;
-        margin-left: -55vh;
-        width: 160rem;
+        margin-left: 0;
+        width: 100%;
     }
     .form-control {
         width: 100%;
@@ -43,28 +43,50 @@
         text-align: center; /* Centraliza o texto */
         color: white; /* Define a cor do texto como branco */
     }
+    .table {
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .table th {
+        border-top: none;
+        font-weight: 600;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
 </style>
 <br>
 <br>
 <br>
 <div class="container mt-5">
     <div class="texto">
-        <h2>Consulta de ID</h2>
+        <h2>Consulta de Requisições</h2>
     </div>
 
     <form method="GET" action="">
         <div class="row mb-3">
             <div class="col">
-                <input type="text" name="ID" class="form-control" placeholder="ID" value="{{ request.GET.ID }}">
+                <input type="text" name="ID" class="form-control" placeholder="ID do Equipamento" value="{{ request.GET.ID }}">
             </div>
             <div class="col">
-                <input type="text" name="ICCID_NOVO" class="form-control" placeholder="ICCID Novo" value="{{ request.GET.ICCID_NOVO }}">
+                <input type="text" name="ICCID_NOVO" class="form-control" placeholder="ICCID" value="{{ request.GET.ICCID_NOVO }}">
             </div>
             <div class="col">
-                <input type="text" name="CLIENTE" class="form-control" placeholder="Cliente" value="{{ request.GET.CLIENTE }}">
+                <input type="text" name="CLIENTE" class="form-control" placeholder="Nome do Cliente" value="{{ request.GET.CLIENTE }}">
             </div>
             <div class="col">
-                <button class="btn btn btn-primary" type="submit">Filtrar</button>
+                <button class="btn btn-primary" type="submit">Filtrar</button>
+                <a href="{% url 'listar_qualits' %}" class="btn btn-secondary">Limpar</a>
             </div>
         </div>
     </form>
@@ -76,34 +98,61 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>Nº</th>
-                        <th>Data</th>
-                        <th>ID</th>
-                        
-                        <th>ICCID Novo</th>
-                        <th>Contrato</th>
-                        <th>Operadora</th>
+                        <th>ID Requisição</th>
                         <th>Cliente</th>
+                        <th>ID Equipamentos</th>
+                        <th>ICCID</th>
+                        <th>Contrato</th>
+                        <th>Comercial</th>
+                        <th>Status</th>
+                        <th>Data Alteração</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for qualit in qualits %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ qualit.Data }}</td>
-                        <td>{{ qualit.ID }}</td>
-                        
-                        <td>{{ qualit.ICCID_NOVO }}</td>
-                        <td>{{ qualit.CONTRATO }}</td>
-                        <td>{{ qualit.OPERADORA }}</td>
-                        <td>{{ qualit.CLIENTE }}</td>
+                        <td>{{ qualit.id }}</td>
+                        <td>{{ qualit.nome.nome|default:"N/A" }}</td>
+                        <td>
+                            {% if qualit.id_equipamentos %}
+                                {{ qualit.id_equipamentos|truncatechars:50 }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if qualit.iccid %}
+                                {{ qualit.iccid|truncatechars:50 }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>{{ qualit.contrato|default:"N/A" }}</td>
+                        <td>{{ qualit.comercial|default:"N/A" }}</td>
+                        <td>
+                            <span class="badge badge-{% if qualit.status == 'Aprovado pelo CEO' %}success{% elif qualit.status == 'Pendente' %}warning{% elif qualit.status == 'Reprovado' %}danger{% else %}secondary{% endif %}">
+                                {{ qualit.status|default:"N/A" }}
+                            </span>
+                        </td>
+                        <td>{{ qualit.data_alteracao|date:"d/m/Y H:i"|default:"N/A" }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        <div class="text-center mt-3">
+            <p class="text-white">Total de registros encontrados: {{ qualits.count }}</p>
+        </div>
         {% else %}
-        <p class="text-white">Nenhum resultado encontrado.</p>
+        <div class="alert alert-info text-center mt-3">
+            <p class="text-white">Nenhum resultado encontrado para os filtros aplicados.</p>
+        </div>
         {% endif %}
+    {% else %}
+        <div class="alert alert-info text-center mt-3">
+            <p class="text-white">Use os filtros acima para buscar requisições.</p>
+        </div>
     {% endif %}
 </div>
 {% endblock %}

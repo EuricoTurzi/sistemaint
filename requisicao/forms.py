@@ -10,7 +10,7 @@ class RequisicaoForm(forms.ModelForm):
             'vigencia', 'motivo', 'antenista', 'envio', 'comercial', 'tipo_produto', 
             'aos_cuidados', 'carregador', 'cabo', 'tipo_fatura', 'valor_unitario', 
             'valor_total', 'forma_pagamento', 'tipo_customizacao', 'numero_de_equipamentos', 
-            'observacoes', 'status', 'TP', 'taxa_envio', 'status_faturamento','id_equipamentos',
+            'observacoes', 'status', 'TP', 'taxa_envio', 'status_faturamento','id_equipamentos', 'iccid',
         ]
         widgets = {
             'nome': forms.Select(attrs={'class': 'form-control'}),
@@ -39,7 +39,8 @@ class RequisicaoForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-control'}),
             'TP': forms.Select(attrs={'class': 'form-control'}),
             'status_faturamento': forms.Select(attrs={'class': 'form-control'}),
-            'id_equipamentos': forms.TextInput(attrs={'class': 'form-control'}),
+            'id_equipamentos': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Cole os IDs dos equipamentos separados por espaços'}),    
+            'iccid': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Cole os ICCIDs separados por espaços'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -61,7 +62,7 @@ class requisicaoFormup(forms.ModelForm):
         fields = ['nome', 'endereco', 'contrato', 'cnpj', 'inicio_de_contrato', 'vigencia', 
                   'motivo', 'envio', 'comercial', 'tipo_produto', 
                   'carregador', 'cabo', 'tipo_fatura', 'valor_unitario', 'valor_total',
-                  'forma_pagamento','tipo_customizacao', 'numero_de_equipamentos', 'observacoes', 'status', 'TP', 'taxa_envio','id_equipamentos']
+                  'forma_pagamento','tipo_customizacao', 'numero_de_equipamentos', 'observacoes', 'status', 'TP', 'taxa_envio','id_equipamentos', 'iccid']
         widgets = {
             'nome': forms.Select(attrs={'class': 'form-control'}),
             'endereco': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
@@ -86,9 +87,10 @@ class requisicaoFormup(forms.ModelForm):
             'observacoes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'status': forms.Select(attrs={'class': 'form-control'}),
             'TP': forms.Select(attrs={'class': 'form-control'}),
+            'id_equipamentos': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Cole os IDs dos equipamentos separados por espaços'}),
+            'iccid': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Cole os ICCIDs separados por espaços'}),
             
             
-            'id_equipamentos': forms.TextInput(attrs={'class': 'form-control'}),
          
         }
         permissions = [
@@ -124,7 +126,7 @@ class RequisicoesForm(forms.ModelForm):
             'antenista': forms.Select(attrs={'class': 'form-control', 'style': 'display:none;', 'id': 'antenista-field'}),
             'tipo_produto': forms.Select(attrs={'class': 'form-control'}),
             'numero_de_equipamentos': forms.NumberInput(attrs={'class': 'form-control'}),
-            'id_equipamentos': forms.TextInput(attrs={'class': 'form-control'}),
+            'id_equipamentos': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Cole os IDs dos equipamentos separados por espaços'}),
             'endereco': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
             'contrato': forms.Select(attrs={'class': 'form-control'}),
             'cnpj': forms.TextInput(attrs={'class': 'form-control'}),
@@ -188,7 +190,7 @@ class RequisicoesForm(forms.ModelForm):
             ('RAFAEL', 'RAFAEL'),
         ], attrs={'class': 'form-control'})
         self.fields['antenista'].required = True
-        self.fields['id_equipamentos'] = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+        self.fields['id_equipamentos'] = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Cole os IDs dos equipamentos separados por espaços'}))
 
     def clean(self):
         cleaned_data = super().clean()

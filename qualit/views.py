@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from .models import Qualit
 from .forms import QualitForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from requisicao.models import Requisicoes
 
 class QualitCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     model = Qualit
@@ -29,11 +30,11 @@ class QualitCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
 
 from django.db.models import Q
 
-class QualitListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
-    model = Qualit
+class QualitListView(LoginRequiredMixin, ListView):
+    model = Requisicoes
     template_name = 'listar_qualits.html'
     context_object_name = 'qualits'
-    permission_required = 'qualit.view_qualit'  # Substitua 'qualit' pelo nome do seu aplicativo
+    # permission_required = 'requisicao.view_requisicoes'  # Comentado temporariamente para teste
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -43,15 +44,18 @@ class QualitListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
         ICCID_NOVO = self.request.GET.get('ICCID_NOVO')
         CLIENTE = self.request.GET.get('CLIENTE')
 
-        # Filtros dinâmicos
+        # Filtros dinâmicos para o modelo Requisicoes
         if ID or ICCID_NOVO or CLIENTE:
             filters = Q()
             if ID:
-                filters &= Q(ID=ID.strip())
+                # Buscar no campo id_equipamentos
+                filters &= Q(id_equipamentos__icontains=ID.strip())
             if ICCID_NOVO:
-                filters &= Q(ICCID_NOVO=ICCID_NOVO.strip())
+                # Buscar no campo iccid
+                filters &= Q(iccid__icontains=ICCID_NOVO.strip())
             if CLIENTE:
-                filters &= Q(CLIENTE__iexact=CLIENTE.strip())
+                # Buscar no nome do cliente
+                filters &= Q(nome__nome__icontains=CLIENTE.strip())
             
             queryset = queryset.filter(filters)
         else:

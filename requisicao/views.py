@@ -283,6 +283,38 @@ class tecnicoUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView)
     success_url = reverse_lazy('tecnicoListView')
     permission_required = "requisicao.change_requisicoes"
 
+    def form_valid(self, form):
+        # Salvar o formulário primeiro
+        response = super().form_valid(form)
+        
+        # Obter os valores dos campos
+        id_equipamentos = form.cleaned_data.get('id_equipamentos', '')
+        iccid = form.cleaned_data.get('iccid', '')
+        
+        if id_equipamentos and iccid:
+            try:
+                # Separar os valores por espaços (qualquer quantidade de espaços)
+                ids = [id.strip() for id in id_equipamentos.split() if id.strip()]
+                iccids = [iccid_val.strip() for iccid_val in iccid.split() if iccid_val.strip()]
+                
+                # Vincular os valores correspondentes
+                for i, (equip_id, iccid_val) in enumerate(zip(ids, iccids), 1):
+                    if i <= 10:  # Limite de 10 equipamentos conforme o modelo
+                        field_name = f'iccid_equipamento{i}'
+                        if hasattr(self.object, field_name):
+                            setattr(self.object, field_name, iccid_val)
+                
+                # Salvar as alterações
+                self.object.save()
+                
+                # Log de sucesso
+                print(f"Vinculação automática realizada: {len(ids)} equipamentos vinculados com ICCIDs")
+                
+            except Exception as e:
+                print(f"Erro ao vincular equipamentos com ICCIDs: {e}")
+        
+        return response
+
 
 #------------------------------------------------------
 
