@@ -222,10 +222,22 @@ class ConfiguracaoListView(PermissionRequiredMixin,LoginRequiredMixin,ListView):
     
     
     def get_queryset(self):
-        
+        # Obter parâmetro de filtro por ID
+        id_filtro = self.request.GET.get('id_filtro')
         
         requisicoes_queryset = Requisicoes.objects.filter(status__in=['Aprovado pelo CEO']).exclude(tipo_produto__nome__in=['GS310','GS340','GS390','GS8310 (4G)','PLUG AND PLAY'])
         manutencao_queryset = registrodemanutencao.objects.filter(status__in=['Aprovado Inteligência', 'Aprovado pela Diretoria', 'Aprovado pelo CEO']).exclude(tipo_produto__nome__in=['GS310','GS340','GS390','GS8310 (4G)','PLUG AND PLAY'])
+        
+        # Aplicar filtro por ID se fornecido
+        if id_filtro:
+            try:
+                id_valor = int(id_filtro)
+                requisicoes_queryset = requisicoes_queryset.filter(id=id_valor)
+                manutencao_queryset = manutencao_queryset.filter(id=id_valor)
+            except ValueError:
+                # Se o ID não for um número válido, retornar queryset vazio
+                return []
+        
         # Combine os querysets
         combined_queryset = list(requisicoes_queryset) + list(manutencao_queryset)
         
