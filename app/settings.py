@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     'goldenx',    
     'documentacoes',
     'Nestle',  
+    'corte',
 ]
 
 MIDDLEWARE = [
