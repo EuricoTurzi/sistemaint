@@ -1289,8 +1289,10 @@ function addNewRow() {
         }
     }
     
-    const newData = {
-        id: rowCounter++,
+    // Primeiro obter o próximo ID disponível do servidor
+    getNextAvailableId(function(nextId) {
+        const newData = {
+            id: nextId,
         faturamento: baseData ? baseData.faturamento : '',
         emissao: baseData ? baseData.emissao : '',
         reajustado: baseData ? baseData.reajustado : '',
@@ -1331,10 +1333,11 @@ function addNewRow() {
         }
     });
     
-    // Se havia linhas selecionadas, desmarcar todas após criar a nova linha
-    if (selectedRows.length > 0) {
-        clearAllCheckboxes();
-    }
+        // Se havia linhas selecionadas, desmarcar todas após criar a nova linha
+        if (selectedRows.length > 0) {
+            clearAllCheckboxes();
+        }
+    });
 }
 
 function addMultipleRows() {
@@ -1357,12 +1360,14 @@ function addMultipleRows() {
         }
     }
 
-    let linhasCriadas = 0;
-    let linhasSalvas = 0;
+    // Obter múltiplos IDs disponíveis
+    getMultipleAvailableIds(quantidade, function(availableIds) {
+        let linhasCriadas = 0;
+        let linhasSalvas = 0;
 
-    for (let i = 0; i < quantidade; i++) {
-        const newData = {
-            id: rowCounter++,
+        for (let i = 0; i < quantidade; i++) {
+            const newData = {
+                id: availableIds[i],
             faturamento: baseData ? baseData.faturamento : '',
             emissao: baseData ? baseData.emissao : '',
             reajustado: baseData ? baseData.reajustado : '',
@@ -1413,7 +1418,8 @@ function addMultipleRows() {
         clearAllCheckboxes();
     }
     
-    showToast(`${quantidade} linhas sendo criadas e salvas...`, 'info');
+        showToast(`${quantidade} linhas sendo criadas e salvas...`, 'info');
+    });
 }
 
 // Função auxiliar para extrair dados de uma linha
@@ -2146,6 +2152,72 @@ function verLinhasSelecionadas() {
     `;
     document.body.appendChild(modal);
     $('#detalhesModal').modal('show');
+}
+
+// Função para obter o próximo ID disponível do servidor
+// REQUER IMPLEMENTAÇÃO NO BACKEND DJANGO:
+// URL: /faturamento/get-next-id/
+// View deve retornar: {"success": true, "next_id": 123}
+function getNextAvailableId(callback) {
+    fetch('/faturamento/get-next-id/', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success && result.next_id) {
+            callback(result.next_id);
+        } else {
+            // Fallback: usar contador local se não conseguir obter do servidor
+            console.warn('Não foi possível obter ID do servidor, usando contador local');
+            callback(rowCounter++);
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao obter próximo ID:', error);
+        // Fallback: usar contador local se houver erro
+        callback(rowCounter++);
+    });
+}
+
+// Função para obter múltiplos IDs disponíveis do servidor
+// REQUER IMPLEMENTAÇÃO NO BACKEND DJANGO:
+// URL: /faturamento/get-multiple-ids/?count=5
+// View deve retornar: {"success": true, "ids": [123, 124, 125, 126, 127]}
+function getMultipleAvailableIds(quantidade, callback) {
+    fetch(`/faturamento/get-multiple-ids/?count=${quantidade}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success && result.ids && result.ids.length === quantidade) {
+            callback(result.ids);
+        } else {
+            // Fallback: gerar IDs locais se não conseguir obter do servidor
+            console.warn('Não foi possível obter IDs do servidor, gerando IDs locais');
+            const localIds = [];
+            for (let i = 0; i < quantidade; i++) {
+                localIds.push(rowCounter++);
+            }
+            callback(localIds);
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao obter múltiplos IDs:', error);
+        // Fallback: gerar IDs locais se houver erro
+        const localIds = [];
+        for (let i = 0; i < quantidade; i++) {
+            localIds.push(rowCounter++);
+        }
+        callback(localIds);
+    });
 }
 </script>
 {% endblock %}

@@ -858,3 +858,65 @@ class FaturamentoDeleteView(View):
                 'success': False,
                 'error': str(e)
             }, status=400) 
+
+@method_decorator(csrf_exempt, name='dispatch')
+class FaturamentoGetNextIdView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            from django.db import connection
+            
+            with connection.cursor() as cursor:
+                # Obter o próximo ID disponível
+                cursor.execute("""
+                    SELECT COALESCE(MAX(id), 0) + 1 as next_id
+                    FROM faturamento_faturamento
+                """)
+                
+                result = cursor.fetchone()
+                next_id = result[0] if result else 1
+                
+                return JsonResponse({
+                    'success': True,
+                    'next_id': next_id
+                })
+                
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=400)
+
+@method_decorator(csrf_exempt, name='dispatch') 
+class FaturamentoGetMultipleIdsView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            count = int(request.GET.get('count', 1))
+            if count < 1 or count > 100:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Quantidade deve ser entre 1 e 100'
+                }, status=400)
+            
+            from django.db import connection
+            
+            with connection.cursor() as cursor:
+                # Obter o maior ID atual
+                cursor.execute("SELECT COALESCE(MAX(id), 0) FROM faturamento_faturamento")
+                result = cursor.fetchone()
+                max_id = result[0] if result else 0
+                
+                # Gerar IDs sequenciais a partir do próximo disponível
+                ids = []
+                for i in range(1, count + 1):
+                    ids.append(max_id + i)
+                
+                return JsonResponse({
+                    'success': True,
+                    'ids': ids
+                })
+                
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=400) 

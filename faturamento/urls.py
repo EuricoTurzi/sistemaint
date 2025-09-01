@@ -6,7 +6,8 @@ from .views import (
     FaturamentoDeleteView, FaturamentoGetDataView, FaturamentoGetClientesView,
     FaturamentoGetComerciaisView, FaturamentoGetNomesFantasiaView,
     FaturamentoGetSistemasOmieView, FaturamentoGetEmpresasView,
-    FaturamentoGetEmailsView, FaturamentoGetFormasPagamentoView
+    FaturamentoGetEmailsView, FaturamentoGetFormasPagamentoView,
+    FaturamentoGetNextIdView, FaturamentoGetMultipleIdsView
 )
 
 urlpatterns = [
@@ -29,5 +30,7 @@ urlpatterns = [
        path('get-empresas/', FaturamentoGetEmpresasView.as_view(), name='faturamento_get_empresas'),
        path('get-emails/', FaturamentoGetEmailsView.as_view(), name='faturamento_get_emails'),
        path('get-formas-pagamento/', FaturamentoGetFormasPagamentoView.as_view(), name='faturamento_get_formas_pagamento'),
+       path('get-next-id/', FaturamentoGetNextIdView.as_view(), name='faturamento_get_next_id'),
+       path('get-multiple-ids/', FaturamentoGetMultipleIdsView.as_view(), name='faturamento_get_multiple_ids'),
     
 ]
