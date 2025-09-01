@@ -487,91 +487,150 @@
                                         {% with todos_equipamentos=todos_equipamentos_api %}
                                             {% for device_id, equipamento in todos_equipamentos.items %}
                                                 {% if requisicao.id_equipamentos and device_id|stringformat:"s" in requisicao.id_equipamentos %}
-                                                    {% comment %} Calcula apto ao corte baseado na data da requisição {% endcomment %}
-                                                    {% if requisicao.data %}
-                                                        {% with data_requisicao=requisicao.data %}
-                                                            {% if data_requisicao %}
-                                                                {% with data_limite=data_requisicao|add:"30 days" %}
-                                                                    {% with dias_atraso=data_limite|timeuntil:data_atual %}
-                                                                        {% with dias_atraso_num=dias_atraso|slice:":-5"|add:"0" %}
-                                                                            <div class="alert alert-{% if dias_atraso_num > 0 %}danger{% else %}info{% endif %} mb-3">
-                                                                                <h6 class="alert-heading">
-                                                                                    <i class="fas fa-satellite"></i> Equipamento: {{ device_id }}
-                                                                                    {% if dias_atraso_num > 0 %}
-                                                                                        <span class="badge badge-danger float-right">APTO AO CORTE</span>
-                                                                                    {% else %}
-                                                                                        <span class="badge badge-success float-right">ATIVO</span>
-                                                                                    {% endif %}
-                                                                                </h6>
-                                                                                <div class="row">
-                                                                                    <div class="col-md-6">
-                                                                                        <strong>Vehicle ID:</strong> {{ equipamento.vehicleId|default:"N/A" }}<br>
-                                                                                        <strong>Placa:</strong> {{ equipamento.plate|default:"N/A" }}<br>
-                                                                                        <strong>Device ID:</strong> {{ equipamento.deviceId }}<br>
-                                                                                        <strong>Modelo:</strong> {{ equipamento.deviceModel|default:"N/A" }}<br>
-                                                                                        <strong>Position ID:</strong> {{ equipamento.positionId }}<br>
-                                                                                        <strong>Data da Última Posição:</strong> {{ equipamento.data_ultima_posicao }}<br>
-                                                                                        <strong>Status:</strong> 
-                                                                                        <span class="badge badge-{% if equipamento.status_equipamento == 'ON' %}success{% elif equipamento.status_equipamento == 'OFF' %}danger{% else %}secondary{% endif %}">
-                                                                                            {{ equipamento.status_equipamento }}
-                                                                                        </span>
-                                                                                    </div>
-                                                                                    <div class="col-md-6">
-                                                                                        <strong>Última Posição:</strong><br>
-                                                                                        {% if equipamento.latitude != 'N/A' and equipamento.longitude != 'N/A' %}
-                                                                                            <span class="text-primary">
-                                                                                                <i class="fas fa-map-pin"></i> 
-                                                                                                Lat: {{ equipamento.latitude }}, Long: {{ equipamento.longitude }}
-                                                                                            </span><br>
-                                                                                            {% if equipamento.endereco != 'N/A' %}
-                                                                                                <small class="text-muted">{{ equipamento.endereco }}</small><br>
-                                                                                            {% endif %}
-                                                                                            {% if equipamento.velocidade != 'N/A' %}
-                                                                                                <small><i class="fas fa-tachometer-alt"></i> Velocidade: {{ equipamento.velocidade }} km/h</small><br>
-                                                                                            {% endif %}
-                                                                                            {% if equipamento.direcao != 'N/A' %}
-                                                                                                <small><i class="fas fa-compass"></i> Direção: {{ equipamento.direcao }}°</small><br>
-                                                                                            {% endif %}
-                                                                                        {% else %}
-                                                                                            <span class="text-muted">Posição não disponível</span>
-                                                                                        {% endif %}
-                                                                                    </div>
+                                                    <div class="alert alert-{% if equipamento.apto_ao_corte %}danger{% else %}info{% endif %} mb-3">
+                                                        <h6 class="alert-heading">
+                                                            <i class="fas fa-satellite"></i> Equipamento: {{ device_id }}
+                                                            {% if equipamento.apto_ao_corte %}
+                                                                <span class="badge badge-danger float-right">APTO AO CORTE</span>
+                                                            {% else %}
+                                                                <span class="badge badge-success float-right">ATIVO</span>
+                                                            {% endif %}
+                                                        </h6>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <strong>Vehicle ID:</strong> {{ equipamento.vehicleId|default:"N/A" }}<br>
+                                                                <strong>Placa:</strong> {{ equipamento.plate|default:"N/A" }}<br>
+                                                                <strong>Device ID:</strong> {{ equipamento.deviceId }}<br>
+                                                                <strong>Modelo:</strong> {{ equipamento.deviceModel|default:"N/A" }}<br>
+                                                                <strong>Position ID:</strong> {{ equipamento.positionId }}<br>
+                                                                <strong>Data da Última Posição:</strong> {{ equipamento.data_ultima_posicao }}<br>
+                                                                <strong>Status:</strong> 
+                                                                <span class="badge badge-{% if equipamento.status_equipamento == 'ON' %}success{% elif equipamento.status_equipamento == 'OFF' %}danger{% else %}secondary{% endif %}">
+                                                                    {{ equipamento.status_equipamento }}
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <strong>Última Posição:</strong><br>
+                                                                {% if equipamento.latitude != 'N/A' and equipamento.longitude != 'N/A' %}
+                                                                    <span class="text-primary">
+                                                                        <i class="fas fa-map-pin"></i> 
+                                                                        Lat: {{ equipamento.latitude }}, Long: {{ equipamento.longitude }}
+                                                                    </span><br>
+                                                                    {% if equipamento.endereco != 'N/A' %}
+                                                                        <small class="text-muted">{{ equipamento.endereco }}</small><br>
+                                                                    {% endif %}
+                                                                    {% if equipamento.velocidade != 'N/A' %}
+                                                                        <small><i class="fas fa-tachometer-alt"></i> Velocidade: {{ equipamento.velocidade }} km/h</small><br>
+                                                                    {% endif %}
+                                                                    {% if equipamento.direcao != 'N/A' %}
+                                                                        <small><i class="fas fa-compass"></i> Direção: {{ equipamento.direcao }}°</small><br>
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <span class="text-muted">Posição não disponível</span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                        
+                                                        <!-- Informações de primeira e última posição -->
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <strong>Primeira Posição:</strong><br>
+                                                                {% if equipamento.total_posicoes > 1 %}
+                                                                    <small class="text-muted">
+                                                                        <i class="fas fa-calendar-plus"></i> 
+                                                                        {{ equipamento.data_primeira_posicao|default:"N/A" }}
+                                                                    </small><br>
+                                                                    {% if equipamento.primeira_posicao.latitude != 'N/A' and equipamento.primeira_posicao.longitude != 'N/A' %}
+                                                                        <small class="text-info">
+                                                                            <i class="fas fa-map-marker"></i> 
+                                                                            Lat: {{ equipamento.primeira_posicao.latitude }}, Long: {{ equipamento.primeira_posicao.longitude }}
+                                                                        </small>
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <small class="text-warning">
+                                                                        <i class="fas fa-info-circle"></i> Apenas uma posição registrada
+                                                                    </small>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <strong>Última Posição:</strong><br>
+                                                                <small class="text-muted">
+                                                                    <i class="fas fa-calendar-check"></i> 
+                                                                    {{ equipamento.data_ultima_posicao_detalhada|default:"N/A" }}
+                                                                </small><br>
+                                                                {% if equipamento.ultima_posicao_detalhada.latitude != 'N/A' and equipamento.ultima_posicao_detalhada.longitude != 'N/A' %}
+                                                                    <small class="text-info">
+                                                                        <i class="fas fa-map-marker"></i> 
+                                                                        Lat: {{ equipamento.ultima_posicao_detalhada.latitude }}, Long: {{ equipamento.ultima_posicao_detalhada.longitude }}
+                                                                    </small>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                        
+                                                        <!-- Cálculo de apto ao corte -->
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <strong>Total de Posições:</strong><br>
+                                                                <span class="badge badge-info">{{ equipamento.total_posicoes }}</span>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <strong>Diferença entre posições:</strong><br>
+                                                                {% if equipamento.total_posicoes > 1 %}
+                                                                    <span class="badge badge-{% if equipamento.apto_ao_corte %}danger{% else %}success{% endif %}">
+                                                                        {{ equipamento.diferenca_dias }} dias
+                                                                    </span>
+                                                                {% else %}
+                                                                    <span class="badge badge-warning">N/A</span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <!-- Verificação de 6 meses da data da requisição -->
+                                                        {% if requisicao.data %}
+                                                            {% with data_requisicao=requisicao.data %}
+                                                                {% with data_limite_6meses=data_requisicao|add:"6 months" %}
+                                                                    {% with dias_desde_requisicao=data_limite_6meses|timeuntil:data_atual %}
+                                                                        {% with dias_desde_requisicao_num=dias_desde_requisicao|slice:":-5"|add:"0" %}
+                                                                            <div class="row mt-2">
+                                                                                <div class="col-md-6">
+                                                                                    <strong>Data da Requisição:</strong><br>
+                                                                                    <small class="text-muted">{{ requisicao.data|date:"d/m/Y" }}</small>
                                                                                 </div>
-                                                                                <hr>
-                                                                                <div class="row">
-                                                                                    <div class="col-md-6">
-                                                                                        <strong>Data da Requisição:</strong> {{ requisicao.data|date:"d/m/Y" }}<br>
-                                                                                        <strong>Data Limite (30 dias):</strong> {{ data_limite|date:"d/m/Y" }}<br>
-                                                                                        <strong>Dias de Atraso:</strong> 
-                                                                                        {% if dias_atraso_num > 0 %}
-                                                                                            <span class="badge badge-danger">{{ dias_atraso_num }} dias</span>
-                                                                                        {% else %}
-                                                                                            <span class="badge badge-success">ATIVO</span>
-                                                                                        {% endif %}
-                                                                                    </div>
-                                                                                    <div class="col-md-6">
-                                                                                        <strong>Status do Corte:</strong>
-                                                                                        {% if dias_atraso_num > 0 %}
-                                                                                            <span class="badge badge-danger">APTO AO CORTE</span>
-                                                                                        {% else %}
-                                                                                            <span class="badge badge-success">ATIVO</span>
-                                                                                        {% endif %}
-                                                                                    </div>
+                                                                                <div class="col-md-6">
+                                                                                    <strong>Limite 6 Meses:</strong><br>
+                                                                                    <small class="text-muted">{{ data_limite_6meses|date:"d/m/Y" }}</small>
+                                                                                </div>
+                                                                            </div>
+                                                                            
+                                                                            <div class="row mt-2">
+                                                                                <div class="col-12 text-center">
+                                                                                    <strong>Status do Corte:</strong><br>
+                                                                                    {% if equipamento.apto_ao_corte %}
+                                                                                        <span class="badge badge-danger badge-lg">
+                                                                                            <i class="fas fa-exclamation-triangle"></i> APTO AO CORTE
+                                                                                        </span>
+                                                                                        <br><small class="text-muted">{{ equipamento.motivo_apto_corte }}</small>
+                                                                                    {% elif dias_desde_requisicao_num > 0 %}
+                                                                                        <span class="badge badge-danger badge-lg">
+                                                                                            <i class="fas fa-exclamation-triangle"></i> APTO AO CORTE
+                                                                                        </span>
+                                                                                        <br><small class="text-muted">Posição mais recente > 6 meses da requisição</small>
+                                                                                    {% else %}
+                                                                                        <span class="badge badge-success badge-lg">
+                                                                                            <i class="fas fa-check-circle"></i> ATIVO
+                                                                                        </span>
+                                                                                        <br><small class="text-muted">Equipamento dentro dos parâmetros</small>
+                                                                                    {% endif %}
                                                                                 </div>
                                                                             </div>
                                                                         {% endwith %}
                                                                     {% endwith %}
                                                                 {% endwith %}
-                                                            {% endif %}
-                                                        {% endwith %}
-                                                    {% else %}
-                                                        <div class="alert alert-warning mb-3">
-                                                            <h6 class="alert-heading">
-                                                                <i class="fas fa-exclamation-triangle"></i> Equipamento: {{ device_id }}
-                                                            </h6>
-                                                            <p class="mb-0">Data da requisição não disponível para cálculo de corte.</p>
-                                                        </div>
-                                                    {% endif %}
+                                                            {% endwith %}
+                                                        {% endif %}
+                                                    </div>
                                                 {% endif %}
                                             {% endfor %}
                                         {% endwith %}
@@ -603,85 +662,110 @@
                                     {% if requisicao.id_equipamentos %}
                                         {% with todos_equipamentos=todos_equipamentos_api %}
                                             {% for device_id, equipamento in todos_equipamentos.items %}
-                                                {% if requisicao.id_equipamentos and device_id|stringformat:"s" in requisicao.id_equipamentos and equipamento.apto_ao_corte %}
-                                                    <div class="alert alert-danger mb-3">
-                                                        <h6 class="alert-heading">
-                                                            <i class="fas fa-cut"></i> EQUIPAMENTO APTO AO CORTE: {{ device_id }}
-                                                            <span class="badge badge-danger float-right">{{ equipamento.diferenca_dias }} dias</span>
-                                                        </h6>
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <strong>Vehicle ID:</strong> {{ equipamento.vehicleId|default:"N/A" }}<br>
-                                                                <strong>Placa:</strong> {{ equipamento.plate|default:"N/A" }}<br>
-                                                                <strong>Device ID:</strong> {{ equipamento.deviceId }}<br>
-                                                                <strong>Modelo:</strong> {{ equipamento.deviceModel|default:"N/A" }}<br>
-                                                                <strong>Position ID:</strong> {{ equipamento.positionId }}<br>
-                                                                <strong>Status:</strong> 
-                                                                <span class="badge badge-{% if equipamento.status_equipamento == 'ON' %}success{% elif equipamento.status_equipamento == 'OFF' %}danger{% else %}secondary{% endif %}">
-                                                                    {{ equipamento.status_equipamento }}
-                                                                </span>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <strong>Última Posição:</strong><br>
-                                                                {% if equipamento.latitude != 'N/A' and equipamento.longitude != 'N/A' %}
-                                                                    <span class="text-primary">
-                                                                        <i class="fas fa-map-pin"></i> 
-                                                                        Lat: {{ equipamento.latitude }}, Long: {{ equipamento.longitude }}
-                                                                    </span><br>
-                                                                    {% if equipamento.endereco != 'N/A' %}
-                                                                        <small class="text-muted">{{ equipamento.endereco }}</small><br>
-                                                                    {% endif %}
-                                                                    {% if equipamento.velocidade != 'N/A' %}
-                                                                        <small><i class="fas fa-tachometer-alt"></i> Velocidade: {{ equipamento.velocidade }} km/h</small><br>
-                                                                    {% endif %}
-                                                                    {% if equipamento.direcao != 'N/A' %}
-                                                                        <small><i class="fas fa-compass"></i> Direção: {{ equipamento.direcao }}°</small><br>
-                                                                    {% endif %}
-                                                                {% else %}
-                                                                    <span class="text-muted">Posição não disponível</span>
-                                                                {% endif %}
-                                                            </div>
-                                                        </div>
-                                                        <hr>
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <strong>Primeira Posição:</strong><br>
-                                                                <small class="text-muted">
-                                                                    <i class="fas fa-calendar-plus"></i> 
-                                                                    {{ equipamento.data_primeira_posicao|default:"N/A" }}
-                                                                </small><br>
-                                                                {% if equipamento.primeira_posicao.latitude != 'N/A' and equipamento.primeira_posicao.longitude != 'N/A' %}
-                                                                    <small class="text-info">
-                                                                        <i class="fas fa-map-marker"></i> 
-                                                                        Lat: {{ equipamento.primeira_posicao.latitude }}, Long: {{ equipamento.primeira_posicao.longitude }}
-                                                                    </small>
-                                                                {% endif %}
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <strong>Última Posição:</strong><br>
-                                                                <small class="text-muted">
-                                                                    <i class="fas fa-calendar-check"></i> 
-                                                                    {{ equipamento.data_ultima_posicao_detalhada|default:"N/A" }}
-                                                                </small><br>
-                                                                {% if equipamento.ultima_posicao_detalhada.latitude != 'N/A' and equipamento.ultima_posicao_detalhada.longitude != 'N/A' %}
-                                                                    <small class="text-info">
-                                                                        <i class="fas fa-map-marker"></i> 
-                                                                        Lat: {{ equipamento.ultima_posicao_detalhada.latitude }}, Long: {{ equipamento.ultima_posicao_detalhada.longitude }}
-                                                                    </small>
-                                                                {% endif %}
-                                                            </div>
-                                                        </div>
-                                                        <hr>
-                                                        <div class="row">
-                                                            <div class="col-12 text-center">
-                                                                <strong>Diferença entre posições:</strong><br>
-                                                                <span class="badge badge-danger badge-lg">
-                                                                    <i class="fas fa-exclamation-triangle"></i> 
-                                                                    {{ equipamento.diferenca_dias }} dias > 30 dias = APTO AO CORTE
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                {% if requisicao.id_equipamentos and device_id|stringformat:"s" in requisicao.id_equipamentos %}
+                                                    {% comment %} Verifica se está apto ao corte por qualquer uma das duas regras {% endcomment %}
+                                                    {% if requisicao.data %}
+                                                        {% with data_requisicao=requisicao.data %}
+                                                            {% with data_limite_6meses=data_requisicao|add:"6 months" %}
+                                                                {% with dias_desde_requisicao=data_limite_6meses|timeuntil:data_atual %}
+                                                                    {% with dias_desde_requisicao_num=dias_desde_requisicao|slice:":-5"|add:"0" %}
+                                                                        {% if equipamento.apto_ao_corte or dias_desde_requisicao_num > 0 %}
+                                                                            <div class="alert alert-danger mb-3">
+                                                                                <h6 class="alert-heading">
+                                                                                    <i class="fas fa-cut"></i> EQUIPAMENTO APTO AO CORTE: {{ device_id }}
+                                                                                    {% if equipamento.apto_ao_corte %}
+                                                                                        <span class="badge badge-danger float-right">{{ equipamento.diferenca_dias }} dias</span>
+                                                                                    {% else %}
+                                                                                        <span class="badge badge-danger float-right">6+ meses</span>
+                                                                                    {% endif %}
+                                                                                </h6>
+                                                                                <div class="row">
+                                                                                    <div class="col-md-6">
+                                                                                        <strong>Vehicle ID:</strong> {{ equipamento.vehicleId|default:"N/A" }}<br>
+                                                                                        <strong>Placa:</strong> {{ equipamento.plate|default:"N/A" }}<br>
+                                                                                        <strong>Device ID:</strong> {{ equipamento.deviceId }}<br>
+                                                                                        <strong>Modelo:</strong> {{ equipamento.deviceModel|default:"N/A" }}<br>
+                                                                                        <strong>Position ID:</strong> {{ equipamento.positionId }}<br>
+                                                                                        <strong>Status:</strong> 
+                                                                                        <span class="badge badge-{% if equipamento.status_equipamento == 'ON' %}success{% elif equipamento.status_equipamento == 'OFF' %}danger{% else %}secondary{% endif %}">
+                                                                                            {{ equipamento.status_equipamento }}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <div class="col-md-6">
+                                                                                        <strong>Última Posição:</strong><br>
+                                                                                        {% if equipamento.latitude != 'N/A' and equipamento.longitude != 'N/A' %}
+                                                                                            <span class="text-primary">
+                                                                                                <i class="fas fa-map-pin"></i> 
+                                                                                                Lat: {{ equipamento.latitude }}, Long: {{ equipamento.longitude }}
+                                                                                            </span><br>
+                                                                                            {% if equipamento.endereco != 'N/A' %}
+                                                                                                <small class="text-muted">{{ equipamento.endereco }}</small><br>
+                                                                                            {% endif %}
+                                                                                            {% if equipamento.velocidade != 'N/A' %}
+                                                                                                <small><i class="fas fa-tachometer-alt"></i> Velocidade: {{ equipamento.velocidade }} km/h</small><br>
+                                                                                            {% endif %}
+                                                                                            {% if equipamento.direcao != 'N/A' %}
+                                                                                                <small><i class="fas fa-compass"></i> Direção: {{ equipamento.direcao }}°</small><br>
+                                                                                            {% endif %}
+                                                                                        {% else %}
+                                                                                            <span class="text-muted">Posição não disponível</span>
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr>
+                                                                                <div class="row">
+                                                                                    <div class="col-md-6">
+                                                                                        <strong>Primeira Posição:</strong><br>
+                                                                                        <small class="text-muted">
+                                                                                            <i class="fas fa-calendar-plus"></i> 
+                                                                                            {{ equipamento.data_primeira_posicao|default:"N/A" }}
+                                                                                        </small><br>
+                                                                                        {% if equipamento.primeira_posicao.latitude != 'N/A' and equipamento.primeira_posicao.longitude != 'N/A' %}
+                                                                                            <small class="text-info">
+                                                                                                <i class="fas fa-map-marker"></i> 
+                                                                                                Lat: {{ equipamento.primeira_posicao.latitude }}, Long: {{ equipamento.primeira_posicao.longitude }}
+                                                                                            </small>
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                    <div class="col-md-6">
+                                                                                        <strong>Última Posição:</strong><br>
+                                                                                        <small class="text-muted">
+                                                                                            <i class="fas fa-calendar-check"></i> 
+                                                                                            {{ equipamento.data_ultima_posicao_detalhada|default:"N/A" }}
+                                                                                        </small><br>
+                                                                                        {% if equipamento.ultima_posicao_detalhada.latitude != 'N/A' and equipamento.ultima_posicao_detalhada.longitude != 'N/A' %}
+                                                                                            <small class="text-info">
+                                                                                                <i class="fas fa-map-marker"></i> 
+                                                                                                Lat: {{ equipamento.ultima_posicao_detalhada.latitude }}, Long: {{ equipamento.ultima_posicao_detalhada.longitude }}
+                                                                                            </small>
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr>
+                                                                                <div class="row">
+                                                                                    <div class="col-12 text-center">
+                                                                                        <strong>Motivo do Corte:</strong><br>
+                                                                                        {% if equipamento.apto_ao_corte %}
+                                                                                            <span class="badge badge-danger badge-lg">
+                                                                                                <i class="fas fa-exclamation-triangle"></i> 
+                                                                                                {{ equipamento.motivo_apto_corte }}
+                                                                                            </span>
+                                                                                        {% else %}
+                                                                                            <span class="badge badge-danger badge-lg">
+                                                                                                <i class="fas fa-exclamation-triangle"></i> 
+                                                                                                Posição mais recente > 6 meses da requisição
+                                                                                            </span>
+                                                                                        {% endif %}
+                                                                                        <br><small class="text-muted">Total de posições: {{ equipamento.total_posicoes }}</small>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    {% endwith %}
+                                                                {% endwith %}
+                                                            {% endwith %}
+                                                        {% endwith %}
+                                                    {% endif %}
                                                 {% endif %}
                                             {% endfor %}
                                         {% endwith %}
