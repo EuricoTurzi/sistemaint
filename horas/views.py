@@ -258,9 +258,9 @@ def consulta_horas_pdf(request):
             h, rem = divmod(int(diff), 3600)
             m, s = divmod(rem, 60)
             row_total = f"{h:02d}:{m:02d}:{s:02d}"
-            # Formatar datas para DD/MM/AAAA
-            hi_str = hi.strftime("%d/%m/%Y") if hi else ""
-            hf_str = hf.strftime("%d/%m/%Y") if hf else ""
+            # Formatar datas para DD/MM/AAAA HH:MM:SS
+            hi_str = hi.strftime("%d/%m/%Y %H:%M:%S") if hi else ""
+            hf_str = hf.strftime("%d/%m/%Y %H:%M:%S") if hf else ""
             rows.append({
                 'hora_inicial': hi_str,
                 'hora_final':   hf_str,
@@ -303,8 +303,8 @@ def consulta_horas_pdf(request):
     for emp in employee_data:
         story.append(Paragraph(f"Funcionário: {emp['funcionario']}", styles['Heading3']))
         data = [[
-            Paragraph("Hora Inicial", wrap_style),
-            Paragraph("Hora Final", wrap_style),
+            Paragraph("Data e Hora Inicial", wrap_style),
+            Paragraph("Data e Hora Final", wrap_style),
             Paragraph("Motivo", wrap_style),
             Paragraph("Total", wrap_style),
         ]]
@@ -320,7 +320,7 @@ def consulta_horas_pdf(request):
             Paragraph("Total de Horas:", bold_style),
             Paragraph(emp['agg_total'], bold_style),
         ])
-        tbl = Table(data, colWidths=[4*cm, 4*cm, 7*cm, 3*cm])
+        tbl = Table(data, colWidths=[5*cm, 5*cm, 6*cm, 3*cm])
         tbl.setStyle(TableStyle([
             ('BACKGROUND', (0,0), (-1,0), colors.lightgrey),
             ('GRID', (0,0), (-1,-1), 0.5, colors.black),
