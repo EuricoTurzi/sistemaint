@@ -426,12 +426,21 @@ class historicoListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
         queryset = Requisicoes.objects.all().order_by('-id')
         nome = self.request.GET.get('nome')
         status = self.request.GET.get('status')
+        id_filtro = self.request.GET.get('id_filtro')
 
         if nome:
             queryset = queryset.filter(nome__nome__icontains=nome)
 
         if status:
             queryset = queryset.filter(status__icontains=status)
+            
+        if id_filtro:
+            try:
+                id_valor = int(id_filtro)
+                queryset = queryset.filter(id=id_valor)
+            except ValueError:
+                # Se o ID não for um número válido, retornar queryset vazio
+                return Requisicoes.objects.none()
 
         return queryset
 

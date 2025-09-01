@@ -154,13 +154,19 @@
     </style>
     </div>
     <div class="row mb-4">
-        <div class="col-md-6">
+        <div class="col-md-4">
+                <form method="get" action="{% url 'historicoListViews' %}" class="d-flex flex-column flex-sm-row gap-2 align-items-center">
+                    <input type="number" class="form-control" name="id_filtro" placeholder="ID" value="{{ id_filter }}" min="1">
+                    <button type="submit" class="btn btn-primary">Buscar ID</button>
+                </form>
+        </div>
+        <div class="col-md-4">
                 <form method="get" action="{% url 'historicoListViews' %}" class="d-flex flex-column flex-sm-row gap-2 align-items-center">
                     <input type="text" class="form-control" name="nome" placeholder="Nome" value="{{ nome_filter }}">
                     <button type="submit" class="btn btn-primary">Buscar</button>
                 </form>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
                 <form method="get" action="{% url 'historicoListViews' %}" class="d-flex flex-column flex-sm-row gap-2 align-items-center">
                     <select class='form-select' name="status">
                         <option value="">Escolha um status</option>
@@ -175,6 +181,39 @@
                 </form>
         </div>
     </div>
+    
+    <!-- Botão para limpar filtros -->
+    {% if id_filter or nome_filter or status_filter %}
+        <div class="row mb-3">
+            <div class="col-12 text-center">
+                <a href="{% url 'historicoListViews' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Limpar Todos os Filtros
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Mensagem quando não há resultados -->
+    {% if historico_list|length == 0 and id_filter or historico_list|length == 0 and nome_filter or historico_list|length == 0 and status_filter %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Nenhum registro encontrado</strong> para os filtros aplicados.
+                    <br>
+                    <small class="text-muted">
+                        {% if id_filter %}ID: <strong>{{ id_filter }}</strong>{% endif %}
+                        {% if nome_filter %}{% if id_filter %} | {% endif %}Nome: <strong>{{ nome_filter }}</strong>{% endif %}
+                        {% if status_filter %}{% if id_filter or nome_filter %} | {% endif %}Status: <strong>{{ status_filter }}</strong>{% endif %}
+                    </small>
+                    <br>
+                    <small class="text-muted">
+                        Tente ajustar os filtros ou limpar todos para ver todos os registros.
+                    </small>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 
     <div class="row">
             {% for item in historico_list %}
@@ -272,10 +311,10 @@
         <ul class="pagination justify-content-center" style="gap:8px;">
             {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link custom-page-link" href="?page=1{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Primeira</a>
+                    <a class="page-link custom-page-link" href="?page=1{% if id_filter %}&id_filtro={{ id_filter }}{% endif %}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Primeira</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link custom-page-link" href="?page={{ page_obj.previous_page_number }}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Anterior</a>
+                    <a class="page-link custom-page-link" href="?page={{ page_obj.previous_page_number }}{% if id_filter %}&id_filtro={{ id_filter }}{% endif %}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Anterior</a>
                 </li>
             {% endif %}
 
@@ -287,10 +326,10 @@
 
             {% if page_obj.has_next %}
                 <li class="page-item">
-                    <a class="page-link custom-page-link" href="?page={{ page_obj.next_page_number }}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Próxima</a>
+                    <a class="page-link custom-page-link" href="?page={{ page_obj.next_page_number }}{% if id_filter %}&id_filtro={{ id_filter }}{% endif %}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Próxima</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link custom-page-link" href="?page={{ page_obj.paginator.num_pages }}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Última</a>
+                    <a class="page-link custom-page-link" href="?page={{ page_obj.paginator.num_pages }}{% if id_filter %}&id_filtro={{ id_filter }}{% endif %}{% if nome_filter %}&nome={{ nome_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Última</a>
                 </li>
             {% endif %}
         </ul>
