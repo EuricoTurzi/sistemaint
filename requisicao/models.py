@@ -303,6 +303,7 @@ class Requisicoes(models.Model):
     status_faturamento = models.CharField(choices=statusfat,  default="Pendente",null=True, blank=True, max_length=50)
     id_equipamentos= models.TextField(max_length=180000, null=True, blank=True, default='')
     faturamento= models.CharField(choices=statusfat ,max_length=1200, blank=True, default='Pendente')
+    iccid = models.CharField(max_length=600000,null=True, blank=True, default='')
     def __str__(self):
         return f"Requisição {self.id} - {self.nome} "
 

@@ -10,7 +10,7 @@ class RequisicoesAdmin(admin.ModelAdmin):
         'vigencia', 'data', 'motivo', 'envio', 'comercial', 'tipo_produto',
         'carregador', 'cabo', 'tipo_fatura', 'valor_unitario', 'valor_total',
         'forma_pagamento', 'observacoes', 'TP', 'status_faturamento', 
-        'id_equipamentos', 'numero_de_equipamentos', 'aos_cuidados'
+        'id_equipamentos', 'numero_de_equipamentos', 'aos_cuidados', 'iccid'
     )
     search_fields = ('nome',)  # Campo de pesquisa para o admin
 

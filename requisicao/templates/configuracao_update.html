@@ -53,19 +53,9 @@
     console.log(`Quantidade total de padrões encontrados: ${quantidade}`);
     console.log(`Último ID usado: ${id}`);
 
-
-
-        // Mantém exatamente 10 números e remove o excesso se houver mais de 10
-        var regex = /(\d{10})(\d+)/g;
-        value = value.replace(regex, function(match, p1, p2) {
-            return p1 + "     "; // Mantém os 10 números e adiciona 5 espaços
-        });
-
-input.value = value; // Atualiza o valor do campo de entrada
-
-// Atualiza o campo oculto de quantidade
-document.getElementById("quantidade").value = quantidade;
-console.log("Quantidade total de padrões encontrados: " + quantidade); // Log para depuração
+    // Atualiza o campo oculto de quantidade
+    document.getElementById("quantidade").value = quantidade;
+    console.log("Quantidade total de padrões encontrados: " + quantidade); // Log para depuração
 });
 </script>
 
