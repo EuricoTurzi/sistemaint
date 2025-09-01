@@ -185,6 +185,54 @@
         transform: scale(1.1);
     }
 
+    /* Estilos para o botão de adicionar múltiplas linhas */
+    .btn-add-multiple {
+        position: fixed;
+        bottom: 20px;
+        left: 80px;
+        z-index: 1000;
+    }
+
+    .btn-add-multiple .input-group {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .btn-add-multiple .form-control {
+        border: none;
+        background: #f8f9fa;
+        text-align: center;
+        font-weight: 600;
+        color: #495057;
+        width: 60px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+
+    .btn-add-multiple .form-control:focus {
+        box-shadow: none;
+        background: #e9ecef;
+    }
+
+    .btn-add-multiple .btn {
+        border: none;
+        background: #17a2b8;
+        color: white;
+        transition: all 0.3s ease;
+        height: 40px;
+        width: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-add-multiple .btn:hover {
+        background: #138496;
+        transform: scale(1.05);
+    }
+
     /* Modal Styles */
     .modal-content {
         border-radius: 12px;
@@ -262,6 +310,26 @@
 
     .btn-close:hover {
         background: #5a6268;
+    }
+
+    /* Estilos para checkboxes */
+    .row-checkbox {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: #007bff;
+    }
+
+    .row-checkbox:checked {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    #selectAllCheckbox {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: #007bff;
     }
 
     /* Estilos para paginação */
@@ -535,6 +603,9 @@
                          <button class="btn btn-outline-secondary" type="button" id="btnLimparFiltro">
                              <i class="fas fa-times"></i> Limpar Filtros
                          </button>
+                         <button class="btn btn-outline-info" type="button" id="btnVerSelecionados" onclick="verLinhasSelecionadas()">
+                             <i class="fas fa-check-square"></i> Ver Selecionados
+                         </button>
                      </div>
                  </div>
              </div>
@@ -544,6 +615,9 @@
                 <table class="table table-bordered table-striped" id="faturamentoTable">
                     <thead>
                         <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="selectAllCheckbox" title="Selecionar todos">
+                            </th>
                             <th>ID</th>
                             <th>Faturamento</th>
                             <th>Emissão</th>
@@ -613,6 +687,18 @@
 <button class="btn-add-row" onclick="addNewRow()" title="Adicionar nova linha">
     <i class="fas fa-plus"></i>
 </button>
+
+<!-- Botão Adicionar Múltiplas Linhas -->
+<div class="btn-add-multiple">
+    <div class="input-group input-group-sm">
+        <input type="number" class="form-control" id="quantidadeLinhas" placeholder="Qtd" min="1" max="100" value="1">
+        <div class="input-group-append">
+            <button class="btn btn-success" onclick="addMultipleRows()">
+                <i class="fas fa-layer-group"></i>
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- Modal de Edição -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -867,6 +953,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadFormasPagamento();
     loadInitialData();
     setupTableEvents();
+    setupRowCheckboxEvents(); // Adicionar eventos para checkboxes
 });
 
 function loadClientes() {
@@ -1103,6 +1190,9 @@ function loadDataForPage(page) {
                 // Limpar tabela atual
                 document.getElementById('faturamentoTbody').innerHTML = '';
                 
+                // Limpar checkboxes selecionados
+                clearAllCheckboxes();
+                
                 // Adicionar dados da página atual
                 data.faturamentos.forEach(faturamento => {
                     const rowData = {
@@ -1185,37 +1275,172 @@ function changePerPage() {
 }
 
 function addNewRow() {
+    // Verificar se há linhas selecionadas
+    const selectedRows = getSelectedRows();
+    let baseData = null;
+    
+    if (selectedRows.length > 0) {
+        // Usar a primeira linha selecionada como base
+        const firstSelectedRow = document.querySelector(`tr[data-row-id="${selectedRows[0]}"]`);
+        if (firstSelectedRow) {
+            baseData = getRowData(firstSelectedRow);
+            // Mostrar mensagem informativa
+            showToast(`Copiando dados da linha ${selectedRows[0]} como base para nova linha`, 'info');
+        }
+    }
+    
     const newData = {
         id: rowCounter++,
-        faturamento: '',
-        emissao: '',
-        reajustado: '',
-        reajuste: '',
-        contrato: '',
-        tempo: '',
-        comercial: '',
-        n_contrato: '',
-        sistema_omie: '',
-        empresa: '',
-        cliente: '',
-        nome_fantasia: '',
-        email: '',
-        tipo_servico: '',
-        descricao: '',
-        forma_pagamento: '',
-        vecimento: '',
-        documento: '',
-        valor_bruto: '',
-        coluna1: '',
-        valor_liquido: '',
-        juros: '',
-        data_pgto: '',
-        valor_pago: '',
-        status2: '',
-        situacao: ''
+        faturamento: baseData ? baseData.faturamento : '',
+        emissao: baseData ? baseData.emissao : '',
+        reajustado: baseData ? baseData.reajustado : '',
+        reajuste: baseData ? baseData.reajuste : '',
+        contrato: baseData ? baseData.contrato : '',
+        tempo: baseData ? baseData.tempo : '',
+        comercial: baseData ? baseData.comercial : '',
+        n_contrato: baseData ? baseData.n_contrato : '',
+        sistema_omie: baseData ? baseData.sistema_omie : '',
+        empresa: baseData ? baseData.empresa : '',
+        cliente: baseData ? baseData.cliente : '',
+        nome_fantasia: baseData ? baseData.nome_fantasia : '',
+        email: baseData ? baseData.email : '',
+        tipo_servico: baseData ? baseData.tipo_servico : '',
+        descricao: baseData ? baseData.descricao : '',
+        forma_pagamento: baseData ? baseData.forma_pagamento : '',
+        vecimento: baseData ? baseData.vecimento : '',
+        documento: baseData ? baseData.documento : '',
+        valor_bruto: baseData ? baseData.valor_bruto : '',
+        coluna1: baseData ? baseData.coluna1 : '',
+        valor_liquido: baseData ? baseData.valor_liquido : '',
+        juros: baseData ? baseData.juros : '',
+        data_pgto: baseData ? baseData.data_pgto : '',
+        valor_pago: baseData ? baseData.valor_pago : '',
+        status2: baseData ? baseData.status2 : '',
+        situacao: baseData ? baseData.situacao : ''
     };
     
+    // Adicionar à tabela primeiro
     addRowToTable(newData, true);
+    
+    // Salvar automaticamente no servidor
+    saveToServer(newData.id, newData, function(success) {
+        if (success) {
+            showToast('Nova linha criada e salva com sucesso!', 'success');
+        } else {
+            showToast('Linha criada mas houve erro ao salvar no servidor', 'warning');
+        }
+    });
+    
+    // Se havia linhas selecionadas, desmarcar todas após criar a nova linha
+    if (selectedRows.length > 0) {
+        clearAllCheckboxes();
+    }
+}
+
+function addMultipleRows() {
+    const quantidade = parseInt(document.getElementById('quantidadeLinhas').value);
+    if (isNaN(quantidade) || quantidade < 1 || quantidade > 100) {
+        showToast('Por favor, insira um número entre 1 e 100.', 'warning');
+        return;
+    }
+
+    // Verificar se há linhas selecionadas
+    const selectedRows = getSelectedRows();
+    let baseData = null;
+    
+    if (selectedRows.length > 0) {
+        // Usar a primeira linha selecionada como base
+        const firstSelectedRow = document.querySelector(`tr[data-row-id="${selectedRows[0]}"]`);
+        if (firstSelectedRow) {
+            baseData = getRowData(firstSelectedRow);
+            showToast(`Copiando dados da linha ${selectedRows[0]} como base para ${quantidade} novas linhas`, 'info');
+        }
+    }
+
+    let linhasCriadas = 0;
+    let linhasSalvas = 0;
+
+    for (let i = 0; i < quantidade; i++) {
+        const newData = {
+            id: rowCounter++,
+            faturamento: baseData ? baseData.faturamento : '',
+            emissao: baseData ? baseData.emissao : '',
+            reajustado: baseData ? baseData.reajustado : '',
+            reajuste: baseData ? baseData.reajuste : '',
+            contrato: baseData ? baseData.contrato : '',
+            tempo: baseData ? baseData.tempo : '',
+            comercial: baseData ? baseData.comercial : '',
+            n_contrato: baseData ? baseData.n_contrato : '',
+            sistema_omie: baseData ? baseData.sistema_omie : '',
+            empresa: baseData ? baseData.empresa : '',
+            cliente: baseData ? baseData.cliente : '',
+            nome_fantasia: baseData ? baseData.nome_fantasia : '',
+            email: baseData ? baseData.email : '',
+            tipo_servico: baseData ? baseData.tipo_servico : '',
+            descricao: baseData ? baseData.descricao : '',
+            forma_pagamento: baseData ? baseData.forma_pagamento : '',
+            vecimento: baseData ? baseData.vecimento : '',
+            documento: baseData ? baseData.documento : '',
+            valor_bruto: baseData ? baseData.valor_bruto : '',
+            coluna1: baseData ? baseData.coluna1 : '',
+            valor_liquido: baseData ? baseData.valor_liquido : '',
+            juros: baseData ? baseData.juros : '',
+            data_pgto: baseData ? baseData.data_pgto : '',
+            valor_pago: baseData ? baseData.valor_pago : '',
+            status2: baseData ? baseData.status2 : '',
+            situacao: baseData ? baseData.situacao : ''
+        };
+        
+        // Adicionar à tabela
+        addRowToTable(newData, true);
+        linhasCriadas++;
+        
+        // Salvar automaticamente no servidor
+        saveToServer(newData.id, newData, function(success) {
+            if (success) {
+                linhasSalvas++;
+                if (linhasSalvas === quantidade) {
+                    showToast(`${linhasCriadas} linhas criadas e ${linhasSalvas} salvas com sucesso!`, 'success');
+                }
+            } else {
+                showToast(`Erro ao salvar linha ${newData.id}`, 'error');
+            }
+        });
+    }
+    
+    // Se havia linhas selecionadas, desmarcar todas após criar as novas linhas
+    if (selectedRows.length > 0) {
+        clearAllCheckboxes();
+    }
+    
+    showToast(`${quantidade} linhas sendo criadas e salvas...`, 'info');
+}
+
+// Função auxiliar para extrair dados de uma linha
+function getRowData(row) {
+    const fields = [
+        'faturamento', 'emissao', 'reajustado', 'reajuste', 'contrato', 'tempo',
+        'comercial', 'n_contrato', 'sistema_omie', 'empresa',
+        'cliente', 'nome_fantasia', 'email', 'tipo_servico', 'descricao',
+        'forma_pagamento', 'vecimento', 'documento', 'valor_bruto', 'coluna1',
+        'valor_liquido', 'juros', 'data_pgto', 'valor_pago', 'status2', 'situacao'
+    ];
+    
+    const rowData = {};
+    fields.forEach(field => {
+        const cell = row.querySelector(`td[data-field="${field}"]`);
+        if (cell) {
+            // Para campos de status, extrair apenas o texto sem as tags HTML
+            if (field === 'status2') {
+                const statusSpan = cell.querySelector('.status-recebido, .status-a-receber');
+                rowData[field] = statusSpan ? statusSpan.textContent.trim() : (cell.dataset.value || cell.textContent || '');
+            } else {
+                rowData[field] = cell.dataset.value || cell.textContent || '';
+            }
+        }
+    });
+    
+    return rowData;
 }
 
 function addRowToTable(data, isNew = false) {
@@ -1236,6 +1461,13 @@ function addRowToTable(data, isNew = false) {
     } else {
         tbody.appendChild(row);
     }
+    
+    // Adicionar célula do checkbox primeiro
+    const checkboxCell = document.createElement('td');
+    checkboxCell.style.width = '50px';
+    checkboxCell.style.textAlign = 'center';
+    checkboxCell.innerHTML = `<input type="checkbox" class="row-checkbox" data-row-id="${data.id}">`;
+    row.appendChild(checkboxCell);
     
     const fields = [
         'id', 'faturamento', 'emissao', 'reajustado', 'reajuste', 'contrato', 'tempo',
@@ -1297,6 +1529,63 @@ function setupTableEvents() {
             const row = e.target.parentElement;
             const rowId = row.dataset.rowId;
             editRow(rowId);
+        }
+    });
+    
+    // Adicionar evento para o checkbox "selecionar todos"
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
+            const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+            rowCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        });
+    }
+}
+
+// Função para obter todas as linhas selecionadas
+function getSelectedRows() {
+    const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+    const selectedRows = [];
+    
+    selectedCheckboxes.forEach(checkbox => {
+        const rowId = checkbox.dataset.rowId;
+        selectedRows.push(rowId);
+    });
+    
+    return selectedRows;
+}
+
+// Função para verificar se todas as linhas estão selecionadas
+function updateSelectAllCheckbox() {
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+    const checkedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+    
+    if (rowCheckboxes.length === 0) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+    } else if (checkedCheckboxes.length === 0) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+    } else if (checkedCheckboxes.length === rowCheckboxes.length) {
+        selectAllCheckbox.checked = true;
+        selectAllCheckbox.indeterminate = false;
+    } else {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = true;
+    }
+}
+
+// Função para adicionar eventos aos checkboxes das linhas
+function setupRowCheckboxEvents() {
+    const tbody = document.getElementById('faturamentoTbody');
+    
+    tbody.addEventListener('change', function(e) {
+        if (e.target.classList.contains('row-checkbox')) {
+            updateSelectAllCheckbox();
         }
     });
 }
@@ -1480,7 +1769,7 @@ function deleteRowById(rowId) {
     showDeleteConfirmModal(rowId);
 }
 
-function saveToServer(rowId, data) {
+function saveToServer(rowId, data, callback) {
     // Implementar AJAX para salvar no servidor
     fetch('/faturamento/save/', {
         method: 'POST',
@@ -1751,5 +2040,112 @@ function getCookie(name) {
       currentPage = 1; // Voltar para a primeira página
       loadDataForPage(1);
   }
+
+// Função para limpar todos os checkboxes
+function clearAllCheckboxes() {
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    if (selectAllCheckbox) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+    }
+    
+    const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+    rowCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+}
+
+// Função para ver detalhes das linhas selecionadas
+function verLinhasSelecionadas() {
+    const selectedRows = getSelectedRows();
+    if (selectedRows.length === 0) {
+        showToast('Nenhuma linha selecionada para exibir detalhes.', 'info');
+        return;
+    }
+
+    const selectedRowsHtml = selectedRows.map(rowId => {
+        const row = document.querySelector(`tr[data-row-id="${rowId}"]`);
+        if (!row) return `Linha com ID ${rowId} não encontrada.`;
+
+        const fields = [
+            'id', 'faturamento', 'emissao', 'reajustado', 'reajuste', 'contrato', 'tempo',
+            'comercial', 'n_contrato', 'sistema_omie', 'empresa',
+            'cliente', 'nome_fantasia', 'email', 'tipo_servico', 'descricao',
+            'forma_pagamento', 'vecimento', 'documento', 'valor_bruto', 'coluna1',
+            'valor_liquido', 'juros', 'data_pgto', 'valor_pago', 'status2', 'situacao'
+        ];
+
+        const rowData = {};
+        fields.forEach(field => {
+            const cell = row.querySelector(`td[data-field="${field}"]`);
+            rowData[field] = cell ? cell.textContent : 'N/A';
+        });
+
+        return `
+            <div class="card mb-2">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">Detalhes da Linha Selecionada</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>ID:</strong> ${rowData.id}</p>
+                    <p><strong>Faturamento:</strong> ${rowData.faturamento}</p>
+                    <p><strong>Emissão:</strong> ${rowData.emissao}</p>
+                    <p><strong>Reajustado:</strong> ${rowData.reajustado}</p>
+                    <p><strong>Reajuste:</strong> ${rowData.reajuste}</p>
+                    <p><strong>Contrato:</strong> ${rowData.contrato}</p>
+                    <p><strong>Tempo:</strong> ${rowData.tempo}</p>
+                    <p><strong>Comercial:</strong> ${rowData.comercial}</p>
+                    <p><strong>Nº Contrato:</strong> ${rowData.n_contrato}</p>
+                    <p><strong>Sistema Omie:</strong> ${rowData.sistema_omie}</p>
+                    <p><strong>Empresa:</strong> ${rowData.empresa}</p>
+                    <p><strong>Cliente:</strong> ${rowData.cliente}</p>
+                    <p><strong>Nome Fantasia:</strong> ${rowData.nome_fantasia}</p>
+                    <p><strong>Email:</strong> ${rowData.email}</p>
+                    <p><strong>Tipo Serviço:</strong> ${rowData.tipo_servico}</p>
+                    <p><strong>Descrição:</strong> ${rowData.descricao}</p>
+                    <p><strong>Forma Pagamento:</strong> ${rowData.forma_pagamento}</p>
+                    <p><strong>Vencimento:</strong> ${rowData.vecimento}</p>
+                    <p><strong>Documento:</strong> ${rowData.documento}</p>
+                    <p><strong>Valor Bruto:</strong> ${rowData.valor_bruto}</p>
+                    <p><strong>Coluna 1:</strong> ${rowData.coluna1}</p>
+                    <p><strong>Valor Líquido:</strong> ${rowData.valor_liquido}</p>
+                    <p><strong>Juros:</strong> ${rowData.juros}</p>
+                    <p><strong>Data Pagamento:</strong> ${rowData.data_pgto}</p>
+                    <p><strong>Valor Pago:</strong> ${rowData.valor_pago}</p>
+                    <p><strong>Status:</strong> ${rowData.status2}</p>
+                    <p><strong>Situação:</strong> ${rowData.situacao}</p>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    const modal = document.createElement('div');
+    modal.className = 'modal fade';
+    modal.id = 'detalhesModal';
+    modal.setAttribute('tabindex', '-1');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-labelledby', 'detalhesModalLabel');
+    modal.setAttribute('aria-hidden', 'true');
+    modal.innerHTML = `
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="detalhesModalLabel">Detalhes das Linhas Selecionadas</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ${selectedRowsHtml}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    $('#detalhesModal').modal('show');
+}
 </script>
 {% endblock %}
