@@ -282,7 +282,7 @@
                     {% if perms.estoqueview_estoque %}
                     <div class="d-flex flex-row gap-2 justify-content-center w-100">
                         <a class="btn btn-success" href="{% url 'Aprovado_Inteligência' registro.id %}" title="Aprovar"><i class="fas fa-check"></i></a>
-                        <a class="btn btn-diretoria" href="{% url 'Reprovado_Inteligência' registro.id %}" title="Diretoria"><i class="fas fa-user-tie"></i></a>
+                        <a class="btn btn-diretoria" href="{% url 'Reprovado_Inteligência' registro.id %}" title="Realizada"><i class="fas fa-user-tie"></i></a>
                         <a class="btn btn-danger" href="{% url 'Reprovado_Inteligência2' registro.id %}" title="Reprovado"><i class="fas fa-times"></i></a>
                     </div>
                     {% endif %}
