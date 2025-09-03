@@ -273,6 +273,7 @@
                         <a class="btn btn-relatorio" href="{% url 'download_pdfmanutencao' registro.id %}">Relatório</a>
                         <a class="btn btn-info" href="{% url 'download_protocolo_entrada' registro.id %}">Protocolo</a>
                         <a class="btn btn-primary" href="{% url 'FormulariosUpdateView' registro.id %}">Editar</a>
+                        <a class="btn btn-diretoria" href="{% url 'Reprovado_Inteligência' registro.id %}" title="Realizada"><i class="fas fa-user-tie"></i></a>
                     </div>
                     <div class="d-flex flex-row flex-wrap gap-2 mb-2">
                         {% if registro.has_retorno_images %}
@@ -282,7 +283,6 @@
                     {% if perms.estoqueview_estoque %}
                     <div class="d-flex flex-row gap-2 justify-content-center w-100">
                         <a class="btn btn-success" href="{% url 'Aprovado_Inteligência' registro.id %}" title="Aprovar"><i class="fas fa-check"></i></a>
-                        <a class="btn btn-diretoria" href="{% url 'Reprovado_Inteligência' registro.id %}" title="Realizada"><i class="fas fa-user-tie"></i></a>
                         <a class="btn btn-danger" href="{% url 'Reprovado_Inteligência2' registro.id %}" title="Reprovado"><i class="fas fa-times"></i></a>
                     </div>
                     {% endif %}
