@@ -54,13 +54,35 @@
 .table thead th {
     position: sticky;
     top: 0;
-    background-color: #817a8583;
+    background-color: #817a85;
     color: #0c0b0b;
     z-index: 1;
     font-weight: 700;
     border-bottom: 2px solid #B0BEC5;
     text-align: center;
     vertical-align: middle;
+}
+
+/* Fixar coluna ID */
+.table thead th:first-child {
+    position: sticky;
+    left: 0;
+    top: 0;
+    background-color: #817a85;
+    z-index: 3;
+    border-right: 2px solid #B0BEC5;
+}
+
+.table tbody td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: #FFFFFF;
+    z-index: 2;
+    border-right: 2px solid #B0BEC5;
+}
+
+.table tbody tr:hover td:first-child {
+    background-color: #FFF5E6;
 }
 
 .table tbody tr {
