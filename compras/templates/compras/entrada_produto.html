@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Entrada de Produto{% endblock %}
+
+{% block content %}
+<style>
+    /* Container ocupa tela cheia */
+    .container-fluid {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    /* Card principal ocupa toda largura */
+    .col-12 > .card {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    /* Cards internos */
+    .card.h-100 {
+        width: 100%;
+    }
+
+    /* Inputs ocupam toda a coluna */
+    form input, form select, form textarea {
+        width: 100% !important;
+    }
+
+    /* Labels do formulário em uma linha só */
+    form label {
+        white-space: nowrap;
+    }
+
+    /* Cabeçalho da tabela sem quebra */
+    .table th {
+        white-space: nowrap;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- CARD PRINCIPAL -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-box-open"></i> Entrada de Produto
+                    </h3>
+                </div>
+
+                <div class="card-body p-0">
+                    <!-- GRID INTERNA: FORM + TABELA -->
+                    <div class="row m-0">
+                        <!-- FORM (5 colunas XL / 6 colunas LG) -->
+                        <div class="col-xl-5 col-lg-6 p-3">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Nova Entrada</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post">
+                                        {% csrf_token %}
+
+                                        <div class="form-group mb-3">
+                                            <label for="{{ form.codigo_produto.id_for_label }}">{{ form.codigo_produto.label }}</label>
+                                            {{ form.codigo_produto }}
+                                            {% if form.codigo_produto.errors %}
+                                                <div class="text-danger">{{ form.codigo_produto.errors }}</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-3">
+                                                    <label for="{{ form.quantidade.id_for_label }}">{{ form.quantidade.label }}</label>
+                                                    {{ form.quantidade }}
+                                                    {% if form.quantidade.errors %}
+                                                        <div class="text-danger">{{ form.quantidade.errors }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-3">
+                                                    <label for="{{ form.id_equipamento.id_for_label }}">{{ form.id_equipamento.label }}</label>
+                                                    {{ form.id_equipamento }}
+                                                    {% if form.id_equipamento.errors %}
+                                                        <div class="text-danger">{{ form.id_equipamento.errors }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group mb-3">
+                                            <label for="{{ form.data.id_for_label }}">{{ form.data.label }}</label>
+                                            {{ form.data }}
+                                            {% if form.data.errors %}
+                                                <div class="text-danger">{{ form.data.errors }}</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-3">
+                                                    <label for="{{ form.valor_nota.id_for_label }}">{{ form.valor_nota.label }}</label>
+                                                    {{ form.valor_nota }}
+                                                    {% if form.valor_nota.errors %}
+                                                        <div class="text-danger">{{ form.valor_nota.errors }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-3">
+                                                    <label for="{{ form.numero_nota_fiscal.id_for_label }}">{{ form.numero_nota_fiscal.label }}</label>
+                                                    {{ form.numero_nota_fiscal }}
+                                                    {% if form.numero_nota_fiscal.errors %}
+                                                        <div class="text-danger">{{ form.numero_nota_fiscal.errors }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="fas fa-save"></i> Registrar Entrada
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TABELA (7 colunas XL / 6 colunas LG) -->
+                        <div class="col-xl-7 col-lg-6 p-3">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Entradas Registradas</h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    {% if entradas %}
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover mb-0">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>Produto</th>
+                                                        <th>Fabricante</th>
+                                                        <th>Qtd</th>
+                                                        <th>ID Equipamento</th>
+                                                        <th>Data/Hora Recebido</th>
+                                                        <th>Valor (R$)</th>
+                                                        <th>Nº NF</th>
+                                                        <th>Data Entrada</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for entrada in entradas %}
+                                                    <tr>
+                                                        <td>
+                                                            <strong>{{ entrada.codigo_produto.nome_produto }}</strong>
+                                                        </td>
+                                                        <td>{{ entrada.codigo_produto.fabricante }}</td>
+                                                        <td class="text-center">{{ entrada.quantidade }}</td>
+                                                        <td>{{ entrada.id_equipamento }}</td>
+                                                        <td>{{ entrada.data|date:"d/m/Y H:i" }}</td>
+                                                        <td class="text-end">R$ {{ entrada.valor_nota|floatformat:2 }}</td>
+                                                        <td>{{ entrada.numero_nota_fiscal }}</td>
+                                                        <td>{{ entrada.data_entrada|date:"d/m/Y H:i" }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% else %}
+                                        <div class="p-4 text-center">
+                                            <p class="text-muted mb-0">Nenhuma entrada registrada ainda.</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /TABELA -->
+                    </div>
+                    <!-- /GRID INTERNA -->
+                </div>
+            </div>
+            <!-- /CARD PRINCIPAL -->
+        </div>
+    </div>
+</div>
+{% endblock %}

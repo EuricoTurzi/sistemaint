@@ -41,6 +41,7 @@ urlpatterns = [
     path('documentacoes/', include('documentacoes.urls')),   
     path('nestle/', include('Nestle.urls')),
     path('corte/', include('corte.urls')),
+    path('compras/', include('compras.urls')),
    
      
      

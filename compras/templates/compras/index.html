@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Setor de Compras{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-shopping-cart"></i> Setor de Compras
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title">Cadastro de Tipo de Produto</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Cadastre novos tipos de produtos com informações do fabricante.</p>
+                                    <a href="{% url 'compras:cadastro_tipo_produto' %}" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Cadastrar Produto
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title">Entrada de Produto</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Registre a entrada de produtos com nota fiscal.</p>
+                                    <a href="{% url 'compras:entrada_produto' %}" class="btn btn-success">
+                                        <i class="fas fa-box"></i> Registrar Entrada
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
