@@ -572,6 +572,10 @@
                                             {% if request.GET.status_operacao == 'Reversa Finalizada' %}selected{% endif %}>
                                             Reversa Finalizada
                                         </option>
+                                        <option value="Equipamento na Base"
+                                            {% if request.GET.status_operacao == 'Equipamento na Base' %}selected{% endif %}>
+                                            Equipamento na Base
+                                        </option>
                                     </select>
                                     <label>Status</label>
                                 </div>
