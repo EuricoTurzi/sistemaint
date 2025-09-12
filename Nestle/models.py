@@ -19,6 +19,8 @@ class GridInternacional(models.Model):
         ('Danificado', 'Danificado'),
         ('Extraviado', 'Extraviado'),
         ('Reversa Finalizada', 'Reversa Finalizada'),
+        ('Equipamento na Base', 'Equipamento na Base'),
+        
     ]
 
     id = models.BigAutoField(primary_key=True) 

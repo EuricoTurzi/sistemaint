@@ -94,25 +94,57 @@
                                 <div class="card-body">
                                     {% if produtos %}
                                         <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
+                                            <table class="table table-striped table-hover">
+                                                <thead class="table-dark">
                                                     <tr>
                                                         <th>Produto</th>
+                                                        <th>Descrição</th>
                                                         <th>Fabricante</th>
-                                                        <th>Valor</th>
+                                                        <th>Contato</th>
+                                                        <th>Valor Unitário</th>
+                                                        <th>Data Cadastro</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {% for produto in produtos %}
                                                     <tr>
-                                                        <td>{{ produto.nome_produto }}</td>
+                                                        <td>
+                                                            <strong>{{ produto.nome_produto }}</strong>
+                                                        </td>
+                                                        <td>
+                                                            <small class="text-muted">
+                                                                {{ produto.descricao|truncatechars:50 }}
+                                                                {% if produto.descricao|length > 50 %}...{% endif %}
+                                                            </small>
+                                                        </td>
                                                         <td>{{ produto.fabricante }}</td>
                                                         <td>
-                                                            {% if produto.valor_unitario %}
-                                                                R$ {{ produto.valor_unitario|floatformat:2 }}
+                                                            {% if produto.telefone_fabricante or produto.email_fabricante %}
+                                                                {% if produto.telefone_fabricante %}
+                                                                    <small class="d-block">
+                                                                        <i class="fas fa-phone"></i> {{ produto.telefone_fabricante }}
+                                                                    </small>
+                                                                {% endif %}
+                                                                {% if produto.email_fabricante %}
+                                                                    <small class="d-block">
+                                                                        <i class="fas fa-envelope"></i> {{ produto.email_fabricante }}
+                                                                    </small>
+                                                                {% endif %}
                                                             {% else %}
-                                                                -
+                                                                <span class="text-muted">-</span>
                                                             {% endif %}
+                                                        </td>
+                                                        <td class="text-end">
+                                                            {% if produto.valor_unitario %}
+                                                                <strong>R$ {{ produto.valor_unitario|floatformat:2 }}</strong>
+                                                            {% else %}
+                                                                <span class="text-muted">-</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            <small class="text-muted">
+                                                                {{ produto.data_cadastro|date:"d/m/Y H:i" }}
+                                                            </small>
                                                         </td>
                                                     </tr>
                                                     {% endfor %}

@@ -46,3 +46,15 @@ class EntradaProdutoForm(forms.ModelForm):
             'valor_nota': 'Valor da Nota (R$)',
             'numero_nota_fiscal': 'Número da Nota Fiscal',
         }
+
+class FiltroEntradaProdutoForm(forms.Form):
+    """Formulário para filtrar entradas de produto"""
+    
+    id_equipamento = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Filtrar por ID do equipamento...'
+        }),
+        label='ID do Equipamento'
+    )

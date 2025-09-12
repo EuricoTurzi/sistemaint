@@ -52,7 +52,7 @@ def enviar_email_requisicao_criada(sender, instance, created, **kwargs):
                 'inteligencia@grupogoldensat.com.br',
                 'aux_financeiro@grupogoldensat.com.br',
                 'mayra.monteiro@grupogoldensat.com.br',
-                'sjuniorr6@gmail.com'#--- retirar
+                'comercial@grupogoldensat.com.br'#--- retirar
             ]
         else:
             recipient_list = [
