@@ -498,6 +498,20 @@
                         {% endif %}
                 </li>
                 
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdownCompras" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-cart-fill"></i> Compras
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownCompras">
+                        <li><a class="dropdown-item" href="{% url 'compras:cadastro_tipo_produto' %}">
+                            <i class="bi bi-box"></i> Cadastrar Produto
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'compras:entrada_produto' %}">
+                            <i class="bi bi-box-arrow-in-down"></i> Entrada de Produto
+                        </a></li>
+                    </ul>
+                </li>
+                
                  
                   <li class="nav-item">
     <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">

@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'documentacoes',
     'Nestle',  
     'corte',
+    'compras',
 ]
 
 MIDDLEWARE = [

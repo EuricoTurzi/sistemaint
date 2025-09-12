@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastro de Tipo de Produto{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-box"></i> Cadastro de Tipo de Produto
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- Formulário -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title">Novo Produto</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="{{ form.nome_produto.id_for_label }}">{{ form.nome_produto.label }}</label>
+                                            {{ form.nome_produto }}
+                                            {% if form.nome_produto.errors %}
+                                                <div class="text-danger">{{ form.nome_produto.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="{{ form.descricao.id_for_label }}">{{ form.descricao.label }}</label>
+                                            {{ form.descricao }}
+                                            {% if form.descricao.errors %}
+                                                <div class="text-danger">{{ form.descricao.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="{{ form.fabricante.id_for_label }}">{{ form.fabricante.label }}</label>
+                                            {{ form.fabricante }}
+                                            {% if form.fabricante.errors %}
+                                                <div class="text-danger">{{ form.fabricante.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="{{ form.telefone_fabricante.id_for_label }}">{{ form.telefone_fabricante.label }}</label>
+                                                    {{ form.telefone_fabricante }}
+                                                    {% if form.telefone_fabricante.errors %}
+                                                        <div class="text-danger">{{ form.telefone_fabricante.errors }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="{{ form.email_fabricante.id_for_label }}">{{ form.email_fabricante.label }}</label>
+                                                    {{ form.email_fabricante }}
+                                                    {% if form.email_fabricante.errors %}
+                                                        <div class="text-danger">{{ form.email_fabricante.errors }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="{{ form.valor_unitario.id_for_label }}">{{ form.valor_unitario.label }}</label>
+                                            {{ form.valor_unitario }}
+                                            {% if form.valor_unitario.errors %}
+                                                <div class="text-danger">{{ form.valor_unitario.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i> Cadastrar Produto
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Lista de Produtos -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title">Produtos Cadastrados</h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if produtos %}
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>Produto</th>
+                                                        <th>Descrição</th>
+                                                        <th>Fabricante</th>
+                                                        <th>Contato</th>
+                                                        <th>Valor Unitário</th>
+                                                        <th>Data Cadastro</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for produto in produtos %}
+                                                    <tr>
+                                                        <td>
+                                                            <strong>{{ produto.nome_produto }}</strong>
+                                                        </td>
+                                                        <td>
+                                                            <small class="text-muted">
+                                                                {{ produto.descricao|truncatechars:50 }}
+                                                                {% if produto.descricao|length > 50 %}...{% endif %}
+                                                            </small>
+                                                        </td>
+                                                        <td>{{ produto.fabricante }}</td>
+                                                        <td>
+                                                            {% if produto.telefone_fabricante or produto.email_fabricante %}
+                                                                {% if produto.telefone_fabricante %}
+                                                                    <small class="d-block">
+                                                                        <i class="fas fa-phone"></i> {{ produto.telefone_fabricante }}
+                                                                    </small>
+                                                                {% endif %}
+                                                                {% if produto.email_fabricante %}
+                                                                    <small class="d-block">
+                                                                        <i class="fas fa-envelope"></i> {{ produto.email_fabricante }}
+                                                                    </small>
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <span class="text-muted">-</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="text-end">
+                                                            {% if produto.valor_unitario %}
+                                                                <strong>R$ {{ produto.valor_unitario|floatformat:2 }}</strong>
+                                                            {% else %}
+                                                                <span class="text-muted">-</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            <small class="text-muted">
+                                                                {{ produto.data_cadastro|date:"d/m/Y H:i" }}
+                                                            </small>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted">Nenhum produto cadastrado ainda.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
