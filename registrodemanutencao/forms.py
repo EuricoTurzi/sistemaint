@@ -13,7 +13,7 @@ class FormulariosForm(forms.ModelForm):
             'nome', 'tipo_produto',
 
             'tipo_entrada', 'customizacaoo', 'numero_equipamento' ,'quantidade',
-             'status',
+             'status',  'tipo_contrato',
             'entregue_por_retirado_por', 'observacoes',
 
             'tipo_entrada', 'customizacaoo', 'numero_equipamento', 
@@ -41,7 +41,7 @@ class FormulariosForm(forms.ModelForm):
 
             
             'status': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
-            
+            'tipo_contrato': forms.Select(attrs={'class': 'form-control'}),
         }
 # registrodemanutencao/forms.py
 

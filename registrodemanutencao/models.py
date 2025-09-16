@@ -108,6 +108,10 @@ class registrodemanutencao(models.Model):
         ('Roteador', 'Roteador'),
         ('Relogio digital', 'Relogio digital'),
     ]
+    contrato_tipo = [
+        ('Descartavel', 'Descartavel'),
+        ('Retornavel', 'Retornavel'),
+    ]
 
     # Campos do Modelo
     nome = models.ForeignKey(Clientes, on_delete=models.CASCADE, related_name='formulario_nome')
@@ -121,7 +125,7 @@ class registrodemanutencao(models.Model):
     quantidade = models.IntegerField(null=True,blank=True,default=0)
 
     
-    
+    tipo_contrato = models.CharField(choices=contrato_tipo, null=True, blank=True, max_length=50)
     customizacaoo = models.CharField(choices=custom, max_length=250, blank=True, default='')
     numero_equipamento = models.TextField(max_length=2500, blank=True, default='')
     observacoes = models.TextField(max_length=250, blank=True, default='')
